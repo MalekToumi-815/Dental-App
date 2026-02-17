@@ -1,8 +1,10 @@
-﻿using System.Configuration;
+﻿using Dental_App.Models;
+using Dental_App.Views;
+using Microsoft.EntityFrameworkCore;
+using Prism.DryIoc;
+using System.Configuration;
 using System.Data;
 using System.Windows;
-using Dental_App.Views;
-using Prism.DryIoc;
 
 namespace Dental_App
 {
@@ -17,7 +19,13 @@ namespace Dental_App
         }
         protected override void RegisterTypes(IContainerRegistry containerRegistry)
         {
-            // Register any types needed for dependency injection here
+            var optionsBuilder = new DbContextOptionsBuilder<DentalContext>();
+            optionsBuilder.UseSqlite("Data Source=app.db");
+
+            // This makes DentalContext available for injection everywhere
+            containerRegistry.RegisterInstance(new DentalContext(optionsBuilder.Options));
+
+            containerRegistry.RegisterForNavigation<MainView, MainViewModel>();
         }
     }
 

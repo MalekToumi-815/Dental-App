@@ -1,19 +1,26 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Prism.Mvvm;
+﻿using Dental_App.Models;
 
-namespace Dental_App.ViewModels
+public class MainViewModel : BindableBase
 {
-    public class MainViewModel : BindableBase
+    private readonly DentalContext _db;
+
+    public MainViewModel(DentalContext db)
     {
-        private String title = "hello bibi"; 
-        public String Title
+        _db = db;
+        CheckDatabase();
+    }
+
+    private void CheckDatabase()
+    {
+        try
         {
-            get { return title; }
-            set { SetProperty(ref title, value); }
+            // Try to count rows in one of your tables (e.g., Patients)
+            var count = _db.Patients.Count();
+            System.Diagnostics.Debug.WriteLine($"Database connected! Row count: {count}");
+        }
+        catch (Exception ex)
+        {
+            System.Diagnostics.Debug.WriteLine($"Database error: {ex.Message}");
         }
     }
 }
