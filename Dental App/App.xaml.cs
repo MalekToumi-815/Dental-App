@@ -19,11 +19,11 @@ namespace Dental_App
         }
         protected override void RegisterTypes(IContainerRegistry containerRegistry)
         {
-            var optionsBuilder = new DbContextOptionsBuilder<DentalContext>();
+            var optionsBuilder = new DbContextOptionsBuilder<Dental_App.Models.AppContext>();
             optionsBuilder.UseSqlite("Data Source=app.db");
 
-            // This makes DentalContext available for injection everywhere
-            containerRegistry.RegisterInstance(new DentalContext(optionsBuilder.Options));
+            // This makes AppContext available for injection everywhere
+            containerRegistry.RegisterInstance(new Dental_App.Models.AppContext(optionsBuilder.Options));
 
             containerRegistry.RegisterForNavigation<MainView, MainViewModel>();
         }

@@ -10,7 +10,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace Dental_App.Migrations
 {
-    [DbContext(typeof(DentalContext))]
+    [DbContext(typeof(Dental_App.Models.AppContext))]
     [Migration("20260217165933_AddCaisseUpsertTrigger")]
     partial class AddCaisseUpsertTrigger
     {

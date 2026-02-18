@@ -2,13 +2,13 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Design;
 
-public class DesignTimeDbContextFactory : IDesignTimeDbContextFactory<DentalContext>
+public class DesignTimeDbContextFactory : IDesignTimeDbContextFactory<Dental_App.Models.AppContext>
 {
-    public DentalContext CreateDbContext(string[] args)
+    public Dental_App.Models.AppContext CreateDbContext(string[] args)
     {
-        var optionsBuilder = new DbContextOptionsBuilder<DentalContext>();
+        var optionsBuilder = new DbContextOptionsBuilder<Dental_App.Models.AppContext>();
         optionsBuilder.UseSqlite("Data Source=app.db");
 
-        return new DentalContext(optionsBuilder.Options);
+        return new Dental_App.Models.AppContext(optionsBuilder.Options);
     }
 }

@@ -9,7 +9,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace Dental_App.Migrations
 {
-    [DbContext(typeof(DentalContext))]
+    [DbContext(typeof(Dental_App.Models.AppContext))]
     partial class DentalContextModelSnapshot : ModelSnapshot
     {
         protected override void BuildModel(ModelBuilder modelBuilder)

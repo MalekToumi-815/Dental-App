@@ -2,9 +2,9 @@
 
 public class MainViewModel : BindableBase
 {
-    private readonly DentalContext _db;
+    private readonly Dental_App.Models.AppContext _db;
 
-    public MainViewModel(DentalContext db)
+    public MainViewModel(Dental_App.Models.AppContext db)
     {
         _db = db;
         CheckDatabase();

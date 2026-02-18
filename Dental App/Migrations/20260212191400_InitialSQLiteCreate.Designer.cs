@@ -10,7 +10,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace Dental_App.Migrations
 {
-    [DbContext(typeof(DentalContext))]
+    [DbContext(typeof(Dental_App.Models.AppContext))]
     [Migration("20260212191400_InitialSQLiteCreate")]
     partial class InitialSQLiteCreate
     {
