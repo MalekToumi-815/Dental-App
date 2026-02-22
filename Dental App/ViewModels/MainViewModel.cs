@@ -1,10 +1,8 @@
-﻿using Dental_App.Models;
-
-public class MainViewModel : BindableBase
+﻿public class MainViewModel : BindableBase
 {
-    private readonly Dental_App.Models.AppContext _db;
-
-    public MainViewModel(Dental_App.Models.AppContext db)
+    private readonly Dental_App.Models.DentalContext _db;
+    
+    public MainViewModel(Dental_App.Models.DentalContext db)
     {
         _db = db;
         CheckDatabase();
@@ -14,9 +12,16 @@ public class MainViewModel : BindableBase
     {
         try
         {
-            // Try to count rows in one of your tables (e.g., Patients)
-            var count = _db.Patients.Count();
-            System.Diagnostics.Debug.WriteLine($"Database connected! Row count: {count}");
+            // Read the first row in Utilisateur and display it
+            var user = System.Linq.Enumerable.FirstOrDefault(_db.Utilisateurs);
+            if (user != null)
+            {
+                System.Diagnostics.Debug.WriteLine($"Utilisateur: Id={user.Id}, Nom={user.Nom}, Prenom={user.Prenom}, Hash={user.MotDePasseHash}");
+            }
+            else
+            {
+                System.Diagnostics.Debug.WriteLine("No utilisateur found.");
+            }
         }
         catch (Exception ex)
         {

@@ -5,7 +5,7 @@ namespace Dental_App.Models;
 
 public partial class Caisse
 {
-    public DateOnly DateDuJour { get; set; }
+    public string DateDuJour { get; set; } = null!;
 
     public decimal? Montant { get; set; }
 }

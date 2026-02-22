@@ -1,5 +1,4 @@
-﻿using Dental_App.Models;
-using Dental_App.Views;
+﻿using Dental_App.Views;
 using Microsoft.EntityFrameworkCore;
 using Prism.DryIoc;
 using System.Configuration;
@@ -19,11 +18,11 @@ namespace Dental_App
         }
         protected override void RegisterTypes(IContainerRegistry containerRegistry)
         {
-            var optionsBuilder = new DbContextOptionsBuilder<Dental_App.Models.AppContext>();
+            var optionsBuilder = new DbContextOptionsBuilder<Dental_App.Models.DentalContext>();
             optionsBuilder.UseSqlite("Data Source=app.db");
 
             // This makes AppContext available for injection everywhere
-            containerRegistry.RegisterInstance(new Dental_App.Models.AppContext(optionsBuilder.Options));
+            containerRegistry.RegisterInstance(new Dental_App.Models.DentalContext(optionsBuilder.Options));
 
             containerRegistry.RegisterForNavigation<MainView, MainViewModel>();
         }
