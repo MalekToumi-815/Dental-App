@@ -1,8 +1,6 @@
 ﻿using Dental_App.Views;
 using Microsoft.EntityFrameworkCore;
-using Prism.DryIoc;
-using System.Configuration;
-using System.Data;
+using System.IO;
 using System.Windows;
 
 namespace Dental_App
@@ -18,11 +16,24 @@ namespace Dental_App
         }
         protected override void RegisterTypes(IContainerRegistry containerRegistry)
         {
-            var optionsBuilder = new DbContextOptionsBuilder<Dental_App.Models.DentalContext>();
-            optionsBuilder.UseSqlite("Data Source=app.db");
+            var folder = Path.Combine(
+                Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData),
+                "Dental_App"
+            );
 
-            // This makes AppContext available for injection everywhere
-            containerRegistry.RegisterInstance(new Dental_App.Models.DentalContext(optionsBuilder.Options));
+            if (!Directory.Exists(folder))
+                Directory.CreateDirectory(folder);
+
+            var dbPath = Path.Combine(folder, "dental.db");
+
+            containerRegistry.RegisterSingleton<Dental_App.Models.DentalContext>(() =>
+            {
+                var options = new DbContextOptionsBuilder<Dental_App.Models.DentalContext>()
+                    .UseSqlite($"Data Source={dbPath}")
+                    .Options;
+
+                return new Dental_App.Models.DentalContext(options);
+            });
 
             containerRegistry.RegisterForNavigation<MainView, MainViewModel>();
         }

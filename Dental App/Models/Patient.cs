@@ -11,7 +11,7 @@ public partial class Patient
 
     public string Prenom { get; set; } = null!;
 
-    public string DateNaissance { get; set; } = null!;
+    public DateOnly DateNaissance { get; set; } 
 
     public string? Sexe { get; set; }
 

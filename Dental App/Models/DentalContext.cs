@@ -1,6 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
+using System;
+using System.IO;
 
 namespace Dental_App.Models;
 
@@ -43,11 +44,13 @@ public partial class DentalContext : DbContext
 
     public virtual DbSet<Utilisateur> Utilisateurs { get; set; }
 
-    protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-        => optionsBuilder.UseSqlite("Data Source=app.db");
-
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
+        // converter for DateOnly <-> TEXT (ISO yyyy-MM-dd)
+        var dateOnlyConverter = new ValueConverter<DateOnly, string>(
+            v => v.ToString("yyyy-MM-dd"),
+            v => DateOnly.Parse(v));
+
         modelBuilder.Entity<ActeMedical>(entity =>
         {
             entity.ToTable("ActeMedical");
@@ -65,6 +68,11 @@ public partial class DentalContext : DbContext
             entity.HasKey(e => e.DateDuJour);
 
             entity.ToTable("Caisse");
+
+            // ensure DateOnly is converted to TEXT for SQLite
+            entity.Property(e => e.DateDuJour)
+                .HasConversion(dateOnlyConverter)
+                .HasColumnType("TEXT");
 
             entity.Property(e => e.Montant)
                 .HasDefaultValue(0.0m)
@@ -171,6 +179,11 @@ public partial class DentalContext : DbContext
         modelBuilder.Entity<Patient>(entity =>
         {
             entity.ToTable("Patient");
+
+            // map DateOnly <-> TEXT
+            entity.Property(e => e.DateNaissance)
+                .HasConversion(dateOnlyConverter)
+                .HasColumnType("TEXT");
 
             entity.Property(e => e.Cin).HasColumnName("CIN");
             entity.Property(e => e.SommePaye)

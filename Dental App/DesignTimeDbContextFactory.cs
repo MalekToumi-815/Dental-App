@@ -1,14 +1,27 @@
 ﻿using Dental_App.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Design;
+using System;
+using System.IO;
 
-public class DesignTimeDbContextFactory : IDesignTimeDbContextFactory<Dental_App.Models.DentalContext>
+public class DesignTimeDbContextFactory : IDesignTimeDbContextFactory<DentalContext>
 {
-    public Dental_App.Models.DentalContext CreateDbContext(string[] args)
+    public DentalContext CreateDbContext(string[] args)
     {
-        var optionsBuilder = new DbContextOptionsBuilder<Dental_App.Models.DentalContext>();
-        optionsBuilder.UseSqlite("Data Source=app.db");
+        // Same folder as in App.xaml.cs
+        var folder = Path.Combine(
+            Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData),
+            "Dental_App"
+        );
 
-        return new Dental_App.Models.DentalContext(optionsBuilder.Options);
+        if (!Directory.Exists(folder))
+            Directory.CreateDirectory(folder);
+
+        var dbPath = Path.Combine(folder, "dental.db");
+
+        var optionsBuilder = new DbContextOptionsBuilder<DentalContext>();
+        optionsBuilder.UseSqlite($"Data Source={dbPath}");
+
+        return new DentalContext(optionsBuilder.Options);
     }
 }
