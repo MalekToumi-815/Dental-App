@@ -35,7 +35,7 @@ namespace Dental_App
                 return new Dental_App.Models.DentalContext(options);
             });
 
-            containerRegistry.RegisterForNavigation<MainView, MainViewModel>();
+            containerRegistry.RegisterForNavigation<MainView, ViewModels.MainViewModel>();
         }
     }
 
