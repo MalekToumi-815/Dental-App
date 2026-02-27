@@ -16,21 +16,21 @@ namespace Dental_App.ViewModels
         public MainViewModel(DentalContext db)
         {
             _db = db;
-            RunPatientServiceTests();
+            RunAntecedentServiceTests();
         }
 
-        // Tests for PatientService: update an existing patient, then create a new patient but do NOT delete it
-        private void RunPatientServiceTests()
+        // Tests for AntecedentService: run each method and show clear output after each
+        private void RunAntecedentServiceTests()
         {
             try
             {
-                var dentService = new DentService(_db);
-                var svc = new PatientService(_db,dentService);
-
-                string FormatPatient(Patient p)
+                var svc = new AntecedentService(_db);
+                svc.AjouterAntecedantAsync(2 ,1).GetAwaiter().GetResult(); // just to ensure the service is initialized and can access the DB
+                // Helper to format actual Antecedant model
+                /*string FormatAntecedant(Antecedant a)
                 {
-                    if (p == null) return "(null)";
-                    return $"Id={p.Id}, Nom={p.Nom}, Prenom={p.Prenom}, DateNaissance={p.DateNaissance:yyyy-MM-dd}, Sexe={p.Sexe ?? ""}, Telephone={p.Telephone}, SommePaye={p.SommePaye?.ToString() ?? ""}, Adresse={p.Adresse}, Profession={p.Profession ?? ""}, CIN={p.Cin ?? ""}";
+                    if (a == null) return "(null)";
+                    return $"Id={a.Id}, Nom={a.Nom}, Description={a.Description ?? ""}";
                 }
                 var newPatient = new Patient
                 {
@@ -47,50 +47,75 @@ namespace Dental_App.ViewModels
                 var created = svc.CreateAsync(newPatient).GetAwaiter().GetResult();
                 MessageBox.Show($"=== Created new patient (NOT deleted) ===\n{FormatPatient(created)}", "PatientService - Create Persistent", MessageBoxButton.OK, MessageBoxImage.Information);
 
-
-                // 1) GetAll and pick an existing patient to update
+                // 1) GetAll
                 var all = svc.GetAllAsync().GetAwaiter().GetResult();
                 var sbAll = new StringBuilder();
-                sbAll.AppendLine("=== GetAll ===");
+                sbAll.AppendLine("=== Antecedant - GetAll ===");
                 sbAll.AppendLine($"Count: {all?.Count ?? 0}");
                 if (all != null && all.Count > 0)
                 {
-                    foreach (var p in all)
-                        sbAll.AppendLine(FormatPatient(p));
+                    foreach (var a in all)
+                        sbAll.AppendLine(FormatAntecedant(a));
                 }
-                MessageBox.Show(sbAll.ToString(), "PatientService - GetAll", MessageBoxButton.OK, MessageBoxImage.Information);
+                MessageBox.Show(sbAll.ToString(), "AntecedantService - GetAll", MessageBoxButton.OK, MessageBoxImage.Information);
 
-                if (all == null || all.Count == 0)
+                // 2) Create
+                var uniqueName = "TempAntTest_" + DateTime.Now.Ticks;
+                var toCreate = new Antecedant
                 {
-                    MessageBox.Show("Aucun patient existant pour tester la mise à jour.", "PatientService", MessageBoxButton.OK, MessageBoxImage.Warning);
-                    return;
-                }
+                    Nom = uniqueName,
+                    Description = "Test description"
+                };
 
-                // Select first existing patient for update test
-                var existing = all[0];
+                var created = svc.CreateAsync(toCreate).GetAwaiter().GetResult();
+                MessageBox.Show($"=== Create ===\n{FormatAntecedant(created)}", "AntecedantService - Create", MessageBoxButton.OK, MessageBoxImage.Information);
 
-                // Show selected existing patient
-                MessageBox.Show($"=== Selected existing patient to UPDATE ===\n{FormatPatient(existing)}", "PatientService - Selected", MessageBoxButton.OK, MessageBoxImage.Information);
+                // 3) GetById
+                var byId = svc.GetByIdAsync(created.Id).GetAwaiter().GetResult();
+                MessageBox.Show($"=== GetById ({created.Id}) ===\n{FormatAntecedant(byId)}", "AntecedantService - GetById", MessageBoxButton.OK, MessageBoxImage.Information);
 
-                // 2) Update the existing patient (modify prenom and telephone)
-                var originalPrenom = existing.Prenom;
-                existing.Prenom = originalPrenom + "_UPDATED";
-                existing.Telephone = string.IsNullOrWhiteSpace(existing.Telephone) ? "99999999" : existing.Telephone + "1";
+                // 4) GetByName
+                var byNameList = svc.GetByNameAsync(created.Nom).GetAwaiter().GetResult();
+                var sbByName = new StringBuilder();
+                sbByName.AppendLine($"=== GetByName ('{created.Nom}') ===");
+                sbByName.AppendLine($"Results: {byNameList.Count}");
+                foreach (var a in byNameList)
+                    sbByName.AppendLine(FormatAntecedant(a));
+                MessageBox.Show(sbByName.ToString(), "AntecedantService - GetByName", MessageBoxButton.OK, MessageBoxImage.Information);
 
-                var updatedExisting = svc.UpdateAsync(existing).GetAwaiter().GetResult();
-                MessageBox.Show($"=== Update existing patient ===\n{FormatPatient(updatedExisting)}", "PatientService - Update Existing", MessageBoxButton.OK, MessageBoxImage.Information);
+                // 5) Update
+                created.Description = "Updated description";
+                var updated = svc.UpdateAsync(created).GetAwaiter().GetResult();
+                MessageBox.Show($"=== Update ===\n{FormatAntecedant(updated)}", "AntecedantService - Update", MessageBoxButton.OK, MessageBoxImage.Information);
 
-                // Note: We will not revert the change in this test — update is persisted.
+                // 6) Exists
+                var exists = svc.ExistsAsync(created.Nom).GetAwaiter().GetResult();
+                MessageBox.Show($"=== Exists ===\nNom: {created.Nom}\nExists: {exists}", "AntecedantService - Exists", MessageBoxButton.OK, MessageBoxImage.Information);
 
-                // 3) Create a new patient (do NOT delete it)
-                
-                // 4) Final count after create
-                var finalCount = svc.CountAsync().GetAwaiter().GetResult();
-                MessageBox.Show($"=== Final Count ===\nPatients count after create: {finalCount}", "PatientService - Count", MessageBoxButton.OK, MessageBoxImage.Information);
-            }
+                // 7) Count
+                var count = svc.CountAsync().GetAwaiter().GetResult();
+                MessageBox.Show($"=== Count ===\nTotal antecedants: {count}", "AntecedantService - Count", MessageBoxButton.OK, MessageBoxImage.Information);
+
+                // 8) DeleteByName
+                var deletedByName = svc.DeleteByNameAsync(created.Nom).GetAwaiter().GetResult();
+                MessageBox.Show($"=== DeleteByName ===\nRequested name: {created.Nom}\nDeleted rows: {deletedByName}", "AntecedantService - DeleteByName", MessageBoxButton.OK, MessageBoxImage.Information);
+
+                // 9) Delete (attempt to delete by id) - should be false because already deleted
+                var deletedById = svc.DeleteAsync(created.Id).GetAwaiter().GetResult();
+                MessageBox.Show($"=== Delete by Id ({created.Id}) ===\nDeleted: {deletedById}", "AntecedantService - Delete", MessageBoxButton.OK, MessageBoxImage.Information);
+
+                // Final list
+                var finalList = svc.GetAllAsync().GetAwaiter().GetResult();
+                var sbFinal = new StringBuilder();
+                sbFinal.AppendLine("=== Final antecedants ===");
+                sbFinal.AppendLine($"Count: {finalList.Count}");
+                foreach (var a in finalList)
+                    sbFinal.AppendLine(FormatAntecedant(a));
+                MessageBox.Show(sbFinal.ToString(), "AntecedantService - Final", MessageBoxButton.OK, MessageBoxImage.Information);
+            */}
             catch (Exception ex)
             {
-                MessageBox.Show($"PatientService tests error: {ex.Message}\n{ex.InnerException?.Message}", "PatientService Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                MessageBox.Show($"AntecedantService tests error: {ex.Message}\n{ex.InnerException?.Message}", "AntecedantService Error", MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }
     }
