@@ -24,13 +24,29 @@ namespace Dental_App.ViewModels
         {
             try
             {
-                var svc = new PatientService(_db);
+                var dentService = new DentService(_db);
+                var svc = new PatientService(_db,dentService);
 
                 string FormatPatient(Patient p)
                 {
                     if (p == null) return "(null)";
                     return $"Id={p.Id}, Nom={p.Nom}, Prenom={p.Prenom}, DateNaissance={p.DateNaissance:yyyy-MM-dd}, Sexe={p.Sexe ?? ""}, Telephone={p.Telephone}, SommePaye={p.SommePaye?.ToString() ?? ""}, Adresse={p.Adresse}, Profession={p.Profession ?? ""}, CIN={p.Cin ?? ""}";
                 }
+                var newPatient = new Patient
+                {
+                    Nom = "PersistentTempPatient",
+                    Prenom = "PTP",
+                    DateNaissance = DateOnly.FromDateTime(DateTime.Now.AddYears(-3)),
+                    Telephone = "00000001",
+                    Adresse = "persistent address",
+                    SommePaye = 0m,
+                    Profession = null,
+                    Cin = null
+                };
+
+                var created = svc.CreateAsync(newPatient).GetAwaiter().GetResult();
+                MessageBox.Show($"=== Created new patient (NOT deleted) ===\n{FormatPatient(created)}", "PatientService - Create Persistent", MessageBoxButton.OK, MessageBoxImage.Information);
+
 
                 // 1) GetAll and pick an existing patient to update
                 var all = svc.GetAllAsync().GetAwaiter().GetResult();
@@ -67,21 +83,7 @@ namespace Dental_App.ViewModels
                 // Note: We will not revert the change in this test — update is persisted.
 
                 // 3) Create a new patient (do NOT delete it)
-                var newPatient = new Patient
-                {
-                    Nom = "PersistentTempPatient",
-                    Prenom = "PTP",
-                    DateNaissance = DateOnly.FromDateTime(DateTime.Now.AddYears(-3)),
-                    Telephone = "00000001",
-                    Adresse = "persistent address",
-                    SommePaye = 0m,
-                    Profession = null,
-                    Cin = null
-                };
-
-                var created = svc.CreateAsync(newPatient).GetAwaiter().GetResult();
-                MessageBox.Show($"=== Created new patient (NOT deleted) ===\n{FormatPatient(created)}", "PatientService - Create Persistent", MessageBoxButton.OK, MessageBoxImage.Information);
-
+                
                 // 4) Final count after create
                 var finalCount = svc.CountAsync().GetAwaiter().GetResult();
                 MessageBox.Show($"=== Final Count ===\nPatients count after create: {finalCount}", "PatientService - Count", MessageBoxButton.OK, MessageBoxImage.Information);

@@ -137,6 +137,15 @@ public partial class DentalContext : DbContext
             entity.ToTable("Dent");
 
             entity.Property(e => e.CodeFdi).HasColumnName("CodeFDI");
+
+            // index on PatientId for lookup
+            entity.HasIndex(e => e.PatientId, "IX_Dent_PatientId");
+
+            // relationship: Dent -> Patient (optional)
+            entity.HasOne(d => d.Patient).WithMany(p => p.Dents)
+                .HasForeignKey(d => d.PatientId)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_Dent_Patient");
         });
 
         modelBuilder.Entity<Medicament>(entity =>

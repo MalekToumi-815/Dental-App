@@ -10,10 +10,12 @@ namespace Dental_App.Services
     internal class PatientService
     {
         private readonly DentalContext _context;
+        private readonly IDentService _dentService;
 
-        public PatientService(DentalContext context)
+        public PatientService(DentalContext context, IDentService dentService)
         {
             _context = context ?? throw new ArgumentNullException(nameof(context));
+            _dentService = dentService ?? throw new ArgumentNullException(nameof(dentService));
         }
 
         public async Task<Patient> CreateAsync(Patient patient)
@@ -23,6 +25,7 @@ namespace Dental_App.Services
 
             _context.Patients.Add(patient);
             await _context.SaveChangesAsync();
+            await _dentService.InitializeTeethForPatientAsync(patient.Id);
             return patient;
         }
 

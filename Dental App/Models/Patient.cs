@@ -11,7 +11,7 @@ public partial class Patient
 
     public string Prenom { get; set; } = null!;
 
-    public DateOnly DateNaissance { get; set; } 
+    public DateOnly DateNaissance { get; set; }
 
     public string? Sexe { get; set; }
 
@@ -36,4 +36,7 @@ public partial class Patient
     public virtual ICollection<RendezVou> RendezVous { get; set; } = new List<RendezVou>();
 
     public virtual ICollection<Antecedant> IdAntecedants { get; set; } = new List<Antecedant>();
+
+    // new: collection of Dents
+    public virtual ICollection<Dent> Dents { get; set; } = new List<Dent>();
 }
