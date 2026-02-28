@@ -7,7 +7,7 @@ namespace Dental_App.Services
     {
         Task InitializeTeethForPatientAsync(int patientId);
         Task<List<Dent>> GetTeethByPatientIdAsync(int patientId);
-        Task<Dent> GetDentByIdAsync(int dentId);
+        Task<Dent?> GetDentByPatientAndFdiAsync(int patientId, int fdiCode);
     }
 
     public class DentService : IDentService
@@ -92,13 +92,14 @@ namespace Dental_App.Services
         }
 
         /// <summary>
-        /// Get a specific dent by ID.
+        /// Get a specific dent by patient id and FDI code.
         /// </summary>
-        public async Task<Dent> GetDentByIdAsync(int dentId)
+        public async Task<Dent?> GetDentByPatientAndFdiAsync(int patientId, int fdiCode)
         {
             try
             {
-                return await _context.Dents.FindAsync(dentId);
+                return await _context.Dents
+                    .FirstOrDefaultAsync(d => d.PatientId == patientId && d.CodeFdi == fdiCode);
             }
             catch (Exception ex)
             {
