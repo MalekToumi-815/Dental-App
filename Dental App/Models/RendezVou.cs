@@ -13,7 +13,7 @@ public partial class RendezVou
 
     public DateTime? DateFin { get; set; }
 
-    public string? Statut { get; set; }
+    public string? Statut { get; set; } // "en attente", "termine", "annule"
 
     public virtual Patient Patient { get; set; } = null!;
 }
