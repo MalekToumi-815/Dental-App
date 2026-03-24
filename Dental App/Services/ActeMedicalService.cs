@@ -50,16 +50,6 @@ namespace Dental_App.Services
                 .ToListAsync();
         }
 
-        public async Task<List<ActeMedical>> GetByPrixRangeAsync(decimal minPrix, decimal maxPrix)
-        {
-            if (minPrix < 0 || maxPrix < 0 || minPrix > maxPrix)
-                throw new ArgumentException("Les prix doivent être positifs et minPrix <= maxPrix.");
-            return await _context.ActeMedicals
-                .Where(a => a.Prix >= minPrix && a.Prix <= maxPrix)
-                .Include(a => a.IdConsuls)
-                .ToListAsync();
-        }
-
         public async Task<ActeMedical> UpdateAsync(ActeMedical acteMedical)
         {
             if (acteMedical == null) throw new ArgumentNullException(nameof(acteMedical));
@@ -71,7 +61,6 @@ namespace Dental_App.Services
             if (existing == null) throw new InvalidOperationException($"L'acte médical avec l'ID {acteMedical.Id} n'existe pas.");
 
             existing.Libelle = acteMedical.Libelle;
-            existing.Prix = acteMedical.Prix;
 
             _context.ActeMedicals.Update(existing);
             await _context.SaveChangesAsync();
@@ -89,21 +78,6 @@ namespace Dental_App.Services
             return await _context.ActeMedicals.CountAsync();
         }
 
-        public async Task<decimal> GetAveragePriceAsync()
-        {
-            var count = await CountAsync();
-            if (count == 0) return 0;
-            
-            var all = await _context.ActeMedicals.ToListAsync();
-            return all.Count == 0 ? 0 : all.Average(a => a.Prix);
-        }
-
-        public async Task<decimal> GetTotalPriceAsync()
-        {
-            var all = await _context.ActeMedicals.ToListAsync();
-            return all.Sum(a => a.Prix);
-        }
-
         public async Task<ActeMedical?> GetByLibelleExactAsync(string libelle)
         {
             if (string.IsNullOrWhiteSpace(libelle)) return null;
@@ -116,8 +90,6 @@ namespace Dental_App.Services
         {
             if (string.IsNullOrWhiteSpace(acteMedical.Libelle))
                 throw new ArgumentException("Le libellé de l'acte médical est requis.", nameof(acteMedical.Libelle));
-            if (acteMedical.Prix < 0)
-                throw new ArgumentException("Le prix ne peut pas être négatif.", nameof(acteMedical.Prix));
         }
     }
 }

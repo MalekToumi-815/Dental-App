@@ -9,7 +9,5 @@ public partial class ActeMedical
 
     public string Libelle { get; set; } = null!;
 
-    public decimal Prix { get; set; }
-
     public virtual ICollection<Consultation> IdConsuls { get; set; } = new List<Consultation>();
 }

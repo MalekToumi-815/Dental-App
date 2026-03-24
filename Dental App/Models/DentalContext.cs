@@ -54,8 +54,6 @@ public partial class DentalContext : DbContext
         modelBuilder.Entity<ActeMedical>(entity =>
         {
             entity.ToTable("ActeMedical");
-
-            entity.Property(e => e.Prix).HasColumnType("decimal(18, 2)");
         });
 
         modelBuilder.Entity<Antecedant>(entity =>
@@ -241,7 +239,6 @@ public partial class DentalContext : DbContext
             entity.HasIndex(e => e.PatientId, "IX_RendezVous_PatientId");
 
             entity.Property(e => e.DateDebut).HasColumnType("datetime");
-            entity.Property(e => e.DateFin).HasColumnType("datetime");
 
             entity.HasOne(d => d.Patient).WithMany(p => p.RendezVous)
                 .HasForeignKey(d => d.PatientId)

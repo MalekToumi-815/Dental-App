@@ -32,7 +32,7 @@ namespace Dental_App.Services
         Task<bool> CancelAsync(int id);
         Task<int> CountAsync();
         Task<int> CountByPatientAsync(int patientId);
-        Task<bool> HasConflictAsync(int patientId, DateTime dateDebut, DateTime? dateFin, int? excludeId = null);
+        Task<bool> HasConflictAsync(int patientId, DateTime dateDebut, int? excludeId = null);
     }
 
     public class RendezVousService : IRendezVousService
@@ -60,7 +60,7 @@ namespace Dental_App.Services
                 throw new InvalidOperationException($"Patient with ID {rendezVous.PatientId} does not exist.");
 
             // Check for scheduling conflicts
-            var conflict = await HasConflictAsync(rendezVous.PatientId, rendezVous.DateDebut, rendezVous.DateFin);
+            var conflict = await HasConflictAsync(rendezVous.PatientId, rendezVous.DateDebut);
             if (conflict)
                 throw new InvalidOperationException($"Patient already has an appointment during this time period.");
 
@@ -163,13 +163,12 @@ namespace Dental_App.Services
                 throw new InvalidOperationException($"RendezVous with ID {rendezVous.Id} does not exist.");
 
             // Check for scheduling conflicts (excluding current appointment)
-            var conflict = await HasConflictAsync(rendezVous.PatientId, rendezVous.DateDebut, rendezVous.DateFin, rendezVous.Id);
+            var conflict = await HasConflictAsync(rendezVous.PatientId, rendezVous.DateDebut, rendezVous.Id);
             if (conflict)
                 throw new InvalidOperationException($"Patient already has an appointment during this time period.");
 
             existing.PatientId = rendezVous.PatientId;
             existing.DateDebut = rendezVous.DateDebut;
-            existing.DateFin = rendezVous.DateFin;
             existing.Statut = rendezVous.Statut ?? RendezVousStatus.EnAttente;
 
             _context.RendezVous.Update(existing);
@@ -237,17 +236,14 @@ namespace Dental_App.Services
         /// <summary>
         /// Check if patient has conflicting appointment during specified time
         /// </summary>
-        public async Task<bool> HasConflictAsync(int patientId, DateTime dateDebut, DateTime? dateFin, int? excludeId = null)
+        public async Task<bool> HasConflictAsync(int patientId, DateTime dateDebut, int? excludeId = null)
         {
             if (patientId <= 0) throw new ArgumentException("PatientId must be greater than 0.", nameof(patientId));
-
-            var effectiveEndDate = dateFin ?? dateDebut.AddHours(1); // Default 1 hour if no end date
 
             var query = _context.RendezVous.Where(r =>
                 r.PatientId == patientId &&
                 r.Statut != RendezVousStatus.Annule &&
-                r.DateDebut < effectiveEndDate &&
-                (r.DateFin ?? r.DateDebut.AddHours(1)) > dateDebut);
+                r.DateDebut == dateDebut);
 
             if (excludeId.HasValue)
                 query = query.Where(r => r.Id != excludeId.Value);
@@ -259,9 +255,6 @@ namespace Dental_App.Services
         {
             if (rendezVous.DateDebut == default)
                 throw new ArgumentException("DateDebut is required and must be valid.", nameof(rendezVous.DateDebut));
-
-            if (rendezVous.DateFin.HasValue && rendezVous.DateFin < rendezVous.DateDebut)
-                throw new ArgumentException("DateFin cannot be earlier than DateDebut.", nameof(rendezVous.DateFin));
 
             if (!string.IsNullOrWhiteSpace(rendezVous.Statut))
                 ValidateStatus(rendezVous.Statut);

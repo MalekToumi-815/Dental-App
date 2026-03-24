@@ -241,9 +241,6 @@ namespace Dental_App.Services
                     }
                 }
 
-                // Calculate total montant
-                consultation.MontantTotal = consultation.IdActes.Sum(a => a.Prix);
-
                 _context.Consultations.Update(consultation);
                 await _context.SaveChangesAsync();
                 System.Diagnostics.Debug.WriteLine($"✓ Added {validActes.Count} actes to consultation {consultationId}");
