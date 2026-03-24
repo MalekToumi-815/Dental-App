@@ -62,7 +62,7 @@ namespace Dental_App.Services
             // Check for scheduling conflicts
             var conflict = await HasConflictAsync(rendezVous.PatientId, rendezVous.DateDebut);
             if (conflict)
-                throw new InvalidOperationException($"Patient already has an appointment during this time period.");
+                throw new InvalidOperationException($"An appointment is already schedualed during this time period.");
 
             // Set default status if not provided
             if (string.IsNullOrWhiteSpace(rendezVous.Statut))
@@ -234,14 +234,13 @@ namespace Dental_App.Services
         }
 
         /// <summary>
-        /// Check if patient has conflicting appointment during specified time
+        /// Check if there's already an appointment at the specified date/time (doctor can't have multiple patients at same time)
         /// </summary>
         public async Task<bool> HasConflictAsync(int patientId, DateTime dateDebut, int? excludeId = null)
         {
             if (patientId <= 0) throw new ArgumentException("PatientId must be greater than 0.", nameof(patientId));
 
             var query = _context.RendezVous.Where(r =>
-                r.PatientId == patientId &&
                 r.Statut != RendezVousStatus.Annule &&
                 r.DateDebut == dateDebut);
 
