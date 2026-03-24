@@ -6,7 +6,18 @@ using System.Threading.Tasks;
 
 namespace Dental_App.Services
 {
-    public class CaisseService
+    public interface ICaisseService
+    {
+        Task<Caisse> GetCaisseByDateAsync(DateOnly date);
+        Task<List<Caisse>> GetAllCaisseAsync();
+        Task<List<Caisse>> GetCaisseByDateRangeAsync(DateOnly startDate, DateOnly endDate);
+        Task<bool> UpsertCaisseAsync(decimal montant);
+        Task<bool> AddMontantAsync(decimal montant);
+        Task<decimal> GetTotalMontantAsync(DateOnly startDate, DateOnly endDate);
+        Task<Caisse> GetTodaysCaisseAsync();
+    }
+
+    public class CaisseService : ICaisseService
     {
         private readonly DentalContext _context;
 

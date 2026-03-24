@@ -7,7 +7,19 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Dental_App.Services
 {
-    internal class ActeMedicalService
+    public interface IActeMedicalService
+    {
+        Task<ActeMedical> CreateAsync(ActeMedical acteMedical);
+        Task<ActeMedical?> GetByIdAsync(int id);
+        Task<List<ActeMedical>> GetAllAsync();
+        Task<List<ActeMedical>> GetByLibelleAsync(string libelle);
+        Task<ActeMedical> UpdateAsync(ActeMedical acteMedical);
+        Task<bool> ExistsAsync(int id);
+        Task<int> CountAsync();
+        Task<ActeMedical?> GetByLibelleExactAsync(string libelle);
+    }
+
+    internal class ActeMedicalService : IActeMedicalService
     {
         private readonly DentalContext _context;
 

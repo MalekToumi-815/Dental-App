@@ -7,7 +7,21 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Dental_App.Services
 {
-    internal class AntecedentService
+    public interface IAntecedentService
+    {
+        Task<Antecedant> CreateAsync(Antecedant antecedant);
+        Task<Antecedant?> GetByIdAsync(int id);
+        Task<List<Antecedant>> GetAllAsync();
+        Task<List<Antecedant>> GetByNameAsync(string name);
+        Task<Antecedant> UpdateAsync(Antecedant antecedant);
+        Task<bool> DeleteAsync(int id);
+        Task<int> DeleteByNameAsync(string name);
+        Task<bool> ExistsAsync(string name);
+        Task<int> CountAsync();
+        Task<bool> AjouterAntecedantAsync(int patientId, int antecedantId);
+    }
+
+    internal class AntecedentService : IAntecedentService
     {
         private readonly DentalContext _context;
 

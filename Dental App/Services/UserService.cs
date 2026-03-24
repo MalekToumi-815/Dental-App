@@ -8,7 +8,20 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Dental_App.Services
 {
-    internal class UserService
+    public interface IUserService
+    {
+        Task<Utilisateur> CreateAsync(Utilisateur utilisateur);
+        Task<Utilisateur> GetByIdAsync(int id);
+        Task<List<Utilisateur>> GetAllAsync();
+        Task<Utilisateur> GetByNomPrenomAsync(string nom, string prenom);
+        Task<Utilisateur> UpdateAsync(Utilisateur utilisateur);
+        Task<bool> DeleteAsync(int id);
+        Task<bool> DeleteAsync(Utilisateur utilisateur);
+        Task<bool> ExistsAsync(string nom, string prenom);
+        Task<int> CountAsync();
+    }
+
+    internal class UserService : IUserService
     {
         private readonly DentalContext _context;
 

@@ -7,7 +7,19 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Dental_App.Services
 {
-    internal class CommandeProthesisteService
+    public interface ICommandeProthesisteService
+    {
+        Task<CommandeProthesiste> CreateAsync(CommandeProthesiste commande);
+        Task<CommandeProthesiste?> GetByIdAsync(int id);
+        Task<List<CommandeProthesiste>> GetAllAsync();
+        Task<List<CommandeProthesiste>> GetByProthesisteAsync(int prothesisteId);
+        Task<CommandeProthesiste> UpdateAsync(CommandeProthesiste commande);
+        Task<bool> DeleteAsync(int id);
+        Task<int> CountAsync();
+        Task<bool> AjouterCommandeAProthesisteAsync(int prothesisteId, int commandeId);
+    }
+
+    internal class CommandeProthesisteService : ICommandeProthesisteService
     {
         private readonly DentalContext _context;
 

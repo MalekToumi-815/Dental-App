@@ -7,7 +7,23 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Dental_App.Services
 {
-    internal class PatientService
+    public interface IPatientService
+    {
+        Task<Patient> CreateAsync(Patient patient);
+        Task<Patient?> GetByIdAsync(int id);
+        Task<List<Patient>> GetAllAsync();
+        Task<List<Patient>> GetByNameAsync(string nom, string prenom);
+        Task<List<Patient>> SearchByNameAsync(string term, int maxResults = 20);
+        Task<Patient> UpdateAsync(Patient patient);
+        Task<bool> DeleteAsync(int id);
+        Task<int> DeleteByNameAsync(string nom, string prenom);
+        Task<bool> DeleteAsync(Patient patient);
+        Task<bool> ExistsAsync(string nom, string prenom);
+        Task<int> CountAsync();
+        Task<Patient?> GetByCinAsync(string? cin);
+    }
+
+    internal class PatientService : IPatientService
     {
         private readonly DentalContext _context;
         private readonly IDentService _dentService;
