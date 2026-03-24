@@ -50,14 +50,14 @@ namespace Dental_App.Services
             // Check if patient exists
             var patientExists = await _context.Patients.AnyAsync(p => p.Id == consultation.PatientId);
             if (!patientExists)
-                throw new InvalidOperationException($"Patient with ID {consultation.PatientId} does not exist.");
+                throw new InvalidOperationException($"Le patient avec l'ID {consultation.PatientId} n'existe pas.");
 
             // Check if dent exists (if specified)
             if (consultation.IdDent.HasValue)
             {
                 var dentExists = await _context.Dents.AnyAsync(d => d.Id == consultation.IdDent.Value);
                 if (!dentExists)
-                    throw new InvalidOperationException($"Dent with ID {consultation.IdDent} does not exist.");
+                    throw new InvalidOperationException($"La dent avec l'ID {consultation.IdDent} n'existe pas.");
             }
 
             // Set default date if not provided
@@ -66,7 +66,7 @@ namespace Dental_App.Services
 
             _context.Consultations.Add(consultation);
             await _context.SaveChangesAsync();
-            System.Diagnostics.Debug.WriteLine($"✓ Consultation created: Id={consultation.Id}, PatientId={consultation.PatientId}");
+            System.Diagnostics.Debug.WriteLine($"✓ Consultation créée : Id={consultation.Id}, PatientId={consultation.PatientId}");
             return consultation;
         }
 
@@ -76,7 +76,7 @@ namespace Dental_App.Services
         public async Task<Consultation?> GetByIdAsync(int id)
         {
             if (id <= 0)
-                throw new ArgumentException("ID must be greater than 0.", nameof(id));
+                throw new ArgumentException("L'ID doit être supérieur à 0.", nameof(id));
 
             return await _context.Consultations
                 .Include(c => c.Patient)
@@ -104,7 +104,7 @@ namespace Dental_App.Services
         public async Task<List<Consultation>> GetByPatientIdAsync(int patientId)
         {
             if (patientId <= 0)
-                throw new ArgumentException("PatientId must be greater than 0.", nameof(patientId));
+                throw new ArgumentException("Le PatientId doit être supérieur à 0.", nameof(patientId));
 
             return await _context.Consultations
                 .Where(c => c.PatientId == patientId)
@@ -120,7 +120,7 @@ namespace Dental_App.Services
         public async Task<List<Consultation>> GetByDentIdAsync(int dentId)
         {
             if (dentId <= 0)
-                throw new ArgumentException("DentId must be greater than 0.", nameof(dentId));
+                throw new ArgumentException("Le DentId doit être supérieur à 0.", nameof(dentId));
 
             return await _context.Consultations
                 .Where(c => c.IdDent == dentId)
@@ -136,7 +136,7 @@ namespace Dental_App.Services
         public async Task<List<Consultation>> GetByDateRangeAsync(DateTime startDate, DateTime endDate)
         {
             if (startDate > endDate)
-                throw new ArgumentException("Start date cannot be greater than end date.");
+                throw new ArgumentException("La date de début ne peut pas être supérieure à la date de fin.");
 
             return await _context.Consultations
                 .Where(c => c.DateConsultation >= startDate && c.DateConsultation <= endDate)
@@ -156,20 +156,20 @@ namespace Dental_App.Services
                 throw new ArgumentNullException(nameof(consultation));
 
             if (consultation.Id <= 0)
-                throw new ArgumentException("ID must be greater than 0.", nameof(consultation.Id));
+                throw new ArgumentException("L'ID doit être supérieur à 0.", nameof(consultation.Id));
 
             ValidateConsultation(consultation);
 
             var existing = await GetByIdAsync(consultation.Id);
             if (existing == null)
-                throw new InvalidOperationException($"Consultation with ID {consultation.Id} does not exist.");
+                throw new InvalidOperationException($"La consultation avec l'ID {consultation.Id} n'existe pas.");
 
             // Check if dent exists (if specified)
             if (consultation.IdDent.HasValue && consultation.IdDent != existing.IdDent)
             {
                 var dentExists = await _context.Dents.AnyAsync(d => d.Id == consultation.IdDent.Value);
                 if (!dentExists)
-                    throw new InvalidOperationException($"Dent with ID {consultation.IdDent} does not exist.");
+                    throw new InvalidOperationException($"La dent avec l'ID {consultation.IdDent} n'existe pas.");
             }
 
             existing.PatientId = consultation.PatientId;
@@ -180,7 +180,7 @@ namespace Dental_App.Services
 
             _context.Consultations.Update(existing);
             await _context.SaveChangesAsync();
-            System.Diagnostics.Debug.WriteLine($"✓ Consultation updated: Id={existing.Id}");
+            System.Diagnostics.Debug.WriteLine($"✓ Consultation mise à jour : Id={existing.Id}");
             return existing;
         }
 
@@ -198,7 +198,7 @@ namespace Dental_App.Services
         public async Task<int> CountByPatientAsync(int patientId)
         {
             if (patientId <= 0)
-                throw new ArgumentException("PatientId must be greater than 0.", nameof(patientId));
+                throw new ArgumentException("Le PatientId doit être supérieur à 0.", nameof(patientId));
 
             return await _context.Consultations.Where(c => c.PatientId == patientId).CountAsync();
         }
@@ -211,17 +211,17 @@ namespace Dental_App.Services
             try
             {
                 if (consultationId <= 0)
-                    throw new ArgumentException("ConsultationId must be greater than 0.", nameof(consultationId));
+                    throw new ArgumentException("Le ConsultationId doit être supérieur à 0.", nameof(consultationId));
 
                 if (actes == null || actes.Count == 0)
-                    throw new ArgumentException("Actes list cannot be null or empty.", nameof(actes));
+                    throw new ArgumentException("La liste des actes ne peut pas être null ou vide.", nameof(actes));
 
                 var consultation = await _context.Consultations
                     .Include(c => c.IdActes)
                     .FirstOrDefaultAsync(c => c.Id == consultationId);
 
                 if (consultation == null)
-                    throw new InvalidOperationException($"Consultation with ID {consultationId} does not exist.");
+                    throw new InvalidOperationException($"La consultation avec l'ID {consultationId} n'existe pas.");
 
                 // Validate that all actes exist
                 var acteIds = actes.Select(a => a.Id).ToList();
@@ -230,7 +230,7 @@ namespace Dental_App.Services
                     .ToListAsync();
 
                 if (validActes.Count != actes.Count)
-                    throw new InvalidOperationException("One or more ActeMedical items do not exist in the database.");
+                    throw new InvalidOperationException("Un ou plusieurs actes médicaux n'existent pas dans la base de données.");
 
                 // Add actes to the consultation (avoid duplicates)
                 foreach (var acte in validActes)
@@ -243,12 +243,12 @@ namespace Dental_App.Services
 
                 _context.Consultations.Update(consultation);
                 await _context.SaveChangesAsync();
-                System.Diagnostics.Debug.WriteLine($"✓ Added {validActes.Count} actes to consultation {consultationId}");
+                System.Diagnostics.Debug.WriteLine($"✓ {validActes.Count} actes ajoutés à la consultation {consultationId}");
                 return true;
             }
             catch (Exception ex)
             {
-                System.Diagnostics.Debug.WriteLine($"Error adding actes to consultation: {ex.Message}");
+                System.Diagnostics.Debug.WriteLine($"Erreur lors de l'ajout des actes à la consultation : {ex.Message}");
                 throw;
             }
         }
@@ -259,7 +259,7 @@ namespace Dental_App.Services
         public async Task<List<ActeMedical>> GetActesByConsultationIdAsync(int consultationId)
         {
             if (consultationId <= 0)
-                throw new ArgumentException("ConsultationId must be greater than 0.", nameof(consultationId));
+                throw new ArgumentException("Le ConsultationId doit être supérieur à 0.", nameof(consultationId));
 
             var consultation = await _context.Consultations
                 .Include(c => c.IdActes)
@@ -274,10 +274,10 @@ namespace Dental_App.Services
         private void ValidateConsultation(Consultation consultation)
         {
             if (consultation.PatientId <= 0)
-                throw new ArgumentException("PatientId must be greater than 0.", nameof(consultation.PatientId));
+                throw new ArgumentException("Le PatientId doit être supérieur à 0.", nameof(consultation.PatientId));
 
             if (consultation.MontantTotal.HasValue && consultation.MontantTotal < 0)
-                throw new ArgumentException("MontantTotal cannot be negative.", nameof(consultation.MontantTotal));
+                throw new ArgumentException("Le montant total ne peut pas être négatif.", nameof(consultation.MontantTotal));
         }
     }
 }

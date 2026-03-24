@@ -34,7 +34,7 @@ public class RadioImageService : IRadioImageService
     public async Task<RadioImage> ImportRadioImageAsync(int patientId, string sourcePath, string type, DateTime datePrise)
     {
         if (!File.Exists(sourcePath))
-            throw new FileNotFoundException("Source image not found.");
+            throw new FileNotFoundException("L'image source n'a pas été trouvée.");
 
         // 1. Prepare the destination folder: Documents/DentalApp_Data/Patients/{ID}/Radio
         string relativeFolder = Path.Combine("Patients", patientId.ToString(), "Radio");

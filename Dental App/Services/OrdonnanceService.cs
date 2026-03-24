@@ -48,7 +48,7 @@ namespace Dental_App.Services
             // Check if patient exists
             var patientExists = await _context.Patients.AnyAsync(p => p.Id == ordonnance.PatientId);
             if (!patientExists)
-                throw new InvalidOperationException($"Patient with ID {ordonnance.PatientId} does not exist.");
+                throw new InvalidOperationException($"Le patient avec l'ID {ordonnance.PatientId} n'existe pas.");
 
             // Set default date if not provided
             if (ordonnance.DateCreation == null)
@@ -56,7 +56,7 @@ namespace Dental_App.Services
 
             _context.Ordonnances.Add(ordonnance);
             await _context.SaveChangesAsync();
-            System.Diagnostics.Debug.WriteLine($"✓ Ordonnance created: Id={ordonnance.Id}, PatientId={ordonnance.PatientId}");
+            System.Diagnostics.Debug.WriteLine($"✓ Ordonnance créée : Id={ordonnance.Id}, PatientId={ordonnance.PatientId}");
             return ordonnance;
         }
 
@@ -66,7 +66,7 @@ namespace Dental_App.Services
         public async Task<Ordonnance?> GetByIdAsync(int id)
         {
             if (id <= 0)
-                throw new ArgumentException("ID must be greater than 0.", nameof(id));
+                throw new ArgumentException("L'ID doit être supérieur à 0.", nameof(id));
 
             return await _context.Ordonnances
                 .Include(o => o.Patient)
@@ -92,7 +92,7 @@ namespace Dental_App.Services
         public async Task<List<Ordonnance>> GetByPatientIdAsync(int patientId)
         {
             if (patientId <= 0)
-                throw new ArgumentException("PatientId must be greater than 0.", nameof(patientId));
+                throw new ArgumentException("Le PatientId doit être supérieur à 0.", nameof(patientId));
 
             return await _context.Ordonnances
                 .Where(o => o.PatientId == patientId)
@@ -107,7 +107,7 @@ namespace Dental_App.Services
         public async Task<List<Ordonnance>> GetByDateRangeAsync(DateTime startDate, DateTime endDate)
         {
             if (startDate > endDate)
-                throw new ArgumentException("Start date cannot be greater than end date.");
+                throw new ArgumentException("La date de début ne peut pas être supérieure à la date de fin.");
 
             return await _context.Ordonnances
                 .Where(o => o.DateCreation >= startDate && o.DateCreation <= endDate)
@@ -126,20 +126,20 @@ namespace Dental_App.Services
                 throw new ArgumentNullException(nameof(ordonnance));
 
             if (ordonnance.Id <= 0)
-                throw new ArgumentException("ID must be greater than 0.", nameof(ordonnance.Id));
+                throw new ArgumentException("L'ID doit être supérieur à 0.", nameof(ordonnance.Id));
 
             ValidateOrdonnance(ordonnance);
 
             var existing = await GetByIdAsync(ordonnance.Id);
             if (existing == null)
-                throw new InvalidOperationException($"Ordonnance with ID {ordonnance.Id} does not exist.");
+                throw new InvalidOperationException($"L'ordonnance avec l'ID {ordonnance.Id} n'existe pas.");
 
             existing.PatientId = ordonnance.PatientId;
             existing.DateCreation = ordonnance.DateCreation;
 
             _context.Ordonnances.Update(existing);
             await _context.SaveChangesAsync();
-            System.Diagnostics.Debug.WriteLine($"✓ Ordonnance updated: Id={existing.Id}");
+            System.Diagnostics.Debug.WriteLine($"✓ Ordonnance mise à jour : Id={existing.Id}");
             return existing;
         }
 
@@ -157,7 +157,7 @@ namespace Dental_App.Services
         public async Task<int> CountByPatientAsync(int patientId)
         {
             if (patientId <= 0)
-                throw new ArgumentException("PatientId must be greater than 0.", nameof(patientId));
+                throw new ArgumentException("Le PatientId doit être supérieur à 0.", nameof(patientId));
 
             return await _context.Ordonnances.Where(o => o.PatientId == patientId).CountAsync();
         }
@@ -170,7 +170,7 @@ namespace Dental_App.Services
             try
             {
                 if (ordonnanceId <= 0)
-                    throw new ArgumentException("OrdonnanceId must be greater than 0.", nameof(ordonnanceId));
+                    throw new ArgumentException("L'OrdonnanceId doit être supérieur à 0.", nameof(ordonnanceId));
 
                 if (medicament == null)
                     throw new ArgumentNullException(nameof(medicament));
@@ -180,22 +180,22 @@ namespace Dental_App.Services
                     .FirstOrDefaultAsync(o => o.Id == ordonnanceId);
 
                 if (ordonnance == null)
-                    throw new InvalidOperationException($"Ordonnance with ID {ordonnanceId} does not exist.");
+                    throw new InvalidOperationException($"L'ordonnance avec l'ID {ordonnanceId} n'existe pas.");
 
                 // Validate medicament
                 if (string.IsNullOrWhiteSpace(medicament.Nom))
-                    throw new ArgumentException("Medicament Nom is required.", nameof(medicament.Nom));
+                    throw new ArgumentException("Le nom du médicament est requis.", nameof(medicament.Nom));
 
                 // Add medicament to ordonnance's collection
                 _context.Medicaments.Add(medicament); 
                 ordonnance.Medicaments.Add(medicament);
                 await _context.SaveChangesAsync();
-                System.Diagnostics.Debug.WriteLine($"✓ Medicament '{medicament.Nom}' added to ordonnance {ordonnanceId}");
+                System.Diagnostics.Debug.WriteLine($"✓ Médicament '{medicament.Nom}' ajouté à l'ordonnance {ordonnanceId}");
                 return true;
             }
             catch (Exception ex)
             {
-                System.Diagnostics.Debug.WriteLine($"Error adding medicament to ordonnance: {ex.Message}");
+                System.Diagnostics.Debug.WriteLine($"Erreur lors de l'ajout du médicament à l'ordonnance : {ex.Message}");
                 throw;
             }
         }
@@ -206,7 +206,7 @@ namespace Dental_App.Services
         private void ValidateOrdonnance(Ordonnance ordonnance)
         {
             if (ordonnance.PatientId <= 0)
-                throw new ArgumentException("PatientId must be greater than 0.", nameof(ordonnance.PatientId));
+                throw new ArgumentException("Le PatientId doit être supérieur à 0.", nameof(ordonnance.PatientId));
         }
     }
 }

@@ -50,19 +50,19 @@ namespace Dental_App.Services
         public async Task<RendezVou> CreateAsync(RendezVou rendezVous)
         {
             if (rendezVous == null) throw new ArgumentNullException(nameof(rendezVous));
-            if (rendezVous.PatientId <= 0) throw new ArgumentException("PatientId must be greater than 0.", nameof(rendezVous.PatientId));
+            if (rendezVous.PatientId <= 0) throw new ArgumentException("Le PatientId doit être supérieur à 0.", nameof(rendezVous.PatientId));
 
             ValidateRendezVous(rendezVous);
 
             // Check if patient exists
             var patientExists = await _context.Patients.AnyAsync(p => p.Id == rendezVous.PatientId);
             if (!patientExists)
-                throw new InvalidOperationException($"Patient with ID {rendezVous.PatientId} does not exist.");
+                throw new InvalidOperationException($"Le patient avec l'ID {rendezVous.PatientId} n'existe pas.");
 
             // Check for scheduling conflicts
             var conflict = await HasConflictAsync(rendezVous.PatientId, rendezVous.DateDebut);
             if (conflict)
-                throw new InvalidOperationException($"An appointment is already schedualed during this time period.");
+                throw new InvalidOperationException($"Un rendez-vous est déjà programmé à cette date/heure.");
 
             // Set default status if not provided
             if (string.IsNullOrWhiteSpace(rendezVous.Statut))
@@ -70,7 +70,7 @@ namespace Dental_App.Services
 
             _context.RendezVous.Add(rendezVous);
             await _context.SaveChangesAsync();
-            System.Diagnostics.Debug.WriteLine($"✓ RendezVous created: Id={rendezVous.Id}, PatientId={rendezVous.PatientId}");
+            System.Diagnostics.Debug.WriteLine($"✓ RendezVous créé : Id={rendezVous.Id}, PatientId={rendezVous.PatientId}");
             return rendezVous;
         }
 
@@ -79,7 +79,7 @@ namespace Dental_App.Services
         /// </summary>
         public async Task<RendezVou?> GetByIdAsync(int id)
         {
-            if (id <= 0) throw new ArgumentException("ID must be greater than 0.", nameof(id));
+            if (id <= 0) throw new ArgumentException("L'ID doit être supérieur à 0.", nameof(id));
             return await _context.RendezVous.Include(r => r.Patient).FirstOrDefaultAsync(r => r.Id == id);
         }
 
@@ -96,7 +96,7 @@ namespace Dental_App.Services
         /// </summary>
         public async Task<List<RendezVou>> GetByPatientIdAsync(int patientId)
         {
-            if (patientId <= 0) throw new ArgumentException("PatientId must be greater than 0.", nameof(patientId));
+            if (patientId <= 0) throw new ArgumentException("Le PatientId doit être supérieur à 0.", nameof(patientId));
             return await _context.RendezVous
                 .Where(r => r.PatientId == patientId)
                 .OrderBy(r => r.DateDebut)
@@ -108,7 +108,7 @@ namespace Dental_App.Services
         /// </summary>
         public async Task<List<RendezVou>> GetByStatusAsync(string status)
         {
-            if (string.IsNullOrWhiteSpace(status)) throw new ArgumentException("Status cannot be empty.", nameof(status));
+            if (string.IsNullOrWhiteSpace(status)) throw new ArgumentException("Le statut ne peut pas être vide.", nameof(status));
             ValidateStatus(status);
             return await _context.RendezVous
                 .Where(r => r.Statut == status)
@@ -122,7 +122,7 @@ namespace Dental_App.Services
         public async Task<List<RendezVou>> GetByDateRangeAsync(DateTime startDate, DateTime endDate)
         {
             if (startDate > endDate)
-                throw new ArgumentException("Start date cannot be greater than end date.");
+                throw new ArgumentException("La date de début ne peut pas être supérieure à la date de fin.");
 
             return await _context.RendezVous
                 .Where(r => r.DateDebut >= startDate && r.DateDebut <= endDate)
@@ -135,7 +135,7 @@ namespace Dental_App.Services
         /// </summary>
         public async Task<List<RendezVou>> GetUpcomingAsync(int patientId)
         {
-            if (patientId <= 0) throw new ArgumentException("PatientId must be greater than 0.", nameof(patientId));
+            if (patientId <= 0) throw new ArgumentException("Le PatientId doit être supérieur à 0.", nameof(patientId));
 
             var now = DateTime.Now;
             return await _context.RendezVous
@@ -153,19 +153,19 @@ namespace Dental_App.Services
         public async Task<RendezVou> UpdateAsync(RendezVou rendezVous)
         {
             if (rendezVous == null) throw new ArgumentNullException(nameof(rendezVous));
-            if (rendezVous.Id <= 0) throw new ArgumentException("ID must be greater than 0.", nameof(rendezVous.Id));
-            if (rendezVous.PatientId <= 0) throw new ArgumentException("PatientId must be greater than 0.", nameof(rendezVous.PatientId));
+            if (rendezVous.Id <= 0) throw new ArgumentException("L'ID doit être supérieur à 0.", nameof(rendezVous.Id));
+            if (rendezVous.PatientId <= 0) throw new ArgumentException("Le PatientId doit être supérieur à 0.", nameof(rendezVous.PatientId));
 
             ValidateRendezVous(rendezVous);
 
             var existing = await GetByIdAsync(rendezVous.Id);
             if (existing == null)
-                throw new InvalidOperationException($"RendezVous with ID {rendezVous.Id} does not exist.");
+                throw new InvalidOperationException($"Le rendez-vous avec l'ID {rendezVous.Id} n'existe pas.");
 
             // Check for scheduling conflicts (excluding current appointment)
             var conflict = await HasConflictAsync(rendezVous.PatientId, rendezVous.DateDebut, rendezVous.Id);
             if (conflict)
-                throw new InvalidOperationException($"Patient already has an appointment during this time period.");
+                throw new InvalidOperationException($"Un rendez-vous est déjà programmé à cette date/heure.");
 
             existing.PatientId = rendezVous.PatientId;
             existing.DateDebut = rendezVous.DateDebut;
@@ -173,7 +173,7 @@ namespace Dental_App.Services
 
             _context.RendezVous.Update(existing);
             await _context.SaveChangesAsync();
-            System.Diagnostics.Debug.WriteLine($"✓ RendezVous updated: Id={existing.Id}");
+            System.Diagnostics.Debug.WriteLine($"✓ RendezVous mis à jour : Id={existing.Id}");
             return existing;
         }
 
@@ -182,21 +182,21 @@ namespace Dental_App.Services
         /// </summary>
         public async Task<bool> UpdateStatusAsync(int id, string newStatus)
         {
-            if (id <= 0) throw new ArgumentException("ID must be greater than 0.", nameof(id));
-            if (string.IsNullOrWhiteSpace(newStatus)) throw new ArgumentException("Status cannot be empty.", nameof(newStatus));
+            if (id <= 0) throw new ArgumentException("L'ID doit être supérieur à 0.", nameof(id));
+            if (string.IsNullOrWhiteSpace(newStatus)) throw new ArgumentException("Le statut ne peut pas être vide.", nameof(newStatus));
             ValidateStatus(newStatus);
 
             var rendezVous = await GetByIdAsync(id);
             if (rendezVous == null)
             {
-                System.Diagnostics.Debug.WriteLine($"RendezVous with ID {id} not found.");
+                System.Diagnostics.Debug.WriteLine($"Le rendez-vous avec l'ID {id} n'a pas été trouvé.");
                 return false;
             }
 
             rendezVous.Statut = newStatus;
             _context.RendezVous.Update(rendezVous);
             await _context.SaveChangesAsync();
-            System.Diagnostics.Debug.WriteLine($"✓ RendezVous {id} status updated to: {newStatus}");
+            System.Diagnostics.Debug.WriteLine($"✓ Statut du rendez-vous {id} mis à jour à : {newStatus}");
             return true;
         }
 
@@ -229,7 +229,7 @@ namespace Dental_App.Services
         /// </summary>
         public async Task<int> CountByPatientAsync(int patientId)
         {
-            if (patientId <= 0) throw new ArgumentException("PatientId must be greater than 0.", nameof(patientId));
+            if (patientId <= 0) throw new ArgumentException("Le PatientId doit être supérieur à 0.", nameof(patientId));
             return await _context.RendezVous.Where(r => r.PatientId == patientId).CountAsync();
         }
 
@@ -238,7 +238,7 @@ namespace Dental_App.Services
         /// </summary>
         public async Task<bool> HasConflictAsync(int patientId, DateTime dateDebut, int? excludeId = null)
         {
-            if (patientId <= 0) throw new ArgumentException("PatientId must be greater than 0.", nameof(patientId));
+            if (patientId <= 0) throw new ArgumentException("Le PatientId doit être supérieur à 0.", nameof(patientId));
 
             var query = _context.RendezVous.Where(r =>
                 r.Statut != RendezVousStatus.Annule &&
@@ -253,7 +253,7 @@ namespace Dental_App.Services
         private void ValidateRendezVous(RendezVou rendezVous)
         {
             if (rendezVous.DateDebut == default)
-                throw new ArgumentException("DateDebut is required and must be valid.", nameof(rendezVous.DateDebut));
+                throw new ArgumentException("La date de début est requise et doit être valide.", nameof(rendezVous.DateDebut));
 
             if (!string.IsNullOrWhiteSpace(rendezVous.Statut))
                 ValidateStatus(rendezVous.Statut);
@@ -263,7 +263,7 @@ namespace Dental_App.Services
         {
             var validStatuses = new[] { RendezVousStatus.EnAttente, RendezVousStatus.Termine, RendezVousStatus.Annule };
             if (!validStatuses.Contains(status))
-                throw new ArgumentException($"Status must be one of: {string.Join(", ", validStatuses)}", nameof(status));
+                throw new ArgumentException($"Le statut doit être l'un de : {string.Join(", ", validStatuses)}", nameof(status));
         }
     }
 }

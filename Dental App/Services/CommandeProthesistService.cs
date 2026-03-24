@@ -20,11 +20,11 @@ namespace Dental_App.Services
         {
             if (commande == null) throw new ArgumentNullException(nameof(commande));
             // ensure FK set
-            if (commande.IdProthesiste <= 0) throw new ArgumentException("IdProthesiste must be set.", nameof(commande.IdProthesiste));
+            if (commande.IdProthesiste <= 0) throw new ArgumentException("L'IdProthesiste doit être défini.", nameof(commande.IdProthesiste));
 
             // Verify that the prothesiste exists in the database
             var prothExists = await _context.Prothesistes.AnyAsync(p => p.Id == commande.IdProthesiste);
-            if (!prothExists) throw new InvalidOperationException($"Prothesiste with Id {commande.IdProthesiste} does not exist in the database.");
+            if (!prothExists) throw new InvalidOperationException($"Le prothésiste avec l'ID {commande.IdProthesiste} n'existe pas dans la base de données.");
 
             // set default date if not provided
             if (commande.Date == null) commande.Date = DateTime.Now;
@@ -37,7 +37,7 @@ namespace Dental_App.Services
 
         public async Task<CommandeProthesiste?> GetByIdAsync(int id)
         {
-            if (id <= 0) throw new ArgumentException("Id must be > 0", nameof(id));
+            if (id <= 0) throw new ArgumentException("L'ID doit être > 0.", nameof(id));
             return await _context.CommandeProthesistes
                 .Include(c => c.IdProthesisteNavigation)
                 .FirstOrDefaultAsync(c => c.Id == id);
@@ -53,7 +53,7 @@ namespace Dental_App.Services
 
         public async Task<List<CommandeProthesiste>> GetByProthesisteAsync(int prothesisteId)
         {
-            if (prothesisteId <= 0) throw new ArgumentException("prothesisteId must be > 0", nameof(prothesisteId));
+            if (prothesisteId <= 0) throw new ArgumentException("Le prothesisteId doit être > 0.", nameof(prothesisteId));
             return await _context.CommandeProthesistes
                 .Where(c => c.IdProthesiste == prothesisteId)
                 .Include(c => c.IdProthesisteNavigation)
@@ -64,10 +64,10 @@ namespace Dental_App.Services
         public async Task<CommandeProthesiste> UpdateAsync(CommandeProthesiste commande)
         {
             if (commande == null) throw new ArgumentNullException(nameof(commande));
-            if (commande.Id <= 0) throw new ArgumentException("Id is invalid", nameof(commande.Id));
+            if (commande.Id <= 0) throw new ArgumentException("L'ID est invalide.", nameof(commande.Id));
 
             var existing = await GetByIdAsync(commande.Id);
-            if (existing == null) throw new InvalidOperationException($"Commande with Id {commande.Id} not found");
+            if (existing == null) throw new InvalidOperationException($"La commande avec l'ID {commande.Id} n'a pas été trouvée.");
 
             existing.Date = commande.Date ?? existing.Date;
             existing.Achats = commande.Achats;
@@ -77,7 +77,7 @@ namespace Dental_App.Services
             if (commande.IdProthesiste > 0 && commande.IdProthesiste != existing.IdProthesiste)
             {
                 var prothExists = await _context.Prothesistes.AnyAsync(p => p.Id == commande.IdProthesiste);
-                if (!prothExists) throw new InvalidOperationException($"Prothesiste with Id {commande.IdProthesiste} does not exist in the database.");
+                if (!prothExists) throw new InvalidOperationException($"Le prothésiste avec l'ID {commande.IdProthesiste} n'existe pas dans la base de données.");
                 existing.IdProthesiste = commande.IdProthesiste;
             }
 
@@ -88,7 +88,7 @@ namespace Dental_App.Services
 
         public async Task<bool> DeleteAsync(int id)
         {
-            if (id <= 0) throw new ArgumentException("Id must be > 0", nameof(id));
+            if (id <= 0) throw new ArgumentException("L'ID doit être > 0.", nameof(id));
             var existing = await _context.CommandeProthesistes.FindAsync(id);
             if (existing == null) return false;
             _context.CommandeProthesistes.Remove(existing);
@@ -107,20 +107,20 @@ namespace Dental_App.Services
         /// </summary>
         public async Task<bool> AjouterCommandeAProthesisteAsync(int prothesisteId, int commandeId)
         {
-            if (prothesisteId <= 0) throw new ArgumentException("prothesisteId must be > 0", nameof(prothesisteId));
-            if (commandeId <= 0) throw new ArgumentException("commandeId must be > 0", nameof(commandeId));
+            if (prothesisteId <= 0) throw new ArgumentException("Le prothesisteId doit être > 0.", nameof(prothesisteId));
+            if (commandeId <= 0) throw new ArgumentException("Le commandeId doit être > 0.", nameof(commandeId));
 
             // Load prothesiste with commandes
             var proth = await _context.Prothesistes
                 .Include(p => p.CommandeProthesistes)
                 .FirstOrDefaultAsync(p => p.Id == prothesisteId);
-            if (proth == null) throw new InvalidOperationException($"Prothesiste {prothesisteId} not found");
+            if (proth == null) throw new InvalidOperationException($"Le prothésiste {prothesisteId} n'a pas été trouvé.");
 
             // Load commande with its navigation
             var commande = await _context.CommandeProthesistes
                 .Include(c => c.IdProthesisteNavigation)
                 .FirstOrDefaultAsync(c => c.Id == commandeId);
-            if (commande == null) throw new InvalidOperationException($"Commande {commandeId} not found");
+            if (commande == null) throw new InvalidOperationException($"La commande {commandeId} n'a pas été trouvée.");
 
             // If already linked to the same prothesiste, nothing to do
             if (commande.IdProthesiste == prothesisteId)
