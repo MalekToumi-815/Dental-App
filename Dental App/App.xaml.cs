@@ -39,6 +39,7 @@ namespace Dental_App
             // Register all services
             containerRegistry.RegisterSingleton<IActeMedicalService, ActeMedicalService>();
             containerRegistry.RegisterSingleton<IAntecedentService, AntecedentService>();
+            containerRegistry.RegisterSingleton<IDentService, DentService>();
             containerRegistry.RegisterSingleton<IPatientService, PatientService>();
             containerRegistry.RegisterSingleton<IMedicamentService, MedicamentService>();
             containerRegistry.RegisterSingleton<IProthesisteService, ProthesisteService>();
@@ -48,7 +49,6 @@ namespace Dental_App
             containerRegistry.RegisterSingleton<IConsultationService, ConsultationService>();
             containerRegistry.RegisterSingleton<IRendezVousService, RendezVousService>();
             containerRegistry.RegisterSingleton<IOrdonnanceService, OrdonnanceService>();
-            containerRegistry.RegisterSingleton<IDentService, DentService>();
             containerRegistry.RegisterSingleton<IRadioImageService, RadioImageService>();
             containerRegistry.RegisterSingleton<IOdontogrammeLibreService, OdontogrammeLibreService>();
 

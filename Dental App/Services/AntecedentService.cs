@@ -21,7 +21,7 @@ namespace Dental_App.Services
         Task<bool> AjouterAntecedantAsync(int patientId, int antecedantId);
     }
 
-    internal class AntecedentService : IAntecedentService
+    public class AntecedentService : IAntecedentService
     {
         private readonly DentalContext _context;
 

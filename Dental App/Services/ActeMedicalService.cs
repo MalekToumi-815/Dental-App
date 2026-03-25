@@ -19,7 +19,7 @@ namespace Dental_App.Services
         Task<ActeMedical?> GetByLibelleExactAsync(string libelle);
     }
 
-    internal class ActeMedicalService : IActeMedicalService
+    public class ActeMedicalService : IActeMedicalService
     {
         private readonly DentalContext _context;
 

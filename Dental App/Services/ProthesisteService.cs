@@ -18,7 +18,7 @@ namespace Dental_App.Services
         Task<int> CountAsync();
     }
 
-    internal class ProthesisteService : IProthesisteService
+    public class ProthesisteService : IProthesisteService
     {
         private readonly DentalContext _context;
 

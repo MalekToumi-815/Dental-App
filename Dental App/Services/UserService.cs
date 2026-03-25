@@ -21,7 +21,7 @@ namespace Dental_App.Services
         Task<int> CountAsync();
     }
 
-    internal class UserService : IUserService
+    public class UserService : IUserService
     {
         private readonly DentalContext _context;
 

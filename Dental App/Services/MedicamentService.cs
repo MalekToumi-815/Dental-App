@@ -22,7 +22,7 @@ namespace Dental_App.Services
         Task<bool> DeleteAsync(Medicament medicament);
     }
 
-    internal class MedicamentService : IMedicamentService
+    public class MedicamentService : IMedicamentService
     {
         private readonly DentalContext _context;
 

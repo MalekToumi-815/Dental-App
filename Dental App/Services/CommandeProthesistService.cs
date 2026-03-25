@@ -19,7 +19,7 @@ namespace Dental_App.Services
         Task<bool> AjouterCommandeAProthesisteAsync(int prothesisteId, int commandeId);
     }
 
-    internal class CommandeProthesisteService : ICommandeProthesisteService
+    public class CommandeProthesisteService : ICommandeProthesisteService
     {
         private readonly DentalContext _context;
 

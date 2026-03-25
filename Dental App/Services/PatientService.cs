@@ -23,7 +23,7 @@ namespace Dental_App.Services
         Task<Patient?> GetByCinAsync(string? cin);
     }
 
-    internal class PatientService : IPatientService
+    public class PatientService : IPatientService
     {
         private readonly DentalContext _context;
         private readonly IDentService _dentService;
