@@ -43,7 +43,6 @@ namespace Dental_App
             containerRegistry.RegisterSingleton<IPatientService, PatientService>();
             containerRegistry.RegisterSingleton<IMedicamentService, MedicamentService>();
             containerRegistry.RegisterSingleton<IProthesisteService, ProthesisteService>();
-            containerRegistry.RegisterSingleton<IUserService, UserService>();
             containerRegistry.RegisterSingleton<ICommandeProthesisteService, CommandeProthesisteService>();
             containerRegistry.RegisterSingleton<ICaisseService, CaisseService>();
             containerRegistry.RegisterSingleton<IConsultationService, ConsultationService>();
