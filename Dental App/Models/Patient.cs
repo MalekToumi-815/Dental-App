@@ -35,7 +35,7 @@ public partial class Patient
 
     public virtual ICollection<RendezVou> RendezVous { get; set; } = new List<RendezVou>();
 
-    public virtual ICollection<Antecedant> IdAntecedants { get; set; } = new List<Antecedant>();
+    public virtual ICollection<Antecedant> Antecedants { get; set; } = new List<Antecedant>();
 
     // new: collection of Dents
     public virtual ICollection<Dent> Dents { get; set; } = new List<Dent>();

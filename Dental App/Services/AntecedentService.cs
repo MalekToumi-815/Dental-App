@@ -13,12 +13,12 @@ namespace Dental_App.Services
         Task<Antecedant?> GetByIdAsync(int id);
         Task<List<Antecedant>> GetAllAsync();
         Task<List<Antecedant>> GetByNameAsync(string name);
+        Task<List<Antecedant>> GetByPatientIdAsync(int patientId);
         Task<Antecedant> UpdateAsync(Antecedant antecedant);
         Task<bool> DeleteAsync(int id);
         Task<int> DeleteByNameAsync(string name);
         Task<bool> ExistsAsync(string name);
         Task<int> CountAsync();
-        Task<bool> AjouterAntecedantAsync(int patientId, int antecedantId);
     }
 
     public class AntecedentService : IAntecedentService
@@ -34,6 +34,11 @@ namespace Dental_App.Services
         {
             if (antecedant == null) throw new ArgumentNullException(nameof(antecedant));
             Validate(antecedant);
+            if (antecedant.PatientId <= 0) throw new ArgumentException("PatientId est obligatoire et doit être supérieur à 0.", nameof(antecedant.PatientId));
+
+            // Vérifier si le patient existe
+            var patientExists = await _context.Patients.AnyAsync(p => p.Id == antecedant.PatientId);
+            if (!patientExists) throw new InvalidOperationException($"Patient avec l'ID {antecedant.PatientId} introuvable.");
 
             _context.Antecedants.Add(antecedant);
             await _context.SaveChangesAsync();
@@ -43,32 +48,47 @@ namespace Dental_App.Services
         public async Task<Antecedant?> GetByIdAsync(int id)
         {
             if (id <= 0) throw new ArgumentException("L'ID doit être supérieur à 0.", nameof(id));
-            return await _context.Antecedants.FirstOrDefaultAsync(a => a.Id == id);
+            return await _context.Antecedants.Include(a => a.Patient).FirstOrDefaultAsync(a => a.Id == id);
         }
 
         public async Task<List<Antecedant>> GetAllAsync()
         {
-            return await _context.Antecedants.ToListAsync();
+            return await _context.Antecedants.Include(a => a.Patient).ToListAsync();
         }
 
         public async Task<List<Antecedant>> GetByNameAsync(string name)
         {
             if (string.IsNullOrWhiteSpace(name)) return new List<Antecedant>();
-            return await _context.Antecedants.Where(a => a.Nom == name).ToListAsync();
+            return await _context.Antecedants.Include(a => a.Patient).Where(a => a.Nom == name).ToListAsync();
+        }
+
+        public async Task<List<Antecedant>> GetByPatientIdAsync(int patientId)
+        {
+            if (patientId <= 0) throw new ArgumentException("PatientId doit être supérieur à 0.", nameof(patientId));
+            return await _context.Antecedants.Where(a => a.PatientId == patientId).ToListAsync();
         }
 
         public async Task<Antecedant> UpdateAsync(Antecedant antecedant)
         {
             if (antecedant == null) throw new ArgumentNullException(nameof(antecedant));
             if (antecedant.Id <= 0) throw new ArgumentException("L'ID est invalide.", nameof(antecedant.Id));
+            if (antecedant.PatientId <= 0) throw new ArgumentException("PatientId est obligatoire et doit être supérieur à 0.", nameof(antecedant.PatientId));
 
             Validate(antecedant);
 
             var existing = await GetByIdAsync(antecedant.Id);
             if (existing == null) throw new InvalidOperationException($"L'antecedant avec l'ID {antecedant.Id} n'existe pas.");
 
+            // Vérifier si le patient existe si PatientId est modifié
+            if (existing.PatientId != antecedant.PatientId)
+            {
+                var patientExists = await _context.Patients.AnyAsync(p => p.Id == antecedant.PatientId);
+                if (!patientExists) throw new InvalidOperationException($"Patient avec l'ID {antecedant.PatientId} introuvable.");
+            }
+
             existing.Nom = antecedant.Nom;
             existing.Description = antecedant.Description;
+            existing.PatientId = antecedant.PatientId;
 
             _context.Antecedants.Update(existing);
             await _context.SaveChangesAsync();
@@ -104,40 +124,6 @@ namespace Dental_App.Services
         public async Task<int> CountAsync()
         {
             return await _context.Antecedants.CountAsync();
-        }
-
-        /// <summary>
-        /// Lie un antécédent à un patient (many-to-many).
-        /// Retourne true si le lien a été ajouté, false si le lien existait déjà.
-        /// Lance une exception si le patient ou l'antécédent n'existe pas.
-        /// </summary>
-        public async Task<bool> AjouterAntecedantAsync(int patientId, int antecedantId)
-        {
-            if (patientId <= 0) throw new ArgumentException("PatientId invalide.", nameof(patientId));
-            if (antecedantId <= 0) throw new ArgumentException("AntecedantId invalide.", nameof(antecedantId));
-
-            // Charger le patient avec ses antecedants
-            var patient = await _context.Patients
-                .Include(p => p.IdAntecedants)
-                .FirstOrDefaultAsync(p => p.Id == patientId);
-
-            if (patient == null) throw new InvalidOperationException($"Patient avec l'ID {patientId} introuvable.");
-
-            var antecedant = await _context.Antecedants
-                .Include(a => a.IdPatients)
-                .FirstOrDefaultAsync(a => a.Id == antecedantId);
-
-            if (antecedant == null) throw new InvalidOperationException($"Antecedant avec l'ID {antecedantId} introuvable.");
-
-            // Vérifier si le lien existe déjà (côté patient ou côté antecedant)
-            if (patient.IdAntecedants.Any(a => a.Id == antecedantId) || antecedant.IdPatients.Any(p => p.Id == patientId))
-                return false; // déjà lié
-
-            // Ajouter le lien sur le côté patient
-            patient.IdAntecedants.Add(antecedant);
-
-            await _context.SaveChangesAsync();
-            return true;
         }
 
         private void Validate(Antecedant antecedant)

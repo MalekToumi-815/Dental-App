@@ -47,18 +47,20 @@ namespace Dental_App.Services
                 var teeth = new List<Dent>();
 
                 // Quadrants 1-4 (using FDI tooth numbering system)
-                for (int quadrant = 1; quadrant <= 4; quadrant++)
+                for (int quad = 1; quad <= 4; quad++)
                 {
-                    // Teeth 1-8 in each quadrant
-                    for (int toothNumber = 1; toothNumber <= 8; toothNumber++)
+                    for (int num = 1; num <= 8; num++)
                     {
-                        int fdiCode = (quadrant * 10) + toothNumber;
+                        teeth.Add(new Dent { PatientId = patientId, CodeFdi = (quad * 10) + num });
+                    }
+                }
 
-                        teeth.Add(new Dent
-                        {
-                            PatientId = patientId,
-                            CodeFdi = fdiCode
-                        });
+                // CHILD TEETH (Quadrants 5-8, Teeth 1-5)
+                for (int quad = 5; quad <= 8; quad++)
+                {
+                    for (int num = 1; num <= 5; num++)
+                    {
+                        teeth.Add(new Dent { PatientId = patientId, CodeFdi = (quad * 10) + num });
                     }
                 }
 

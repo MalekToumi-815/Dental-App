@@ -59,6 +59,15 @@ public partial class DentalContext : DbContext
         modelBuilder.Entity<Antecedant>(entity =>
         {
             entity.ToTable("Antecedant");
+
+            entity.Property(e => e.PatientId).HasColumnName("PatientId");
+
+            entity.HasIndex(e => e.PatientId, "IX_Antecedant_PatientId");
+
+            entity.HasOne(d => d.Patient).WithMany(p => p.Antecedants)
+                .HasForeignKey(d => d.PatientId)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_Antecedant_Patient");
         });
 
         modelBuilder.Entity<Caisse>(entity =>
@@ -196,22 +205,6 @@ public partial class DentalContext : DbContext
             entity.Property(e => e.SommePaye)
                 .HasDefaultValue(0.0m)
                 .HasColumnType("decimal(18, 2)");
-
-            entity.HasMany(d => d.IdAntecedants).WithMany(p => p.IdPatients)
-                .UsingEntity<Dictionary<string, object>>(
-                    "PatientAntecedant",
-                    r => r.HasOne<Antecedant>().WithMany()
-                        .HasForeignKey("IdAntecedant")
-                        .OnDelete(DeleteBehavior.ClientSetNull),
-                    l => l.HasOne<Patient>().WithMany()
-                        .HasForeignKey("IdPatient")
-                        .OnDelete(DeleteBehavior.ClientSetNull),
-                    j =>
-                    {
-                        j.HasKey("IdPatient", "IdAntecedant");
-                        j.ToTable("PatientAntecedant");
-                        j.HasIndex(new[] { "IdAntecedant" }, "IX_PatientAntecedant_IdAntecedant");
-                    });
         });
 
         modelBuilder.Entity<Prothesiste>(entity =>

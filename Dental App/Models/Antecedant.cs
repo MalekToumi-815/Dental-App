@@ -11,5 +11,7 @@ public partial class Antecedant
 
     public string? Description { get; set; }
 
-    public virtual ICollection<Patient> IdPatients { get; set; } = new List<Patient>();
+    public int PatientId { get; set; }
+
+    public virtual Patient Patient { get; set; } = null!;
 }
