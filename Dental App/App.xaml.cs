@@ -51,7 +51,23 @@ namespace Dental_App
             containerRegistry.RegisterSingleton<IRadioImageService, RadioImageService>();
             containerRegistry.RegisterSingleton<IOdontogrammeLibreService, OdontogrammeLibreService>();
 
-            containerRegistry.RegisterForNavigation<MainView, ViewModels.MainViewModel>();
+            // Register Views for Navigation
+            containerRegistry.RegisterForNavigation<SidebarView>();
+            containerRegistry.RegisterForNavigation<DashboardView>();
+            containerRegistry.RegisterForNavigation<MainView>();
+        }
+
+        protected override void OnInitialized()
+        {
+            base.OnInitialized();
+
+            var regionManager = Container.Resolve<IRegionManager>();
+
+            // This "injects" the Sidebar into the left column immediately
+            regionManager.RegisterViewWithRegion("SidebarRegion", typeof(SidebarView));
+
+            // This "injects" the Dashboard into the right column immediately
+            regionManager.RegisterViewWithRegion("ContentRegion", typeof(DashboardView));
         }
     }
 
