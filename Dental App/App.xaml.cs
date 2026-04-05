@@ -1,5 +1,6 @@
-﻿using Dental_App.Views;
-using Dental_App.Services;
+﻿using Dental_App.Services;
+using Dental_App.ViewModels;
+using Dental_App.Views;
 using Microsoft.EntityFrameworkCore;
 using System.IO;
 using System.Windows;
@@ -53,7 +54,7 @@ namespace Dental_App
 
             // Register Views for Navigation
             containerRegistry.RegisterForNavigation<SidebarView>();
-            containerRegistry.RegisterForNavigation<DashboardView>();
+            containerRegistry.RegisterForNavigation<DashboardView, DashboardViewModel>();
             containerRegistry.RegisterForNavigation<MainView>();
         }
 

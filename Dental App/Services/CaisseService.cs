@@ -15,6 +15,7 @@ namespace Dental_App.Services
         Task<bool> AddMontantAsync(decimal montant);
         Task<decimal> GetTotalMontantAsync(DateOnly startDate, DateOnly endDate);
         Task<Caisse> GetTodaysCaisseAsync();
+        Task<int?> GetByDateAsync(DateOnly dateOnly);
     }
 
     public class CaisseService : ICaisseService
@@ -137,6 +138,15 @@ namespace Dental_App.Services
         {
             var today = DateOnly.FromDateTime(DateTime.Now);
             return await GetCaisseByDateAsync(today);
+        }
+
+        /// <summary>
+        /// Get montant by date
+        /// </summary>
+        public async Task<int?> GetByDateAsync(DateOnly dateOnly)
+        {
+            var caisse = await Task.FromResult(_context.Caisses.FirstOrDefault(c => c.DateDuJour == dateOnly));
+            return caisse != null ? (int?)caisse.Montant : null;
         }
     }
 }
