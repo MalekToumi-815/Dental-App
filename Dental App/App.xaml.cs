@@ -54,6 +54,7 @@ namespace Dental_App
 
             // Register Views for Navigation
             containerRegistry.RegisterForNavigation<SidebarView, SidebarViewModel>();
+            containerRegistry.RegisterForNavigation<ToolbarView, ToolbarViewModel>();
             containerRegistry.RegisterForNavigation<DashboardView, DashboardViewModel>();
             containerRegistry.RegisterForNavigation<MainView>();
         }
@@ -66,6 +67,9 @@ namespace Dental_App
 
             // This "injects" the Sidebar into the left column immediately
             regionManager.RegisterViewWithRegion("SidebarRegion", typeof(SidebarView));
+
+            // This "injects" the Toolbar into the top immediately
+            regionManager.RegisterViewWithRegion("ToolbarRegion", typeof(ToolbarView));
 
             // This "injects" the Dashboard into the right column immediately
             regionManager.RegisterViewWithRegion("ContentRegion", typeof(DashboardView));

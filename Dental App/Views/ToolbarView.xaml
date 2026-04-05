@@ -1,0 +1,60 @@
+<UserControl x:Class="Dental_App.Views.ToolbarView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:prism="http://prismlibrary.com/"
+             prism:ViewModelLocator.AutoWireViewModel="True"
+             Background="{DynamicResource PrimaryBackground}" Height="70" Padding="30,0">
+
+    <UserControl.Resources>
+        <Style x:Key="ThemeToggleButtonStyle" TargetType="Button">
+            <Setter Property="Height" Value="40"/>
+            <Setter Property="Width" Value="40"/>
+            <Setter Property="Background" Value="Transparent"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="Padding" Value="0"/>
+            <Setter Property="Foreground" Value="{DynamicResource TextSecondary}"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border x:Name="border" Background="Transparent" CornerRadius="8" Padding="8">
+                            <ContentPresenter x:Name="content" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="border" Property="Background" Value="{DynamicResource SecondaryBackground}"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <!-- Icon Geometries -->
+        <Geometry x:Key="IconMoon">M21.64,13a1,1 0 0 0 -1.05,-1 10,10 0 0 1 -9.59,-15 1,1 0 0 0 -1.33,-1 10,10 0 0 0 9,19 1,1 0 0 0 1.06,-1 1,1 0 0 0 -0.07,-1z</Geometry>
+        <Geometry x:Key="IconSun">M12,18A6,6 0 0,1 6,12A6,6 0 0,1 12,6A6,6 0 0,1 18,12A6,6 0 0,1 12,18M20,13H23V11H20M4,13H1V11H4M17.66,19.66L19.82,21.82L21.23,20.41L19.07,18.25M6.34,7.34L4.18,5.18L5.59,3.77L7.75,5.93M17.66,7.34L15.5,5.18L16.91,3.77L19.07,5.93M6.34,19.66L4.18,21.82L5.59,23.23L7.75,21.07M12,1V4H12V1M12,20V23H12V20Z</Geometry>
+    </UserControl.Resources>
+
+    <Grid VerticalAlignment="Center">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="Auto"/>
+            <ColumnDefinition Width="*"/>
+            <ColumnDefinition Width="Auto"/>
+        </Grid.ColumnDefinitions>
+
+        <!-- Greeting and Date -->
+        <StackPanel Grid.Column="0" VerticalAlignment="Center">
+            <TextBlock Text="Bonjour, Dr. Ben Ali 👋" Foreground="{DynamicResource TextPrimary}" FontSize="16" FontWeight="SemiBold"/>
+            <TextBlock Text="{Binding TodayDate}" Foreground="{DynamicResource TextSecondary}" FontSize="12" Margin="0,5,0,0"/>
+        </StackPanel>
+
+        <!-- Dark/Light Mode Toggle -->
+        <Button Grid.Column="2" 
+                Style="{StaticResource ThemeToggleButtonStyle}"
+                Command="{Binding ToggleThemeCommand}"
+                ToolTip="Toggle Dark/Light Mode">
+            <Path Width="24" Height="24" Stretch="Uniform" 
+                  Fill="{DynamicResource TextSecondary}"
+                  Data="{Binding ThemeIconGeometry}"/>
+        </Button>
+    </Grid>
+</UserControl>

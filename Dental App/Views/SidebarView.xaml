@@ -3,7 +3,7 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:prism="http://prismlibrary.com/"
              prism:ViewModelLocator.AutoWireViewModel="True"
-             Width="280" Background="#101926">
+             Width="280" Background="{DynamicResource SidebarBackground}">
 
     <UserControl.Resources>
         <!-- SVG Geometries for Icons -->
@@ -23,7 +23,7 @@
 
         <!-- Section Title Style -->
         <Style x:Key="SectionTitleStyle" TargetType="TextBlock">
-            <Setter Property="Foreground" Value="#475569"/>
+            <Setter Property="Foreground" Value="{DynamicResource TextSecondary}"/>
             <Setter Property="FontSize" Value="11"/>
             <Setter Property="FontWeight" Value="SemiBold"/>
             <Setter Property="Margin" Value="20,20,0,12"/>
@@ -34,7 +34,7 @@
             <Setter Property="Height" Value="44"/>
             <Setter Property="Margin" Value="12,6"/>
             <Setter Property="Background" Value="Transparent"/>
-            <Setter Property="Foreground" Value="#94A3B8"/>
+            <Setter Property="Foreground" Value="{DynamicResource TextSecondary}"/>
             <Setter Property="BorderThickness" Value="0"/>
             <Setter Property="Padding" Value="0"/>
             <Setter Property="Template">
@@ -54,8 +54,8 @@
                         </Border>
                         <ControlTemplate.Triggers>
                             <Trigger Property="IsMouseOver" Value="True">
-                                <Setter TargetName="border" Property="Background" Value="#1E293B"/>
-                                <Setter Property="Foreground" Value="White"/>
+                                <Setter TargetName="border" Property="Background" Value="{DynamicResource SecondaryBackground}"/>
+                                <Setter Property="Foreground" Value="{DynamicResource TextPrimary}"/>
                             </Trigger>
                         </ControlTemplate.Triggers>
                     </ControlTemplate>
@@ -68,21 +68,21 @@
             <Setter Property="Template">
                 <Setter.Value>
                     <ControlTemplate TargetType="Button">
-                        <Border x:Name="border" CornerRadius="12" Background="#2ECC71" Padding="16,0">
+                        <Border x:Name="border" CornerRadius="12" Background="{DynamicResource AccentColor}" Padding="16,0">
                             <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
                                 <Path x:Name="icon" 
                                       Data="{TemplateBinding Tag}" 
-                                      Fill="White" 
+                                      Fill="{DynamicResource TextPrimary}" 
                                       Width="20" Height="20" Stretch="Uniform" VerticalAlignment="Center"/>
                                 <TextBlock Text="{TemplateBinding Content}" 
                                            VerticalAlignment="Center" 
                                            Margin="16,0,0,0" 
-                                           FontSize="14" FontWeight="Medium" Foreground="White"/>
+                                           FontSize="14" FontWeight="Medium" Foreground="{DynamicResource TextPrimary}"/>
                             </StackPanel>
                         </Border>
                         <ControlTemplate.Triggers>
                             <Trigger Property="IsMouseOver" Value="True">
-                                <Setter TargetName="border" Property="Background" Value="#27B85A"/>
+                                <Setter TargetName="border" Property="Opacity" Value="0.9"/>
                             </Trigger>
                         </ControlTemplate.Triggers>
                     </ControlTemplate>
@@ -98,12 +98,12 @@
         </Grid.RowDefinitions>
 
         <!-- Logo Section -->
-        <Border Background="#0D1117" Padding="20">
+        <Border Background="{DynamicResource PrimaryBackground}" Padding="20">
             <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
-                <Border Width="40" Height="40" Background="#2ECC71" CornerRadius="10">
-                    <Path Data="{StaticResource IconLogo}" Fill="White" Width="24" Height="24" Stretch="Uniform" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                <Border Width="40" Height="40" Background="{DynamicResource AccentColor}" CornerRadius="10">
+                    <Path Data="{StaticResource IconLogo}" Fill="{DynamicResource TextPrimary}" Width="24" Height="24" Stretch="Uniform" VerticalAlignment="Center" HorizontalAlignment="Center"/>
                 </Border>
-                <TextBlock Text="DentaCare Pro" Foreground="#2ECC71" FontSize="18" FontWeight="Bold" Margin="12,0,0,0" VerticalAlignment="Center"/>
+                <TextBlock Text="DentaCare Pro" Foreground="{DynamicResource AccentColor}" FontSize="18" FontWeight="Bold" Margin="12,0,0,0" VerticalAlignment="Center"/>
             </StackPanel>
         </Border>
 

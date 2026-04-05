@@ -3,68 +3,65 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:prism="http://prismlibrary.com/"
              prism:ViewModelLocator.AutoWireViewModel="True"
-             Background="#0D1117">
+             Background="{DynamicResource PrimaryBackground}">
     <UserControl.Resources>
         <Style x:Key="StatCardStyle" TargetType="Border">
-            <Setter Property="Background" Value="#0F172A"/>
+            <Setter Property="Background" Value="{DynamicResource CardBackground}"/>
             <Setter Property="CornerRadius" Value="12"/>
             <Setter Property="Padding" Value="20"/>
             <Setter Property="BorderThickness" Value="1"/>
-            <Setter Property="BorderBrush" Value="#1E293B"/>
+            <Setter Property="BorderBrush" Value="{DynamicResource BorderColor}"/>
         </Style>
 
         <Style x:Key="SectionBorderStyle" TargetType="Border">
-            <Setter Property="Background" Value="#0F172A"/>
+            <Setter Property="Background" Value="{DynamicResource CardBackground}"/>
             <Setter Property="CornerRadius" Value="12"/>
             <Setter Property="BorderThickness" Value="1"/>
-            <Setter Property="BorderBrush" Value="#1E293B"/>
+            <Setter Property="BorderBrush" Value="{DynamicResource BorderColor}"/>
             <Setter Property="Padding" Value="25"/>
         </Style>
     </UserControl.Resources>
     
     <ScrollViewer VerticalScrollBarVisibility="Hidden">
         <StackPanel Margin="30">
-            <TextBlock Text="Bonjour, Dr. Ben Ali 👋" Foreground="White" FontSize="28" FontWeight="Bold"/>
-            <TextBlock Text="{Binding TodayDate}" Foreground="#94A3B8" FontSize="16" Margin="0,5,0,30"/>
-
             <UniformGrid Columns="3" Margin="0,0,0,20" VerticalAlignment="Top">
                 <Border Style="{StaticResource StatCardStyle}" Margin="0,0,10,10">
                     <StackPanel>
-                        <TextBlock Text="{Binding TotalPatients}" Foreground="White" FontSize="28" FontWeight="Bold"/>
-                        <TextBlock Text="Total Patients" Foreground="#94A3B8" Margin="0,5"/>
+                        <TextBlock Text="{Binding TotalPatients}" Foreground="{DynamicResource TextPrimary}" FontSize="28" FontWeight="Bold"/>
+                        <TextBlock Text="Total Patients" Foreground="{DynamicResource TextSecondary}" Margin="0,5"/>
                     </StackPanel>
                 </Border>
                 <Border Style="{StaticResource StatCardStyle}" Margin="0,0,10,10">
                     <StackPanel>
-                        <TextBlock Text="{Binding RvToday}" Foreground="White" FontSize="28" FontWeight="Bold"/>
-                        <TextBlock Text="Rendez-Vous aujourd'hui" Foreground="#94A3B8" Margin="0,5"/>
+                        <TextBlock Text="{Binding RvToday}" Foreground="{DynamicResource TextPrimary}" FontSize="28" FontWeight="Bold"/>
+                        <TextBlock Text="Rendez-Vous aujourd'hui" Foreground="{DynamicResource TextSecondary}" Margin="0,5"/>
                     </StackPanel>
                 </Border>
                 <Border Style="{StaticResource StatCardStyle}" Margin="0,0,0,10">
                     <StackPanel>
-                        <TextBlock Text="{Binding ConsultsMonth}" Foreground="White" FontSize="28" FontWeight="Bold"/>
-                        <TextBlock Text="Consultations ce mois" Foreground="#94A3B8" Margin="0,5"/>
+                        <TextBlock Text="{Binding ConsultsMonth}" Foreground="{DynamicResource TextPrimary}" FontSize="28" FontWeight="Bold"/>
+                        <TextBlock Text="Consultations ce mois" Foreground="{DynamicResource TextSecondary}" Margin="0,5"/>
                     </StackPanel>
                 </Border>
                 <Border Style="{StaticResource StatCardStyle}" Margin="0,0,10,0">
                     <StackPanel>
-                        <TextBlock Text="{Binding ActesTotal}" Foreground="White" FontSize="28" FontWeight="Bold"/>
-                        <TextBlock Text="Actes Médicaux" Foreground="#94A3B8" Margin="0,5"/>
+                        <TextBlock Text="{Binding ActesTotal}" Foreground="{DynamicResource TextPrimary}" FontSize="28" FontWeight="Bold"/>
+                        <TextBlock Text="Actes Médicaux" Foreground="{DynamicResource TextSecondary}" Margin="0,5"/>
                     </StackPanel>
                 </Border>
                 <Border Style="{StaticResource StatCardStyle}" Margin="0,0,10,0">
                     <StackPanel>
-                        <TextBlock Text="{Binding OrdosActive}" Foreground="White" FontSize="28" FontWeight="Bold"/>
-                        <TextBlock Text="Ordonnances actives" Foreground="#94A3B8" Margin="0,5"/>
+                        <TextBlock Text="{Binding OrdosActive}" Foreground="{DynamicResource TextPrimary}" FontSize="28" FontWeight="Bold"/>
+                        <TextBlock Text="Ordonnances actives" Foreground="{DynamicResource TextSecondary}" Margin="0,5"/>
                     </StackPanel>
                 </Border>
                 <Border Style="{StaticResource StatCardStyle}">
                     <StackPanel>
                         <StackPanel Orientation="Horizontal">
-                            <TextBlock Text="{Binding RevenueToday, StringFormat={}{0:N0}}" Foreground="White" FontSize="28" FontWeight="Bold"/>
-                            <TextBlock Text=" DT" Foreground="White" FontSize="18" VerticalAlignment="Bottom"/>
+                            <TextBlock Text="{Binding RevenueToday, StringFormat={}{0:N0}}" Foreground="{DynamicResource TextPrimary}" FontSize="28" FontWeight="Bold"/>
+                            <TextBlock Text=" DT" Foreground="{DynamicResource TextPrimary}" FontSize="18" VerticalAlignment="Bottom"/>
                         </StackPanel>
-                        <TextBlock Text="Recettes du jour" Foreground="#94A3B8" Margin="0,5"/>
+                        <TextBlock Text="Recettes du jour" Foreground="{DynamicResource TextSecondary}" Margin="0,5"/>
                     </StackPanel>
                 </Border>
             </UniformGrid>
@@ -77,7 +74,7 @@
 
                 <Border Grid.Column="0" Style="{StaticResource SectionBorderStyle}" Margin="0,0,15,0">
                     <DockPanel>
-                        <TextBlock DockPanel.Dock="Top" Text="Évolution des consultations" Foreground="White" FontSize="18" FontWeight="SemiBold" Margin="0,0,0,20"/>
+                        <TextBlock DockPanel.Dock="Top" Text="Évolution des consultations" Foreground="{DynamicResource TextPrimary}" FontSize="18" FontWeight="SemiBold" Margin="0,0,0,20"/>
                         <ItemsControl ItemsSource="{Binding ConsultationChartData}" VerticalAlignment="Bottom">
                             <ItemsControl.ItemsPanel>
                                 <ItemsPanelTemplate>
@@ -87,9 +84,9 @@
                             <ItemsControl.ItemTemplate>
                                 <DataTemplate>
                                     <StackPanel Margin="12,0" VerticalAlignment="Bottom">
-                                        <TextBlock Text="{Binding Value}" Foreground="#2ECC71" HorizontalAlignment="Center" FontWeight="Bold" FontSize="11" Margin="0,0,0,5"/>
-                                        <Border Width="35" Height="{Binding BarHeight}" Background="#2ECC71" CornerRadius="6,6,2,2" VerticalAlignment="Bottom"/>
-                                        <TextBlock Text="{Binding DayName}" Foreground="#94A3B8" HorizontalAlignment="Center" Margin="0,10,0,0" FontSize="11"/>
+                                        <TextBlock Text="{Binding Value}" Foreground="{DynamicResource AccentColor}" HorizontalAlignment="Center" FontWeight="Bold" FontSize="11" Margin="0,0,0,5"/>
+                                        <Border Width="35" Height="{Binding BarHeight}" Background="{DynamicResource AccentColor}" CornerRadius="6,6,2,2" VerticalAlignment="Bottom"/>
+                                        <TextBlock Text="{Binding DayName}" Foreground="{DynamicResource TextSecondary}" HorizontalAlignment="Center" Margin="0,10,0,0" FontSize="11"/>
                                     </StackPanel>
                                 </DataTemplate>
                             </ItemsControl.ItemTemplate>
@@ -99,25 +96,25 @@
 
                 <Border Grid.Column="1" Style="{StaticResource SectionBorderStyle}">
                     <DockPanel>
-                        <TextBlock DockPanel.Dock="Top" Text="Prochain Rendez-Vous" Foreground="White" FontSize="18" FontWeight="SemiBold" Margin="0,0,0,15"/>
+                        <TextBlock DockPanel.Dock="Top" Text="Prochain Rendez-Vous" Foreground="{DynamicResource TextPrimary}" FontSize="18" FontWeight="SemiBold" Margin="0,0,0,15"/>
                         <ItemsControl ItemsSource="{Binding UpcomingAppointments}">
                             <ItemsControl.ItemTemplate>
                                 <DataTemplate>
-                                    <Border BorderBrush="#1E293B" BorderThickness="0,0,0,1" Padding="0,12">
+                                    <Border BorderBrush="{DynamicResource BorderColor}" BorderThickness="0,0,0,1" Padding="0,12">
                                         <Grid>
                                             <Grid.ColumnDefinitions>
                                                 <ColumnDefinition Width="Auto"/>
                                                 <ColumnDefinition Width="*"/>
                                                 <ColumnDefinition Width="Auto"/>
                                             </Grid.ColumnDefinitions>
-                                            <Border Width="38" Height="38" Background="#1E293B" CornerRadius="19" BorderBrush="#2ECC71" BorderThickness="2">
-                                                <TextBlock Text="{Binding Initials}" Foreground="#2ECC71" VerticalAlignment="Center" HorizontalAlignment="Center" FontSize="12" FontWeight="Bold"/>
+                                            <Border Width="38" Height="38" Background="{DynamicResource SecondaryBackground}" CornerRadius="19" BorderBrush="{DynamicResource AccentColor}" BorderThickness="2">
+                                                <TextBlock Text="{Binding Initials}" Foreground="{DynamicResource AccentColor}" VerticalAlignment="Center" HorizontalAlignment="Center" FontSize="12" FontWeight="Bold"/>
                                             </Border>
                                             <StackPanel Grid.Column="1" Margin="12,0">
-                                                <TextBlock Text="{Binding PatientName}" Foreground="White" FontWeight="SemiBold"/>
-                                                <TextBlock Text="{Binding Time}" Foreground="#94A3B8" FontSize="11"/>
+                                                <TextBlock Text="{Binding PatientName}" Foreground="{DynamicResource TextPrimary}" FontWeight="SemiBold"/>
+                                                <TextBlock Text="{Binding Time}" Foreground="{DynamicResource TextSecondary}" FontSize="11"/>
                                             </StackPanel>
-                                            <TextBlock Grid.Column="2" Text="👁 Voir" Foreground="#2ECC71" VerticalAlignment="Center" FontSize="12" Cursor="Hand"/>
+                                            <TextBlock Grid.Column="2" Text="👁 Voir" Foreground="{DynamicResource AccentColor}" VerticalAlignment="Center" FontSize="12" Cursor="Hand"/>
                                         </Grid>
                                     </Border>
                                 </DataTemplate>

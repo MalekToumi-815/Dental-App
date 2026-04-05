@@ -4,6 +4,33 @@
              xmlns:local="clr-namespace:Dental_App"
              xmlns:prism="http://prismlibrary.com/">
     <prism:PrismApplication.Resources>
-         
+        <!-- Dark Theme Colors (Default) -->
+        <Color x:Key="PrimaryBackgroundColor">#0D1117</Color>
+        <Color x:Key="SecondaryBackgroundColor">#0F172A</Color>
+        <Color x:Key="CardBackgroundColor">#0F172A</Color>
+        <Color x:Key="TextPrimaryColor">#FFFFFF</Color>
+        <Color x:Key="TextSecondaryColor">#94A3B8</Color>
+        <Color x:Key="BorderColorValue">#1E293B</Color>
+        <Color x:Key="AccentColorValue">#2ECC71</Color>
+        <Color x:Key="SidebarBackgroundColor">#101926</Color>
+
+        <!-- Brush Resources -->
+        <SolidColorBrush x:Key="PrimaryBackground" Color="{StaticResource PrimaryBackgroundColor}"/>
+        <SolidColorBrush x:Key="SecondaryBackground" Color="{StaticResource SecondaryBackgroundColor}"/>
+        <SolidColorBrush x:Key="CardBackground" Color="{StaticResource CardBackgroundColor}"/>
+        <SolidColorBrush x:Key="TextPrimary" Color="{StaticResource TextPrimaryColor}"/>
+        <SolidColorBrush x:Key="TextSecondary" Color="{StaticResource TextSecondaryColor}"/>
+        <SolidColorBrush x:Key="BorderColor" Color="{StaticResource BorderColorValue}"/>
+        <SolidColorBrush x:Key="AccentColor" Color="{StaticResource AccentColorValue}"/>
+        <SolidColorBrush x:Key="SidebarBackground" Color="{StaticResource SidebarBackgroundColor}"/>
+
+        <!-- Icon Geometries -->
+        <Geometry x:Key="IconMoon">
+            M21,12.79A9,9 0 1,1 11.21,3A7,7 0 0,0 21,12.79M16,7A2,2 0 1,0 14,9A2,2 0 0,0 16,7M10,15A1.5,1.5 0 1,0 8.5,16.5A1.5,1.5 0 0,0 10,15Z
+        </Geometry>
+
+        <Geometry x:Key="IconSun">
+            M12,18A6,6 0 1,1 12,6A6,6 0 1,1 12,18M12,2L14.8,5.6H9.2L12,2M12,22L9.2,18.4H14.8L12,22M2,12L5.6,9.2V14.8L2,12M22,12L18.4,14.8V9.2L22,12M4.9,4.9L8.5,6.1L6.1,8.5L4.9,4.9M19.1,19.1L15.5,17.9L17.9,15.5L19.1,19.1M19.1,4.9L17.9,8.5L15.5,6.1L19.1,4.9M4.9,19.1L6.1,15.5L8.5,17.9L4.9,19.1Z
+        </Geometry>
     </prism:PrismApplication.Resources>
 </prism:PrismApplication>
