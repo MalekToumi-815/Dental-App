@@ -20,8 +20,11 @@ namespace Dental_App.ViewModels
         {
             TodayDate = DateTime.Now.ToString("dddd d MMMM yyyy", _frenchCulture);
             ToggleThemeCommand = new DelegateCommand(ToggleTheme);
-            // Initialize geometry after app resources are loaded
-            Application.Current.Dispatcher.BeginInvoke(() => UpdateThemeIcon(), System.Windows.Threading.DispatcherPriority.Loaded);
+            CloseApplicationCommand = new DelegateCommand(CloseApplication);
+            // Initialize with a default and then update after dispatcher queue processes
+            UpdateThemeIcon();
+            // Also schedule an update to ensure resources are available
+            Application.Current?.Dispatcher?.BeginInvoke(new Action(UpdateThemeIcon), System.Windows.Threading.DispatcherPriority.ContextIdle);
         }
 
         public string TodayDate
@@ -43,6 +46,8 @@ namespace Dental_App.ViewModels
         }
 
         public DelegateCommand ToggleThemeCommand { get; }
+
+        public DelegateCommand CloseApplicationCommand { get; }
 
         private void ToggleTheme()
         {
@@ -134,6 +139,11 @@ namespace Dental_App.ViewModels
                     resources[brushKey] = newBrush;
                 }
             }
+        }
+
+        private void CloseApplication()
+        {
+            Application.Current.Shutdown();
         }
     }
 }

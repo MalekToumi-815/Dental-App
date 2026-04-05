@@ -4,9 +4,18 @@
         xmlns:prism="http://prismlibrary.com/"
         prism:ViewModelLocator.AutoWireViewModel="True"
         Title="DentaCare Pro" 
-        WindowState="Maximized" 
-        WindowStartupLocation="CenterScreen"
+        
+        WindowState="Maximized"
+        WindowStyle="SingleBorderWindow" 
+        AllowsTransparency="False"
         Background="{DynamicResource PrimaryBackground}">
+
+    <WindowChrome.WindowChrome>
+        <WindowChrome CaptionHeight="0" 
+                      CornerRadius="0" 
+                      GlassFrameThickness="0" 
+                      UseAeroCaptionButtons="False"/>
+    </WindowChrome.WindowChrome>
 
     <Grid Background="{DynamicResource PrimaryBackground}">
         <Grid.RowDefinitions>
