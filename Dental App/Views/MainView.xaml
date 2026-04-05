@@ -5,11 +5,12 @@
         prism:ViewModelLocator.AutoWireViewModel="True"
         Title="DentaCare Pro" 
         WindowState="Maximized" 
-        WindowStartupLocation="CenterScreen">
+        WindowStartupLocation="CenterScreen"
+        Background="#0D1117">
 
-    <Grid>
+    <Grid Background="#0D1117">
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="250"/>
+            <ColumnDefinition Width="280"/>
             <ColumnDefinition Width="*"/>
         </Grid.ColumnDefinitions>
 

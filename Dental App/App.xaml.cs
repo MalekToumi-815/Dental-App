@@ -53,7 +53,7 @@ namespace Dental_App
             containerRegistry.RegisterSingleton<IOdontogrammeLibreService, OdontogrammeLibreService>();
 
             // Register Views for Navigation
-            containerRegistry.RegisterForNavigation<SidebarView>();
+            containerRegistry.RegisterForNavigation<SidebarView, SidebarViewModel>();
             containerRegistry.RegisterForNavigation<DashboardView, DashboardViewModel>();
             containerRegistry.RegisterForNavigation<MainView>();
         }
