@@ -72,7 +72,8 @@ public partial class DentalContext : DbContext
 
         modelBuilder.Entity<Caisse>(entity =>
         {
-            entity.HasKey(e => e.DateDuJour);
+            // Configure composite primary key: (DateDuJour, IsRevenu)
+            entity.HasKey(e => new { e.DateDuJour, e.IsRevenu });
 
             entity.ToTable("Caisse");
 
@@ -84,6 +85,11 @@ public partial class DentalContext : DbContext
             entity.Property(e => e.Montant)
                 .HasDefaultValue(0.0m)
                 .HasColumnType("decimal(18, 2)");
+
+            // Configure IsRevenu property: true = Revenu, false = Dépense
+            entity.Property(e => e.IsRevenu)
+                .HasDefaultValue(true)
+                .HasColumnType("BOOLEAN");
         });
 
         modelBuilder.Entity<CommandeProthesiste>(entity =>

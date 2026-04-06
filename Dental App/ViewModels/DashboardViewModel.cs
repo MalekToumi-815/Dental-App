@@ -54,8 +54,8 @@ namespace Dental_App.ViewModels
             var monthly = await _consultService.GetByDateRangeAsync(startOfMonth, DateTime.Now);
             ConsultsMonth = monthly.Count;
 
-            var caisse = await _caisseService.GetTodaysCaisseAsync();
-            RevenueToday = caisse?.Montant ?? 0;
+            var (revenu, depense) = await _caisseService.GetTodaySummaryAsync();
+            RevenueToday = revenu-depense;
 
             // 2. Build 7-Day Chart Data
             var last7DaysConsults = await _consultService.GetByDateRangeAsync(DateTime.Today.AddDays(-6), DateTime.Now);
