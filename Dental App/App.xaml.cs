@@ -4,6 +4,7 @@ using Dental_App.Views;
 using Microsoft.EntityFrameworkCore;
 using System.IO;
 using System.Windows;
+using Prism.Ioc;
 
 namespace Dental_App
 {
@@ -16,6 +17,7 @@ namespace Dental_App
         {
             return ContainerLocator.Container.Resolve<MainView>();
         }
+
         protected override void RegisterTypes(IContainerRegistry containerRegistry)
         {
             var folder = Path.Combine(
@@ -53,9 +55,10 @@ namespace Dental_App
             containerRegistry.RegisterSingleton<IOdontogrammeLibreService, OdontogrammeLibreService>();
 
             // Register Views for Navigation
-            containerRegistry.RegisterForNavigation<SidebarView, SidebarViewModel>();
-            containerRegistry.RegisterForNavigation<ToolbarView, ToolbarViewModel>();
-            containerRegistry.RegisterForNavigation<DashboardView, DashboardViewModel>();
+            containerRegistry.RegisterForNavigation<SidebarView, SidebarViewModel>("SidebarView");
+            containerRegistry.RegisterForNavigation<ToolbarView, ToolbarViewModel>("ToolbarView");
+            containerRegistry.RegisterForNavigation<DashboardView, DashboardViewModel>("DashboardView");
+            containerRegistry.RegisterForNavigation<ActesMedicauxView, ActesMedicauxViewModel>("ActesMedicauxView");
             containerRegistry.RegisterForNavigation<MainView>();
         }
 
@@ -63,16 +66,34 @@ namespace Dental_App
         {
             base.OnInitialized();
 
-            var regionManager = Container.Resolve<IRegionManager>();
+            try
+            {
+                var regionManager = Container.Resolve<IRegionManager>();
 
-            // This "injects" the Sidebar into the left column immediately
-            regionManager.RegisterViewWithRegion("SidebarRegion", typeof(SidebarView));
+                // This "injects" the Sidebar into the left column immediately
+                regionManager.RegisterViewWithRegion("SidebarRegion", typeof(SidebarView));
 
-            // This "injects" the Toolbar into the top immediately
-            regionManager.RegisterViewWithRegion("ToolbarRegion", typeof(ToolbarView));
+                // This "injects" the Toolbar into the top immediately
+                regionManager.RegisterViewWithRegion("ToolbarRegion", typeof(ToolbarView));
 
-            // This "injects" the Dashboard into the right column immediately
-            regionManager.RegisterViewWithRegion("ContentRegion", typeof(DashboardView));
+                // This "injects" the Dashboard into the right column immediately
+                regionManager.RegisterViewWithRegion("ContentRegion", typeof(DashboardView));
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"Error during initialization: {ex}");
+                MessageBox.Show($"Initialization Error: {ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+        }
+
+        protected override void OnStartup(StartupEventArgs e)
+        {
+            AppDomain.CurrentDomain.UnhandledException += (s, args) =>
+            {
+                System.Diagnostics.Debug.WriteLine($"Unhandled Exception: {args.ExceptionObject}");
+            };
+
+            base.OnStartup(e);
         }
     }
 

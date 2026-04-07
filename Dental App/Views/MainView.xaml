@@ -38,6 +38,8 @@
 
         <!-- Content -->
         <ContentControl Grid.Row="1" Grid.Column="1" 
-                        prism:RegionManager.RegionName="ContentRegion" />
+                        prism:RegionManager.RegionName="ContentRegion"
+                        HorizontalContentAlignment="Stretch"
+                        VerticalContentAlignment="Stretch"/>
     </Grid>
 </Window>
