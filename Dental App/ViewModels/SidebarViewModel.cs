@@ -8,6 +8,7 @@ namespace Dental_App.ViewModels
     public class SidebarViewModel : BindableBase
     {
         private readonly IRegionManager _regionManager;
+        private string _activeView = "DashboardView";
 
         public SidebarViewModel(IRegionManager regionManager)
         {
@@ -16,6 +17,12 @@ namespace Dental_App.ViewModels
         }
 
         public DelegateCommand<string> NavigateCommand { get; }
+
+        public string ActiveView
+        {
+            get => _activeView;
+            set => SetProperty(ref _activeView, value);
+        }
 
         private void Navigate(string navigatePath)
         {
@@ -28,10 +35,13 @@ namespace Dental_App.ViewModels
             try
             {
                 System.Diagnostics.Debug.WriteLine($"Attempting to navigate to: {navigatePath}");
-                
+
+                // Update active view immediately (optimistic update)
+                ActiveView = navigatePath;
+
                 // Create a Uri for the navigation
                 Uri navigationUri = new Uri(navigatePath, UriKind.Relative);
-                
+
                 _regionManager.RequestNavigate(
                     "ContentRegion",
                     navigationUri,

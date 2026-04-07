@@ -12,6 +12,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using Dental_App.ViewModels;
 
 namespace Dental_App.Views
 {
@@ -20,9 +21,63 @@ namespace Dental_App.Views
     /// </summary>
     public partial class SidebarView : UserControl
     {
+        private Dictionary<string, Button> _buttonMap;
+
         public SidebarView()
         {
             InitializeComponent();
+
+            // Map view names to their corresponding buttons
+            _buttonMap = new Dictionary<string, Button>
+            {
+                { "DashboardView", DashboardButton },
+                { "RendezVousView", RendezVousButton },
+                { "ConsultationView", ConsultationButton },
+                { "PatientsView", PatientsButton },
+                { "AntecedentsView", AntecedentsButton },
+                { "OrdonnancesView", OrdonnancesButton },
+                { "ActesMedicauxView", ActesMedicauxButton },
+                { "RadioImagesView", RadioImagesButton },
+                { "OdontogrammeView", OdontogrammeButton },
+                { "CaisseView", CaisseButton },
+                { "CommandeProthesisteView", CommandeProthesisteButton },
+                { "ProthesistesView", ProthesistesButton }
+            };
+
+            this.Loaded += SidebarView_Loaded;
+        }
+
+        private void SidebarView_Loaded(object sender, RoutedEventArgs e)
+        {
+            if (this.DataContext is SidebarViewModel viewModel)
+            {
+                // Initial setup
+                UpdateActiveButtonStyle(viewModel.ActiveView);
+
+                // Subscribe to ActiveView changes
+                viewModel.PropertyChanged += (s, args) =>
+                {
+                    if (args.PropertyName == nameof(SidebarViewModel.ActiveView))
+                    {
+                        UpdateActiveButtonStyle(viewModel.ActiveView);
+                    }
+                };
+            }
+        }
+
+        private void UpdateActiveButtonStyle(string activeView)
+        {
+            // Reset all buttons to inactive style
+            foreach (var button in _buttonMap.Values)
+            {
+                button.Style = (Style)this.Resources["NavButtonStyle"];
+            }
+
+            // Apply active style to the current view's button
+            if (_buttonMap.TryGetValue(activeView, out var activeButton))
+            {
+                activeButton.Style = (Style)this.Resources["NavButtonActiveStyle"];
+            }
         }
     }
 }
