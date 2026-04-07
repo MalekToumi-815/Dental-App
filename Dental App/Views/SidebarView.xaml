@@ -170,7 +170,7 @@
                 
                 <Button Content="Prothésistes" Tag="{StaticResource IconProthesistes}" 
                         Style="{StaticResource NavButtonStyle}"
-                        Command="{Binding NavigateCommand}" CommandParameter="ProthesistesView"/>
+                        Command="{Binding NavigateCommand}" CommandParameter="ProthesisteView"/>
             </StackPanel>
         </ScrollViewer>
     </Grid>

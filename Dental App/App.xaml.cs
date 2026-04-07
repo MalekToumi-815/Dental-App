@@ -56,6 +56,7 @@ namespace Dental_App
             containerRegistry.RegisterForNavigation<SidebarView, SidebarViewModel>();
             containerRegistry.RegisterForNavigation<ToolbarView, ToolbarViewModel>();
             containerRegistry.RegisterForNavigation<DashboardView, DashboardViewModel>();
+            containerRegistry.RegisterForNavigation<ProthesisteView, ProthesisteViewModel>();
             containerRegistry.RegisterForNavigation<MainView>();
         }
 
