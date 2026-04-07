@@ -1,5 +1,6 @@
 using Dental_App.Models;
 using Dental_App.Services;
+using Dental_App.Views;
 using Prism.Commands;
 using Prism.Mvvm;
 using System;
@@ -138,7 +139,113 @@ namespace Dental_App.ViewModels
             }
         }
 
-        private void ExecuteAddActe() { /* Implementation */ }
-        private void ExecuteEditActe(ActeMedical acte) { /* Implementation */ }
+        private void ExecuteAddActe()
+        {
+            try
+            {
+                System.Diagnostics.Debug.WriteLine("ExecuteAddActe called");
+
+                var dialogViewModel = new ActeDialogViewModel(null);
+                var dialogView = new ActeDialogView { DataContext = dialogViewModel };
+
+                // Create a dialog window
+                var window = new Window
+                {
+                    Content = dialogView,
+                    SizeToContent = System.Windows.SizeToContent.WidthAndHeight,
+                    WindowStyle = WindowStyle.None,
+                    AllowsTransparency = true,
+                    Background = System.Windows.Media.Brushes.Transparent,
+                    WindowStartupLocation = WindowStartupLocation.CenterOwner,
+                    Owner = Application.Current.MainWindow,
+                    Padding = new Thickness(10)
+                };
+
+                dialogViewModel.CloseDialog = async (result) =>
+                {
+                    if (result != null)
+                    {
+                        try
+                        {
+                            var newActe = await _acteService.CreateAsync(result);
+                            Actes.Add(newActe);
+                            FilterActes();
+                            System.Diagnostics.Debug.WriteLine($"New acte created: {newActe.Libelle}");
+                        }
+                        catch (Exception ex)
+                        {
+                            System.Diagnostics.Debug.WriteLine($"Error creating acte: {ex.Message}");
+                            MessageBox.Show($"Erreur lors de l'ajout: {ex.Message}", "Erreur", MessageBoxButton.OK, MessageBoxImage.Error);
+                        }
+                    }
+                    window.Close();
+                };
+
+                window.ShowDialog();
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"Error in ExecuteAddActe: {ex.Message}");
+                MessageBox.Show($"Erreur: {ex.Message}", "Erreur", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+        }
+
+        private void ExecuteEditActe(ActeMedical acte)
+        {
+            try
+            {
+                System.Diagnostics.Debug.WriteLine($"ExecuteEditActe called for: {acte.Libelle}");
+
+                var dialogViewModel = new ActeDialogViewModel(acte);
+                var dialogView = new ActeDialogView { DataContext = dialogViewModel };
+
+                // Create a dialog window
+                var window = new Window
+                {
+                    Content = dialogView,
+                    SizeToContent = System.Windows.SizeToContent.WidthAndHeight,
+                    WindowStyle = WindowStyle.None,
+                    AllowsTransparency = true,
+                    Background = System.Windows.Media.Brushes.Transparent,
+                    WindowStartupLocation = WindowStartupLocation.CenterOwner,
+                    Owner = Application.Current.MainWindow,
+                    Padding = new Thickness(10)
+                };
+
+                dialogViewModel.CloseDialog = async (result) =>
+                {
+                    if (result != null)
+                    {
+                        try
+                        {
+                            var updatedActe = await _acteService.UpdateAsync(result);
+                            
+                            // Update the collection
+                            var index = Actes.IndexOf(acte);
+                            if (index >= 0)
+                            {
+                                Actes[index] = updatedActe;
+                            }
+                            
+                            FilterActes();
+                            System.Diagnostics.Debug.WriteLine($"Acte updated: {updatedActe.Libelle}");
+                        }
+                        catch (Exception ex)
+                        {
+                            System.Diagnostics.Debug.WriteLine($"Error updating acte: {ex.Message}");
+                            MessageBox.Show($"Erreur lors de la modification: {ex.Message}", "Erreur", MessageBoxButton.OK, MessageBoxImage.Error);
+                        }
+                    }
+                    window.Close();
+                };
+
+                window.ShowDialog();
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"Error in ExecuteEditActe: {ex.Message}");
+                MessageBox.Show($"Erreur: {ex.Message}", "Erreur", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+        }
     }
 }
