@@ -13,6 +13,7 @@ namespace Dental_App.Services
         Task<Prothesiste?> GetByIdAsync(int id);
         Task<List<Prothesiste>> GetAllAsync();
         Task<List<Prothesiste>> GetByNameAsync(string name);
+        Task<List<Prothesiste>> GetByPhoneAsync(string phone);
         Task<Prothesiste> UpdateAsync(Prothesiste prothesiste);
         Task<bool> ExistsAsync(string name);
         Task<int> CountAsync();
@@ -57,6 +58,15 @@ namespace Dental_App.Services
             if (string.IsNullOrWhiteSpace(name)) return new List<Prothesiste>();
             return await _context.Prothesistes
                 .Where(p => p.Nom == name)
+                .Include(p => p.CommandeProthesistes)
+                .ToListAsync();
+        }
+
+        public async Task<List<Prothesiste>> GetByPhoneAsync(string phone)
+        {
+            if (string.IsNullOrWhiteSpace(phone)) return new List<Prothesiste>();
+            return await _context.Prothesistes
+                .Where(p => p.Tel != null && p.Tel.Contains(phone))
                 .Include(p => p.CommandeProthesistes)
                 .ToListAsync();
         }
