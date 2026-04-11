@@ -21,6 +21,8 @@ namespace Dental_App.Services
         Task<bool> ExistsAsync(string nom, string prenom);
         Task<int> CountAsync();
         Task<Patient?> GetByCinAsync(string? cin);
+        Task<Patient> AjouterMontantAsync(int patientId, decimal montant);
+        Task<decimal> GetSommeAPayerAsync(int patientId);
     }
 
     public class PatientService : IPatientService
@@ -196,6 +198,36 @@ namespace Dental_App.Services
         {
             if (string.IsNullOrWhiteSpace(cin)) return null;
             return await _context.Patients.FirstOrDefaultAsync(p => p.Cin == cin);
+        }
+
+        public async Task<Patient> AjouterMontantAsync(int patientId, decimal montant)
+        {
+            if (patientId <= 0) throw new ArgumentException("L'ID du patient doit être supérieur à 0.", nameof(patientId));
+            if (montant <= 0) throw new ArgumentException("Le montant doit être supérieur à 0.", nameof(montant));
+
+            var patient = await GetByIdAsync(patientId);
+            if (patient == null) throw new InvalidOperationException($"Le patient avec l'ID {patientId} n'existe pas.");
+
+            patient.SommePaye += montant;
+
+            _context.Patients.Update(patient);
+            await _context.SaveChangesAsync();
+            return patient;
+        }
+
+        public async Task<decimal> GetSommeAPayerAsync(int patientId)
+        {
+            if (patientId <= 0) throw new ArgumentException("L'ID du patient doit être supérieur à 0.", nameof(patientId));
+
+            var patient = await GetByIdAsync(patientId);
+            if (patient == null) throw new InvalidOperationException($"Le patient avec l'ID {patientId} n'existe pas.");
+
+            // Calculate the sum of MontantTotal from all patient consultations
+            var sommeAPayer = await _context.Consultations
+                .Where(c => c.PatientId == patientId)
+                .SumAsync(c => c.MontantTotal) ?? 0m;
+
+            return sommeAPayer;
         }
     }
 }
