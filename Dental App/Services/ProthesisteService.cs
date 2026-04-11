@@ -56,8 +56,9 @@ namespace Dental_App.Services
         public async Task<List<Prothesiste>> GetByNameAsync(string name)
         {
             if (string.IsNullOrWhiteSpace(name)) return new List<Prothesiste>();
+            var searchTerm = name.ToLower();
             return await _context.Prothesistes
-                .Where(p => p.Nom == name)
+                .Where(p => p.Nom.ToLower().Contains(searchTerm))
                 .Include(p => p.CommandeProthesistes)
                 .ToListAsync();
         }
@@ -65,8 +66,9 @@ namespace Dental_App.Services
         public async Task<List<Prothesiste>> GetByPhoneAsync(string phone)
         {
             if (string.IsNullOrWhiteSpace(phone)) return new List<Prothesiste>();
+            var searchTerm = phone.ToLower();
             return await _context.Prothesistes
-                .Where(p => p.Tel != null && p.Tel.Contains(phone))
+                .Where(p => p.Tel != null && p.Tel.ToLower().Contains(searchTerm))
                 .Include(p => p.CommandeProthesistes)
                 .ToListAsync();
         }

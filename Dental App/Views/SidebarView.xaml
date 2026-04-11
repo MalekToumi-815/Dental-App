@@ -136,7 +136,7 @@
                 
                 <Button Content="Antécédents" Tag="{StaticResource IconAntecedents}" 
                         Style="{StaticResource NavButtonStyle}"
-                        Command="{Binding NavigateCommand}" CommandParameter="AntecedentsView"/>
+                        Command="{Binding NavigateCommand}" CommandParameter="AntecedentView"/>
                 
                 <Button Content="Ordonnances" Tag="{StaticResource IconOrdonnances}" 
                         Style="{StaticResource NavButtonStyle}"
