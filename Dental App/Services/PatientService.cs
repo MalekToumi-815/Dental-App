@@ -11,6 +11,7 @@ namespace Dental_App.Services
     {
         Task<Patient> CreateAsync(Patient patient);
         Task<Patient?> GetByIdAsync(int id);
+        Task<Patient?> GetByIdWithConsultationsAsync(int id);
         Task<List<Patient>> GetAllAsync();
         Task<List<Patient>> GetByNameAsync(string nom, string prenom);
         Task<List<Patient>> SearchByNameAsync(string term, int maxResults = 20);
@@ -51,6 +52,14 @@ namespace Dental_App.Services
         {
             if (id <= 0) throw new ArgumentException("L'ID doit être supérieur à 0.", nameof(id));
             return await _context.Patients.FirstOrDefaultAsync(p => p.Id == id);
+        }
+
+        public async Task<Patient?> GetByIdWithConsultationsAsync(int id)
+        {
+            if (id <= 0) throw new ArgumentException("L'ID doit être supérieur à 0.", nameof(id));
+            return await _context.Patients
+                .Include(p => p.Consultations)
+                .FirstOrDefaultAsync(p => p.Id == id);
         }
 
         public async Task<List<Patient>> GetAllAsync()
@@ -222,10 +231,13 @@ namespace Dental_App.Services
             var patient = await GetByIdAsync(patientId);
             if (patient == null) throw new InvalidOperationException($"Le patient avec l'ID {patientId} n'existe pas.");
 
-            // Calculate the sum of MontantTotal from all patient consultations
-            var sommeAPayer = await _context.Consultations
+            // Load consultations into memory first, then sum on the client side
+            // SQLite doesn't support Sum on decimal types in LINQ queries
+            var consultations = await _context.Consultations
                 .Where(c => c.PatientId == patientId)
-                .SumAsync(c => c.MontantTotal) ?? 0m;
+                .ToListAsync();
+
+            var sommeAPayer = consultations.Sum(c => c.MontantTotal ?? 0m);
 
             return sommeAPayer;
         }
