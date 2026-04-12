@@ -134,7 +134,7 @@ namespace Dental_App.ViewModels
             
             try
             {
-                var dialogViewModel = new PatientDetailsDialogViewModel(patient.Patient);
+                var dialogViewModel = new PatientDetailsDialogViewModel(_patientService, patient.Patient);
                 // Set the financial data
                 dialogViewModel.TotalAmount = patient.RemainingAmountValue + (patient.Patient.SommePaye ?? 0);
                 dialogViewModel.PaidAmount = patient.Patient.SommePaye ?? 0;
@@ -159,7 +159,8 @@ namespace Dental_App.ViewModels
                     if (result != null && result == true)
                     {
                         System.Diagnostics.Debug.WriteLine($"PatientsViewModel: PatientDetailsDialog closed with OK for patient {patient.Id}");
-                        // TODO: Handle payment addition if needed
+                        // Reload the patients list to reflect the payment
+                        _ = LoadPatientsAsync();
                     }
                     window.Close();
                 };

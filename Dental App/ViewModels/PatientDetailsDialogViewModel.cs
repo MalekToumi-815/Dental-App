@@ -3,11 +3,13 @@ using Prism.Commands;
 using System;
 using System.Windows;
 using Dental_App.Models;
+using Dental_App.Services;
 
 namespace Dental_App.ViewModels
 {
     public class PatientDetailsDialogViewModel : BindableBase
     {
+        private readonly IPatientService _patientService;
         private string _title = "Dossier Patient";
         private string _buttonText = "Ajouter Paiement";
         private Patient _patient;
@@ -16,9 +18,12 @@ namespace Dental_App.ViewModels
         private decimal _totalAmount;
         private decimal _paidAmount;
         private decimal _remainingAmount;
+        private bool _isPaymentInputVisible;
+        private string _paymentAmountInput = string.Empty;
 
-        public PatientDetailsDialogViewModel(Patient patient = null)
+        public PatientDetailsDialogViewModel(IPatientService patientService = null, Patient patient = null)
         {
+            _patientService = patientService;
             SaveCommand = new DelegateCommand(ExecuteSave);
             CancelCommand = new DelegateCommand(ExecuteCancel);
 
@@ -76,6 +81,18 @@ namespace Dental_App.ViewModels
             set => SetProperty(ref _remainingAmount, value);
         }
 
+        public bool IsPaymentInputVisible
+        {
+            get => _isPaymentInputVisible;
+            set => SetProperty(ref _isPaymentInputVisible, value);
+        }
+
+        public string PaymentAmountInput
+        {
+            get => _paymentAmountInput;
+            set => SetProperty(ref _paymentAmountInput, value);
+        }
+
         public DelegateCommand SaveCommand { get; }
         public DelegateCommand CancelCommand { get; }
         public Action<bool?> CloseDialog { get; set; }
@@ -94,20 +111,77 @@ namespace Dental_App.ViewModels
             System.Diagnostics.Debug.WriteLine($"PatientDetailsDialogViewModel initialized with patient: {FullName}");
         }
 
-        private void ExecuteSave()
+        private async void ExecuteSave()
         {
             try
             {
-                System.Diagnostics.Debug.WriteLine($"PatientDetailsDialogViewModel: Add Payment executed for patient {Patient?.Id}");
-                // TODO: Implement add payment logic
-                CloseDialog?.Invoke(true);
+                // If payment input is visible, process the payment
+                if (IsPaymentInputVisible)
+                {
+                    if (string.IsNullOrWhiteSpace(PaymentAmountInput))
+                    {
+                        MessageBox.Show("Veuillez entrer un montant", "Validation", MessageBoxButton.OK, MessageBoxImage.Warning);
+                        return;
+                    }
+
+                    if (!decimal.TryParse(PaymentAmountInput, out decimal paymentAmount) || paymentAmount <= 0)
+                    {
+                        MessageBox.Show("Veuillez entrer un montant valide", "Validation", MessageBoxButton.OK, MessageBoxImage.Warning);
+                        return;
+                    }
+
+                    if (_patientService == null || Patient == null)
+                    {
+                        MessageBox.Show("Erreur: Service ou patient non disponible", "Erreur", MessageBoxButton.OK, MessageBoxImage.Error);
+                        return;
+                    }
+
+                    // Call the service to add the payment
+                    var updatedPatient = await _patientService.AjouterMontantAsync(Patient.Id, paymentAmount);
+                    
+                    // Update the patient object
+                    Patient = updatedPatient;
+                    
+                    // Update the paid amount and remaining amount
+                    PaidAmount = updatedPatient.SommePaye ?? 0m;
+                    RemainingAmount = TotalAmount - PaidAmount;
+
+                    // Reset the input and hide the field
+                    PaymentAmountInput = string.Empty;
+                    IsPaymentInputVisible = false;
+                    ButtonText = "Ajouter Paiement";
+
+                    System.Diagnostics.Debug.WriteLine($"Payment of {paymentAmount} DT added for patient {Patient?.Id}. New paid amount: {PaidAmount}");
+                    }
+                else
+                {
+                    // Show the payment input field
+                    IsPaymentInputVisible = true;
+                    ButtonText = "Confirmer";
+                    System.Diagnostics.Debug.WriteLine($"Payment input field opened for patient {Patient?.Id}");
+                }
             }
             catch (Exception ex)
             {
+                System.Diagnostics.Debug.WriteLine($"Error in ExecuteSave: {ex.Message}");
                 MessageBox.Show($"Erreur: {ex.Message}", "Erreur", MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }
 
-        private void ExecuteCancel() => CloseDialog?.Invoke(false);
+        private void ExecuteCancel()
+        {
+            // If payment input is visible, hide it without saving
+            if (IsPaymentInputVisible)
+            {
+                PaymentAmountInput = string.Empty;
+                IsPaymentInputVisible = false;
+                ButtonText = "Ajouter Paiement";
+                System.Diagnostics.Debug.WriteLine("Payment input cancelled");
+            }
+            else
+            {
+                CloseDialog?.Invoke(false);
+            }
+        }
     }
 }

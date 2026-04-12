@@ -77,7 +77,24 @@
                     <TextBlock Grid.Column="1" Text="{Binding RemainingAmount}" Foreground="#FF5555" FontSize="13" TextAlignment="Right"/>
                 </Grid>
 
-                <Button Content="Ajouter Paiement" Command="{Binding SaveCommand}" Background="{DynamicResource AccentColor}" Foreground="White" BorderThickness="0" Padding="20,12" FontSize="14" FontWeight="Medium" Height="48" Margin="0,24,0,0"/>
+                <!-- Payment Input Field - Visible only when IsPaymentInputVisible is true -->
+                <Grid Margin="0,20,0,12" Visibility="{Binding IsPaymentInputVisible, Converter={StaticResource BooleanToVisibilityConverter}}">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="200"/>
+                    </Grid.ColumnDefinitions>
+                    <TextBlock Text="Montant Paiement" Foreground="{DynamicResource TextSecondary}" FontSize="13" VerticalAlignment="Center"/>
+                    <TextBox Grid.Column="1" Text="{Binding PaymentAmountInput, UpdateSourceTrigger=PropertyChanged}" 
+                             Background="{DynamicResource SecondaryBackground}" 
+                             Foreground="{DynamicResource TextPrimary}" 
+                             BorderBrush="{DynamicResource BorderColor}" 
+                             BorderThickness="1" 
+                             Padding="12,8" 
+                             FontSize="13"
+                             Margin="12,0,0,0"/>
+                </Grid>
+
+                <Button Content="{Binding ButtonText}" Command="{Binding SaveCommand}" Background="{DynamicResource AccentColor}" Foreground="White" BorderThickness="0" Padding="20,12" FontSize="14" FontWeight="Medium" Height="48" Margin="0,24,0,0"/>
 
             </StackPanel>
         </Border>
