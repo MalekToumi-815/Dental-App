@@ -15,7 +15,7 @@ namespace Dental_App.ViewModels
         private string _buttonText = "Ajouter";
         private string _nom;
         private string _prenom;
-        private DateOnly? _dateNaissance;
+        private DateTime? _dateNaissance;
         private string _sexe;
         private string _telephone;
         private string _cin;
@@ -58,7 +58,7 @@ namespace Dental_App.ViewModels
             set { if (SetProperty(ref _prenom, value)) ValidateForm(); }
         }
 
-        public DateOnly? DateNaissance
+        public DateTime? DateNaissance
         {
             get => _dateNaissance;
             set { if (SetProperty(ref _dateNaissance, value)) ValidateForm(); }
@@ -67,7 +67,7 @@ namespace Dental_App.ViewModels
         public string Sexe
         {
             get => _sexe;
-            set => SetProperty(ref _sexe, value);
+            set { if (SetProperty(ref _sexe, value)) ValidateForm(); }
         }
 
         public string Telephone
@@ -107,11 +107,16 @@ namespace Dental_App.ViewModels
 
         private void ValidateForm()
         {
-            IsFormValid = !string.IsNullOrWhiteSpace(Nom) &&
-                         !string.IsNullOrWhiteSpace(Prenom) &&
-                         DateNaissance.HasValue &&
-                         !string.IsNullOrWhiteSpace(Telephone) &&
-                         !string.IsNullOrWhiteSpace(Adresse);
+            var isNomValid = !string.IsNullOrWhiteSpace(Nom);
+            var isPrenomValid = !string.IsNullOrWhiteSpace(Prenom);
+            var isDateValid = DateNaissance.HasValue;
+            var isTelephoneValid = !string.IsNullOrWhiteSpace(Telephone);
+            var isAdresseValid = !string.IsNullOrWhiteSpace(Adresse);
+
+            IsFormValid = isNomValid && isPrenomValid && isDateValid && isTelephoneValid && isAdresseValid;
+
+            System.Diagnostics.Debug.WriteLine($"ValidateForm: Nom={isNomValid}, Prenom={isPrenomValid}, Date={isDateValid}, Tel={isTelephoneValid}, Adresse={isAdresseValid}, Final={IsFormValid}");
+            System.Diagnostics.Debug.WriteLine($"ValidateForm Values: Nom='{Nom}', Prenom='{Prenom}', Date={DateNaissance}, Tel='{Telephone}', Adresse='{Adresse}'");
         }
 
         private bool CanSave() => IsFormValid;
@@ -124,7 +129,7 @@ namespace Dental_App.ViewModels
                 {
                     Nom = Nom,
                     Prenom = Prenom,
-                    DateNaissance = DateNaissance.Value,
+                    DateNaissance = DateOnly.FromDateTime(_dateNaissance!.Value),
                     Sexe = Sexe,
                     Telephone = Telephone,
                     Cin = Cin,
