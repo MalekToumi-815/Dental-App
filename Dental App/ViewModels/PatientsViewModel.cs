@@ -135,11 +135,45 @@ namespace Dental_App.ViewModels
 
         private void EditPatient(PatientDisplayRow patient)
         {
-            if (patient == null)
+            if (patient?.Patient == null)
                 return;
 
             System.Diagnostics.Debug.WriteLine($"PatientsViewModel: EditPatient command executed for patient {patient.Id}");
-            // TODO: Implement edit patient logic (e.g., show edit dialog)
+            
+            try
+            {
+                var dialogViewModel = new AddPatientDialogViewModel(_patientService, patient.Patient);
+                var dialogView = new AddPatientDialogView { DataContext = dialogViewModel };
+
+                var window = new Window
+                {
+                    Content = dialogView,
+                    SizeToContent = SizeToContent.WidthAndHeight,
+                    WindowStyle = WindowStyle.None,
+                    AllowsTransparency = true,
+                    Background = System.Windows.Media.Brushes.Transparent,
+                    WindowStartupLocation = WindowStartupLocation.CenterOwner,
+                    Owner = Application.Current.MainWindow,
+                    Padding = new Thickness(10)
+                };
+
+                dialogViewModel.CloseDialog = (result) =>
+                {
+                    if (result != null && result == true)
+                    {
+                        System.Diagnostics.Debug.WriteLine("PatientsViewModel: EditPatientDialog closed with OK");
+                        _ = LoadPatientsAsync();
+                    }
+                    window.Close();
+                };
+
+                window.ShowDialog();
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"Error in EditPatient: {ex.Message}");
+                MessageBox.Show($"Erreur: {ex.Message}", "Erreur", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
         }
 
         private async Task LoadPatientsAsync()

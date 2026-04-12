@@ -22,16 +22,43 @@ namespace Dental_App.ViewModels
         private string _adresse;
         private string _profession;
         private bool _isFormValid;
+        private Patient _patientBeingEdited;
 
-        public AddPatientDialogViewModel(IPatientService patientService)
+        public AddPatientDialogViewModel(IPatientService patientService, Patient patientToEdit = null)
         {
             _patientService = patientService ?? throw new ArgumentNullException(nameof(patientService));
 
             SexeOptions = new ObservableCollection<string> { "Masculin", "Féminin" };
 
-            // FIXED: Combined into a single initialization with ObservesProperty
-            SaveCommand = new DelegateCommand(Save, CanSave).ObservesProperty(() => IsFormValid);
-            CancelCommand = new DelegateCommand(Cancel);
+            SaveCommand = new DelegateCommand(ExecuteSave, CanSave).ObservesProperty(() => IsFormValid);
+            CancelCommand = new DelegateCommand(ExecuteCancel);
+
+            // Initialize based on whether we're editing or adding
+            if (patientToEdit != null)
+            {
+                // Edit mode
+                _patientBeingEdited = patientToEdit;
+                Title = "Modifier Patient";
+                ButtonText = "Sauvegarder Patient";
+
+                Nom = patientToEdit.Nom;
+                Prenom = patientToEdit.Prenom;
+                DateNaissance = patientToEdit.DateNaissance.ToDateTime(TimeOnly.MinValue);
+                Sexe = patientToEdit.Sexe;
+                Telephone = patientToEdit.Telephone;
+                Cin = patientToEdit.Cin;
+                Adresse = patientToEdit.Adresse;
+                Profession = patientToEdit.Profession;
+
+                ValidateForm();
+            }
+            else
+            {
+                // Add mode
+                Title = "Ajouter un nouveau patient";
+                ButtonText = "Ajouter";
+                _patientBeingEdited = null;
+            }
         }
 
         public string Title
@@ -121,24 +148,45 @@ namespace Dental_App.ViewModels
 
         private bool CanSave() => IsFormValid;
 
-        private async void Save()
+        private async void ExecuteSave()
         {
             try
             {
-                var patient = new Patient
+                if (_patientBeingEdited != null)
                 {
-                    Nom = Nom,
-                    Prenom = Prenom,
-                    DateNaissance = DateOnly.FromDateTime(_dateNaissance!.Value),
-                    Sexe = Sexe,
-                    Telephone = Telephone,
-                    Cin = Cin,
-                    Adresse = Adresse,
-                    Profession = Profession,
-                    SommePaye = 0m
-                };
+                    // Edit mode - update existing patient
+                    _patientBeingEdited.Nom = Nom;
+                    _patientBeingEdited.Prenom = Prenom;
+                    _patientBeingEdited.DateNaissance = DateOnly.FromDateTime(DateNaissance!.Value);
+                    _patientBeingEdited.Sexe = Sexe;
+                    _patientBeingEdited.Telephone = Telephone;
+                    _patientBeingEdited.Cin = Cin;
+                    _patientBeingEdited.Adresse = Adresse;
+                    _patientBeingEdited.Profession = Profession;
 
-                await _patientService.CreateAsync(patient);
+                    await _patientService.UpdateAsync(_patientBeingEdited);
+                    System.Diagnostics.Debug.WriteLine($"Patient {_patientBeingEdited.Id} updated successfully");
+                }
+                else
+                {
+                    // Add mode - create new patient
+                    var newPatient = new Patient
+                    {
+                        Nom = Nom,
+                        Prenom = Prenom,
+                        DateNaissance = DateOnly.FromDateTime(DateNaissance!.Value),
+                        Sexe = Sexe,
+                        Telephone = Telephone,
+                        Cin = Cin,
+                        Adresse = Adresse,
+                        Profession = Profession,
+                        SommePaye = 0m
+                    };
+
+                    await _patientService.CreateAsync(newPatient);
+                    System.Diagnostics.Debug.WriteLine("Patient created successfully");
+                }
+
                 CloseDialog?.Invoke(true);
             }
             catch (Exception ex)
@@ -147,6 +195,6 @@ namespace Dental_App.ViewModels
             }
         }
 
-        private void Cancel() => CloseDialog?.Invoke(false);
+        private void ExecuteCancel() => CloseDialog?.Invoke(false);
     }
 }
