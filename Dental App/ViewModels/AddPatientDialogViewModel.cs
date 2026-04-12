@@ -3,11 +3,14 @@ using Prism.Commands;
 using System;
 using System.Collections.ObjectModel;
 using System.Windows;
+using Dental_App.Models;
+using Dental_App.Services;
 
 namespace Dental_App.ViewModels
 {
     public class AddPatientDialogViewModel : BindableBase
     {
+        private readonly IPatientService _patientService;
         private string _title = "Nouveau Patient";
         private string _buttonText = "Ajouter";
         private string _nom;
@@ -20,10 +23,13 @@ namespace Dental_App.ViewModels
         private string _profession;
         private bool _isFormValid;
 
-        public AddPatientDialogViewModel()
+        public AddPatientDialogViewModel(IPatientService patientService)
         {
+            _patientService = patientService ?? throw new ArgumentNullException(nameof(patientService));
+
             SexeOptions = new ObservableCollection<string> { "Masculin", "Féminin" };
-            
+
+            // FIXED: Combined into a single initialization with ObservesProperty
             SaveCommand = new DelegateCommand(Save, CanSave).ObservesProperty(() => IsFormValid);
             CancelCommand = new DelegateCommand(Cancel);
         }
@@ -43,37 +49,19 @@ namespace Dental_App.ViewModels
         public string Nom
         {
             get => _nom;
-            set
-            {
-                if (SetProperty(ref _nom, value))
-                {
-                    ValidateForm();
-                }
-            }
+            set { if (SetProperty(ref _nom, value)) ValidateForm(); }
         }
 
         public string Prenom
         {
             get => _prenom;
-            set
-            {
-                if (SetProperty(ref _prenom, value))
-                {
-                    ValidateForm();
-                }
-            }
+            set { if (SetProperty(ref _prenom, value)) ValidateForm(); }
         }
 
         public DateOnly? DateNaissance
         {
             get => _dateNaissance;
-            set
-            {
-                if (SetProperty(ref _dateNaissance, value))
-                {
-                    ValidateForm();
-                }
-            }
+            set { if (SetProperty(ref _dateNaissance, value)) ValidateForm(); }
         }
 
         public string Sexe
@@ -85,13 +73,7 @@ namespace Dental_App.ViewModels
         public string Telephone
         {
             get => _telephone;
-            set
-            {
-                if (SetProperty(ref _telephone, value))
-                {
-                    ValidateForm();
-                }
-            }
+            set { if (SetProperty(ref _telephone, value)) ValidateForm(); }
         }
 
         public string Cin
@@ -103,13 +85,7 @@ namespace Dental_App.ViewModels
         public string Adresse
         {
             get => _adresse;
-            set
-            {
-                if (SetProperty(ref _adresse, value))
-                {
-                    ValidateForm();
-                }
-            }
+            set { if (SetProperty(ref _adresse, value)) ValidateForm(); }
         }
 
         public string Profession
@@ -125,10 +101,8 @@ namespace Dental_App.ViewModels
         }
 
         public ObservableCollection<string> SexeOptions { get; }
-
         public DelegateCommand SaveCommand { get; }
         public DelegateCommand CancelCommand { get; }
-
         public Action<bool?> CloseDialog { get; set; }
 
         private void ValidateForm()
@@ -140,30 +114,34 @@ namespace Dental_App.ViewModels
                          !string.IsNullOrWhiteSpace(Adresse);
         }
 
-        private bool CanSave()
-        {
-            return IsFormValid;
-        }
+        private bool CanSave() => IsFormValid;
 
-        private void Save()
+        private async void Save()
         {
             try
             {
-                System.Diagnostics.Debug.WriteLine($"AddPatientDialogViewModel: Save called - {Prenom} {Nom}");
-                // TODO: Call patient service to save the patient
-                // For now, just close the dialog with success
+                var patient = new Patient
+                {
+                    Nom = Nom,
+                    Prenom = Prenom,
+                    DateNaissance = DateNaissance.Value,
+                    Sexe = Sexe,
+                    Telephone = Telephone,
+                    Cin = Cin,
+                    Adresse = Adresse,
+                    Profession = Profession,
+                    SommePaye = 0m
+                };
+
+                await _patientService.CreateAsync(patient);
                 CloseDialog?.Invoke(true);
             }
             catch (Exception ex)
             {
-                System.Diagnostics.Debug.WriteLine($"Error saving patient: {ex.Message}");
-                MessageBox.Show($"Erreur lors de l'ajout du patient: {ex.Message}", "Erreur", MessageBoxButton.OK, MessageBoxImage.Error);
+                MessageBox.Show($"Erreur: {ex.Message}", "Erreur", MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }
 
-        private void Cancel()
-        {
-            CloseDialog?.Invoke(false);
-        }
+        private void Cancel() => CloseDialog?.Invoke(false);
     }
 }

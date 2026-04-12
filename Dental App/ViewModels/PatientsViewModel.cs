@@ -90,7 +90,7 @@ namespace Dental_App.ViewModels
             
             try
             {
-                var dialogViewModel = new AddPatientDialogViewModel();
+                var dialogViewModel = new AddPatientDialogViewModel(_patientService);
                 var dialogView = new AddPatientDialogView { DataContext = dialogViewModel };
 
                 var window = new Window
