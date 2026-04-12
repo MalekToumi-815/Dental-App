@@ -1,6 +1,7 @@
 using Dental_App.Models;
 using Dental_App.Services;
 using Dental_App.Views;
+using Dental_App.ViewModels;
 using Prism.Mvvm;
 using Prism.Commands;
 using System;
@@ -126,11 +127,50 @@ namespace Dental_App.ViewModels
 
         private void ViewPatient(PatientDisplayRow patient)
         {
-            if (patient == null)
+            if (patient?.Patient == null)
                 return;
 
             System.Diagnostics.Debug.WriteLine($"PatientsViewModel: ViewPatient command executed for patient {patient.Id}");
-            // TODO: Implement view patient logic (e.g., show patient details dialog)
+            
+            try
+            {
+                var dialogViewModel = new PatientDetailsDialogViewModel(patient.Patient);
+                // Set the financial data
+                dialogViewModel.TotalAmount = patient.RemainingAmountValue + (patient.Patient.SommePaye ?? 0);
+                dialogViewModel.PaidAmount = patient.Patient.SommePaye ?? 0;
+                dialogViewModel.RemainingAmount = patient.RemainingAmountValue;
+
+                var dialogView = new PatientDetailsDialogView { DataContext = dialogViewModel };
+
+                var window = new Window
+                {
+                    Content = dialogView,
+                    SizeToContent = SizeToContent.WidthAndHeight,
+                    WindowStyle = WindowStyle.None,
+                    AllowsTransparency = true,
+                    Background = System.Windows.Media.Brushes.Transparent,
+                    WindowStartupLocation = WindowStartupLocation.CenterOwner,
+                    Owner = Application.Current.MainWindow,
+                    Padding = new Thickness(10)
+                };
+
+                dialogViewModel.CloseDialog = (result) =>
+                {
+                    if (result != null && result == true)
+                    {
+                        System.Diagnostics.Debug.WriteLine($"PatientsViewModel: PatientDetailsDialog closed with OK for patient {patient.Id}");
+                        // TODO: Handle payment addition if needed
+                    }
+                    window.Close();
+                };
+
+                window.ShowDialog();
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"Error in ViewPatient: {ex.Message}");
+                MessageBox.Show($"Erreur: {ex.Message}", "Erreur", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
         }
 
         private void EditPatient(PatientDisplayRow patient)

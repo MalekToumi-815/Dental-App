@@ -1,0 +1,85 @@
+<UserControl x:Class="Dental_App.Views.PatientDetailsDialogView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             Background="Transparent">
+
+    <Grid HorizontalAlignment="Center" VerticalAlignment="Center">
+        <Border Background="{DynamicResource CardBackground}" CornerRadius="12" BorderBrush="{DynamicResource BorderColor}" BorderThickness="1" Padding="30">
+            <StackPanel>
+                <Grid Margin="0,0,0,20">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="Auto"/>
+                    </Grid.ColumnDefinitions>
+                    <TextBlock Text="{Binding Title}" FontSize="20" FontWeight="SemiBold" Foreground="{DynamicResource TextPrimary}"/>
+                    <Button Grid.Column="1" Background="Transparent" BorderThickness="0" Cursor="Hand" Padding="8" Command="{Binding CancelCommand}">
+                        <Path Data="M19 6.41L17.59 5L12 10.59L6.41 5L5 6.41L10.59 12L5 17.59L6.41 19L12 13.41L17.59 19L19 17.59L13.41 12L19 6.41Z" Fill="{DynamicResource TextPrimary}" Width="20" Height="20"/>
+                    </Button>
+                </Grid>
+
+                <StackPanel Orientation="Horizontal" Margin="0,0,0,24">
+                    <Border Width="80" Height="80" CornerRadius="40" Background="{DynamicResource AccentColor}" Margin="0,0,20,0">
+                        <TextBlock Text="{Binding Initials}" FontSize="28" FontWeight="SemiBold" Foreground="White" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                    </Border>
+                    <StackPanel VerticalAlignment="Center">
+                        <TextBlock Text="{Binding FullName}" FontSize="18" FontWeight="SemiBold" Foreground="{DynamicResource TextPrimary}"/>
+                        <TextBlock Text="{Binding Patient.Telephone}" FontSize="13" Foreground="{DynamicResource TextSecondary}"/>
+                        <TextBlock Text="{Binding Patient.Adresse}" FontSize="13" Foreground="{DynamicResource TextSecondary}"/>
+                    </StackPanel>
+                </StackPanel>
+
+                <TextBlock Text="INFORMATIONS" FontSize="12" FontWeight="SemiBold" Foreground="{DynamicResource TextSecondary}"/>
+
+                <Grid Margin="0,8,0,8">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="200"/>
+                    </Grid.ColumnDefinitions>
+                    <TextBlock Text="Date de naissance" Foreground="{DynamicResource TextSecondary}" FontSize="13"/>
+                    <TextBlock Grid.Column="1" Text="{Binding Patient.DateNaissance}" Foreground="{DynamicResource TextPrimary}" FontSize="13" TextAlignment="Right"/>
+                </Grid>
+
+                <Grid Margin="0,8,0,8">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="200"/>
+                    </Grid.ColumnDefinitions>
+                    <TextBlock Text="Sexe" Foreground="{DynamicResource TextSecondary}" FontSize="13"/>
+                    <TextBlock Grid.Column="1" Text="{Binding Patient.Sexe}" Foreground="{DynamicResource TextPrimary}" FontSize="13" TextAlignment="Right"/>
+                </Grid>
+
+                <TextBlock Text="FINANCES" FontSize="12" FontWeight="SemiBold" Foreground="{DynamicResource TextSecondary}" Margin="0,24,0,12"/>
+
+                <Grid Margin="0,8,0,8">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="200"/>
+                    </Grid.ColumnDefinitions>
+                    <TextBlock Text="Montant Total" Foreground="{DynamicResource TextSecondary}" FontSize="13"/>
+                    <TextBlock Grid.Column="1" Text="{Binding TotalAmount}" Foreground="{DynamicResource TextPrimary}" FontSize="13" TextAlignment="Right"/>
+                </Grid>
+
+                <Grid Margin="0,8,0,8">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="200"/>
+                    </Grid.ColumnDefinitions>
+                    <TextBlock Text="Montant Paye" Foreground="{DynamicResource TextSecondary}" FontSize="13"/>
+                    <TextBlock Grid.Column="1" Text="{Binding PaidAmount}" Foreground="{DynamicResource TextPrimary}" FontSize="13" TextAlignment="Right"/>
+                </Grid>
+
+                <Grid Margin="0,8,0,8">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="200"/>
+                    </Grid.ColumnDefinitions>
+                    <TextBlock Text="Restant" Foreground="{DynamicResource TextSecondary}" FontSize="13"/>
+                    <TextBlock Grid.Column="1" Text="{Binding RemainingAmount}" Foreground="#FF5555" FontSize="13" TextAlignment="Right"/>
+                </Grid>
+
+                <Button Content="Ajouter Paiement" Command="{Binding SaveCommand}" Background="{DynamicResource AccentColor}" Foreground="White" BorderThickness="0" Padding="20,12" FontSize="14" FontWeight="Medium" Height="48" Margin="0,24,0,0"/>
+
+            </StackPanel>
+        </Border>
+    </Grid>
+</UserControl>
