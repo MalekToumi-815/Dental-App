@@ -88,7 +88,6 @@ public partial class DentalContext : DbContext
 
             // Configure IsRevenu property: true = Revenu, false = Dépense
             entity.Property(e => e.IsRevenu)
-                .HasDefaultValue(true)
                 .HasColumnType("BOOLEAN");
         });
 

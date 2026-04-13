@@ -23,9 +23,9 @@ namespace Dental_App.ViewModels
     }
 
     /// <summary>
-    /// Display item for chart bar showing revenue/expense evolution
-    /// </summary>
-    public class CaisseChartBarItem
+	/// Display item for chart bar showing revenue/expense evolution
+	/// </summary>
+	public class CaisseChartBarItem
     {
         public string DayName { get; set; } = string.Empty;
         public decimal Revenue { get; set; }
@@ -125,7 +125,7 @@ namespace Dental_App.ViewModels
             set { SetProperty(ref _newDescription, value); }
         }
 
-        private string _newType = "Revenu";
+        private string _newType = string.Empty;
         public string NewType
         {
             get { return _newType; }
@@ -303,7 +303,7 @@ namespace Dental_App.ViewModels
             ModalTitle = "Nouvelle Transaction";
             NewDate = DateOnly.FromDateTime(DateTime.Now);
             NewDescription = string.Empty;
-            NewType = "Revenu";
+            NewType = string.Empty;
             NewMontant = 0;
             IsModalVisible = true;
         }
@@ -364,18 +364,29 @@ namespace Dental_App.ViewModels
                 Debug.WriteLine("[SaveTransaction] Enregistrement de la transaction");
 
                 bool isRevenu = NewType == "Revenu";
-                bool success = await _caisseService.AddOrUpdateCaisseAsync(
+                bool success;
+                if (isRevenu) {
+                    success = await _caisseService.AddOrUpdateCaisseAsync(
+                        NewMontant,
+                        true,
+                        NewDate
+                    );
+                }
+                else
+                {
+                    success = await _caisseService.AddOrUpdateCaisseAsync(
                     NewMontant,
-                    isRevenu,
+                    false,
                     NewDate
                 );
+                }
 
                 if (success)
                 {
                     CloseModal();
                     await LoadDataAsync();
-                    string message = _selectedTransaction == null 
-                        ? "Transaction enregistrée avec succès." 
+                    string message = _selectedTransaction == null
+                        ? "Transaction enregistrée avec succès."
                         : "Transaction mise à jour avec succès.";
                     MessageBox.Show(message, "Succès", MessageBoxButton.OK, MessageBoxImage.Information);
                 }
@@ -403,6 +414,12 @@ namespace Dental_App.ViewModels
             if (!NewDate.HasValue)
             {
                 MessageBox.Show("La date est obligatoire.", "Validation", MessageBoxButton.OK, MessageBoxImage.Warning);
+                return false;
+            }
+
+            if (string.IsNullOrWhiteSpace(NewType))
+            {
+                MessageBox.Show("Le type de transaction est obligatoire.", "Validation", MessageBoxButton.OK, MessageBoxImage.Warning);
                 return false;
             }
 

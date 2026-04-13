@@ -12,5 +12,5 @@ public partial class Caisse
     /// <summary>
     /// Type de caisse: true = Revenu, false = Dépense
     /// </summary>
-    public bool IsRevenu { get; set; } = true;
+    public bool IsRevenu { get; set; }
 }
