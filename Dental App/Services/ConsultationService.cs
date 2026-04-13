@@ -22,6 +22,7 @@ namespace Dental_App.Services
         Task<int> CountAsync();
         Task<int> CountByPatientAsync(int patientId);
         Task<bool> AddActesAsync(int consultationId, List<ActeMedical> actes);
+        Task<bool> ClearActesAsync(int consultationId);
         Task<List<ActeMedical>> GetActesByConsultationIdAsync(int consultationId);
     }
 
@@ -249,6 +250,37 @@ namespace Dental_App.Services
             catch (Exception ex)
             {
                 System.Diagnostics.Debug.WriteLine($"Erreur lors de l'ajout des actes à la consultation : {ex.Message}");
+                throw;
+            }
+        }
+
+        /// <summary>
+        /// Clear all ActeMedical items for a specific consultation
+        /// </summary>
+        public async Task<bool> ClearActesAsync(int consultationId)
+        {
+            try
+            {
+                if (consultationId <= 0)
+                    throw new ArgumentException("Le ConsultationId doit être supérieur à 0.", nameof(consultationId));
+
+                var consultation = await _context.Consultations
+                    .Include(c => c.IdActes)
+                    .FirstOrDefaultAsync(c => c.Id == consultationId);
+
+                if (consultation == null)
+                    throw new InvalidOperationException($"La consultation avec l'ID {consultationId} n'existe pas.");
+
+                consultation.IdActes.Clear();
+
+                _context.Consultations.Update(consultation);
+                await _context.SaveChangesAsync();
+                System.Diagnostics.Debug.WriteLine($"✓ Actes supprimés de la consultation {consultationId}");
+                return true;
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"Erreur lors de la suppression des actes de la consultation : {ex.Message}");
                 throw;
             }
         }

@@ -17,6 +17,7 @@ namespace Dental_App.ViewModels
         private readonly IPatientService _patientService;
         private readonly IConsultationService _consultationService;
         private readonly IDentService _dentService;
+        private readonly IActeMedicalService _acteService;
 
         private ObservableCollection<PatientForConsultation> _allPatients;
         private ObservableCollection<PatientForConsultation> _filteredPatients;
@@ -29,11 +30,12 @@ namespace Dental_App.ViewModels
         private DelegateCommand<ConsultationDisplayRow> _editConsultationCommand;
         private DelegateCommand<ConsultationDisplayRow> _gererActeCommand;
 
-        public ConsultationViewModel(IPatientService patientService, IConsultationService consultationService, IDentService dentService)
+        public ConsultationViewModel(IPatientService patientService, IConsultationService consultationService, IDentService dentService, IActeMedicalService acteService)
         {
             _patientService = patientService ?? throw new ArgumentNullException(nameof(patientService));
             _consultationService = consultationService ?? throw new ArgumentNullException(nameof(consultationService));
             _dentService = dentService ?? throw new ArgumentNullException(nameof(dentService));
+            _acteService = acteService ?? throw new ArgumentNullException(nameof(acteService));
 
             AllPatients = new ObservableCollection<PatientForConsultation>();
             FilteredPatients = new ObservableCollection<PatientForConsultation>();
@@ -335,8 +337,40 @@ namespace Dental_App.ViewModels
 
             System.Diagnostics.Debug.WriteLine($"ConsultationViewModel: GererActe command executed for consultation {consultation.Id}");
 
-            // TODO: Implement the act management dialog
-            MessageBox.Show($"Gestion des actes pour la consultation {consultation.Id}", "Info", MessageBoxButton.OK, MessageBoxImage.Information);
+            try
+            {
+                var dialogViewModel = new GererActeDialogViewModel(_acteService, _consultationService, consultation.Id);
+                var dialogView = new GererActeDialogView { DataContext = dialogViewModel };
+
+                var window = new Window
+                {
+                    Content = dialogView,
+                    SizeToContent = SizeToContent.WidthAndHeight,
+                    WindowStyle = WindowStyle.None,
+                    AllowsTransparency = true,
+                    Background = System.Windows.Media.Brushes.Transparent,
+                    WindowStartupLocation = WindowStartupLocation.CenterOwner,
+                    Owner = Application.Current.MainWindow,
+                    Padding = new Thickness(10)
+                };
+
+                dialogViewModel.CloseDialog = (result) =>
+                {
+                    if (result != null && result == true)
+                    {
+                        System.Diagnostics.Debug.WriteLine($"ConsultationViewModel: GererActeDialog closed with OK for consultation {consultation.Id}");
+                        _ = OnPatientSelectedAsync(SelectedPatient);
+                    }
+                    window.Close();
+                };
+
+                window.ShowDialog();
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"Error in GererActe: {ex.Message}");
+                MessageBox.Show($"Erreur: {ex.Message}", "Erreur", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
         }
     }
 
@@ -357,8 +391,30 @@ namespace Dental_App.ViewModels
         public int Id { get; set; }
         public DateTime Date { get; set; }
         public string Tooth { get; set; }
-        public string ActeName { get; set; }
+        private string _acteName;
+        public string ActeName 
+        { 
+            get => _acteName;
+            set => SetProperty(ref _acteName, value);
+        }
         public decimal Amount { get; set; }
         public string Notes { get; set; }
+
+        /// <summary>
+        /// Returns acts as a list, splitting by comma for vertical display
+        /// </summary>
+        public List<string> ActeNameList
+        {
+            get
+            {
+                if (string.IsNullOrWhiteSpace(ActeName) || ActeName == "-")
+                    return new List<string> { "-" };
+                
+                return ActeName
+                    .Split(new[] { ',' }, StringSplitOptions.RemoveEmptyEntries)
+                    .Select(a => a.Trim())
+                    .ToList();
+            }
+        }
     }
 }

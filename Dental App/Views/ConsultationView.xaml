@@ -30,7 +30,6 @@
             <Setter Property="BorderThickness" Value="0"/>
             <Setter Property="GridLinesVisibility" Value="Horizontal"/>
             <Setter Property="HorizontalGridLinesBrush" Value="{DynamicResource BorderColor}"/>
-            <Setter Property="RowHeight" Value="52"/>
             <Setter Property="HeadersVisibility" Value="Column"/>
             <Setter Property="AutoGenerateColumns" Value="False"/>
             <Setter Property="CanUserAddRows" Value="False"/>
@@ -278,7 +277,19 @@
                         <DataGrid.Columns>
                             <DataGridTextColumn Header="Date" Binding="{Binding Date, StringFormat=dd/MM/yyyy}" Width="110"/>
                             <DataGridTextColumn Header="Dent (FDI)" Binding="{Binding Tooth}" Width="80"/>
-                            <DataGridTextColumn Header="Acte" Binding="{Binding ActeName}" Width="*"/>
+                            <DataGridTemplateColumn Header="Acte" Width="*">
+                                <DataGridTemplateColumn.CellTemplate>
+                                    <DataTemplate>
+                                        <ItemsControl ItemsSource="{Binding ActeNameList}">
+                                            <ItemsControl.ItemTemplate>
+                                                <DataTemplate>
+                                                    <TextBlock Text="{Binding}" Foreground="{DynamicResource TextPrimary}" Margin="0,4,0,4" TextWrapping="Wrap"/>
+                                                </DataTemplate>
+                                            </ItemsControl.ItemTemplate>
+                                        </ItemsControl>
+                                    </DataTemplate>
+                                </DataGridTemplateColumn.CellTemplate>
+                            </DataGridTemplateColumn>
                             <DataGridTextColumn Header="Montant" Binding="{Binding Amount, StringFormat={}{0:N2} DT}" Width="100"/>
                             <DataGridTextColumn Header="Notes" Binding="{Binding Notes}" Width="1.5*"/>
                             <DataGridTemplateColumn Header="Action" Width="140">

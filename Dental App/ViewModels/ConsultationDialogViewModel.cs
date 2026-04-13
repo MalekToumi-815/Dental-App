@@ -130,6 +130,11 @@ namespace Dental_App.ViewModels
             for (int i = 21; i <= 28; i++) teeth.Add(i.ToString());
             for (int i = 31; i <= 38; i++) teeth.Add(i.ToString());
             for (int i = 41; i <= 48; i++) teeth.Add(i.ToString());
+            // Child teeth: 51-55 (upper right), 61-65 (upper left), 71-75 (lower left), 81-85 (lower right)
+            for (int i = 51; i <= 55; i++) teeth.Add(i.ToString());
+            for (int i = 61; i <= 65; i++) teeth.Add(i.ToString());
+            for (int i = 71; i <= 75; i++) teeth.Add(i.ToString());
+            for (int i = 81; i <= 85; i++) teeth.Add(i.ToString());
 
             ToothOptions = teeth;
         }
