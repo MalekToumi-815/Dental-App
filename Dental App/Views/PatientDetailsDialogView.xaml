@@ -36,7 +36,7 @@
                         <ColumnDefinition Width="200"/>
                     </Grid.ColumnDefinitions>
                     <TextBlock Text="Date de naissance" Foreground="{DynamicResource TextSecondary}" FontSize="13"/>
-                    <TextBlock Grid.Column="1" Text="{Binding Patient.DateNaissance}" Foreground="{DynamicResource TextPrimary}" FontSize="13" TextAlignment="Right"/>
+                    <TextBlock Grid.Column="1" Text="{Binding Patient.DateNaissance, StringFormat='dd/MM/yyyy'}" Foreground="{DynamicResource TextPrimary}" FontSize="13" TextAlignment="Right"/>
                 </Grid>
 
                 <Grid Margin="0,8,0,8">
@@ -46,6 +46,24 @@
                     </Grid.ColumnDefinitions>
                     <TextBlock Text="Sexe" Foreground="{DynamicResource TextSecondary}" FontSize="13"/>
                     <TextBlock Grid.Column="1" Text="{Binding Patient.Sexe}" Foreground="{DynamicResource TextPrimary}" FontSize="13" TextAlignment="Right"/>
+                </Grid>
+
+                <Grid Margin="0,8,0,8">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="200"/>
+                    </Grid.ColumnDefinitions>
+                    <TextBlock Text="CIN" Foreground="{DynamicResource TextSecondary}" FontSize="13"/>
+                    <TextBlock Grid.Column="1" Text="{Binding Patient.Cin}" Foreground="{DynamicResource TextPrimary}" FontSize="13" TextAlignment="Right"/>
+                </Grid>
+
+                <Grid Margin="0,8,0,8">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="200"/>
+                    </Grid.ColumnDefinitions>
+                    <TextBlock Text="Profession" Foreground="{DynamicResource TextSecondary}" FontSize="13"/>
+                    <TextBlock Grid.Column="1" Text="{Binding Patient.Profession}" Foreground="{DynamicResource TextPrimary}" FontSize="13" TextAlignment="Right"/>
                 </Grid>
 
                 <TextBlock Text="FINANCES" FontSize="12" FontWeight="SemiBold" Foreground="{DynamicResource TextSecondary}" Margin="0,24,0,12"/>
