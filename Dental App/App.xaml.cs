@@ -62,6 +62,7 @@ namespace Dental_App
             containerRegistry.RegisterForNavigation<RadioImagesView, RadioImagesViewModel>("RadioImagesView");
             containerRegistry.RegisterForNavigation<PatientsView, PatientsViewModel>("PatientsView");
             containerRegistry.RegisterForNavigation<ConsultationView, ConsultationViewModel>("ConsultationView");
+            containerRegistry.RegisterForNavigation<OdontogrammeView, OdontogrammeViewModel>("OdontogrammeView");
             containerRegistry.RegisterForNavigation<MainView>();
         }
 
