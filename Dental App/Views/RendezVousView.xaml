@@ -1,0 +1,373 @@
+<UserControl x:Class="Dental_App.Views.RendezVousView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             mc:Ignorable="d" 
+             d:DesignHeight="450" d:DesignWidth="800"
+             Background="{DynamicResource PrimaryBackground}">
+    
+    <UserControl.Resources>
+        <Style x:Key="TimeSlotStyle" TargetType="ToggleButton">
+            <Setter Property="Background" Value="{DynamicResource SecondaryBackground}"/>
+            <Setter Property="Foreground" Value="{DynamicResource TextPrimary}"/>
+            <Setter Property="BorderBrush" Value="{DynamicResource BorderColor}"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="Padding" Value="10,5"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="ToggleButton">
+                        <Border Background="{TemplateBinding Background}" 
+                                BorderBrush="{TemplateBinding BorderBrush}" 
+                                BorderThickness="{TemplateBinding BorderThickness}"
+                                CornerRadius="8" Padding="{TemplateBinding Padding}">
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsChecked" Value="True">
+                                <Setter Property="Background" Value="{DynamicResource AccentColor}"/>
+                                <Setter Property="Foreground" Value="{DynamicResource PrimaryBackground}"/>
+                            </Trigger>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter Property="Background" Value="{DynamicResource CardBackground}"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <Style x:Key="ButtonStyle" TargetType="Button">
+            <Setter Property="Background" Value="{DynamicResource AccentColor}"/>
+            <Setter Property="Foreground" Value="{DynamicResource PrimaryBackground}"/>
+            <Setter Property="FontWeight" Value="Bold"/>
+            <Setter Property="Padding" Value="15,10"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border x:Name="ButtonBorder" Background="{TemplateBinding Background}" 
+                                CornerRadius="10" 
+                                Padding="{TemplateBinding Padding}">
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="ButtonBorder" Property="Opacity" Value="0.8"/>
+                            </Trigger>
+                            <Trigger Property="IsPressed" Value="True">
+                                <Setter TargetName="ButtonBorder" Property="Opacity" Value="0.6"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <Style x:Key="TextBoxStyle" TargetType="TextBox">
+            <Setter Property="Background" Value="{DynamicResource SecondaryBackground}"/>
+            <Setter Property="Foreground" Value="{DynamicResource TextPrimary}"/>
+            <Setter Property="BorderBrush" Value="{DynamicResource BorderColor}"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="Padding" Value="10,8"/>
+            <Setter Property="TextWrapping" Value="Wrap"/>
+        </Style>
+
+        <Style x:Key="DatePickerStyleCustom" TargetType="DatePicker">
+            <Setter Property="Foreground" Value="{DynamicResource TextPrimary}"/>
+            <Setter Property="Background" Value="{DynamicResource SecondaryBackground}"/>
+            <Setter Property="BorderBrush" Value="{DynamicResource BorderColor}"/>
+            <Setter Property="Height" Value="40"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="DatePicker">
+                        <Border BorderBrush="{TemplateBinding BorderBrush}"
+                                BorderThickness="1"
+                                Background="{TemplateBinding Background}"
+                                CornerRadius="8"
+                                Padding="0">
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="Auto"/>
+                                </Grid.ColumnDefinitions>
+
+                                <DatePickerTextBox x:Name="PART_TextBox" 
+                                                   Grid.Column="0"
+                                                   Margin="10,0,5,0"
+                                                   Background="Transparent"
+                                                   Foreground="{DynamicResource TextPrimary}"
+                                                   BorderThickness="0"
+                                                   FontSize="14"
+                                                   VerticalContentAlignment="Center"
+                                                   Padding="0"/>
+
+                                <Button x:Name="PART_Button"
+                                        Grid.Column="1"
+                                        Width="40"
+                                        Height="40"
+                                        Background="Transparent"
+                                        BorderThickness="0"
+                                        Cursor="Hand"
+                                        Margin="0"
+                                        Padding="10">
+                                    <Viewbox Width="18" Height="18" VerticalAlignment="Center">
+                                        <Path Fill="{DynamicResource AccentColor}" 
+                                              Data="M19,4H17V3a1,1,0,0,0-2,0V4H9V3A1,1,0,0,0,7,3V4H5V7H19ZM9,8V7a1,1,0,0,1,2,0V8Zm4,0V7a1,1,0,0,1,2,0V8ZM5,10H19V9H5ZM19,12H5v-1H19ZM5,14H19v-1H5ZM19,16H5v-1H19Z"
+                                              Stretch="Uniform"/>
+                                    </Viewbox>
+                                </Button>
+
+                                <Popup x:Name="PART_Popup"
+                                       PlacementTarget="{Binding ElementName=PART_TextBox}"
+                                       AllowsTransparency="True"
+                                       Placement="Bottom"
+                                       StaysOpen="False">
+                                    <Border Background="{DynamicResource CardBackground}"
+                                            BorderBrush="Transparent"
+                                            BorderThickness="0"
+                                            CornerRadius="8"
+                                            Padding="10">
+                                        <StackPanel>
+                                            <Calendar x:Name="PART_Calendar"
+                                                      Background="{DynamicResource CardBackground}"
+                                                      Foreground="{DynamicResource TextPrimary}"
+                                                      BorderThickness="0"
+                                                      BorderBrush="Transparent"
+                                                      Padding="0"
+                                                      Style="{StaticResource ChicCalendarStyle}">
+                                                <Calendar.Resources>
+                                                    <Style TargetType="CalendarDayButton" BasedOn="{StaticResource ChicCalendarDayButtonStyle}"/>
+                                                </Calendar.Resources>
+                                            </Calendar>
+                                        </StackPanel>
+                                    </Border>
+                                </Popup>
+                            </Grid>
+                        </Border>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+    </UserControl.Resources>
+
+    <Grid Background="{DynamicResource PrimaryBackground}">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="2*"/>
+            <ColumnDefinition Width="3*"/>
+        </Grid.ColumnDefinitions>
+
+        <StackPanel Grid.Column="0" Margin="20">
+            <TextBlock Text="Rendez-Vous" Foreground="{DynamicResource TextPrimary}" FontSize="28" FontWeight="Bold" Margin="0,0,0,20"/>
+            
+            <Border Background="{DynamicResource CardBackground}" 
+                    CornerRadius="15" 
+                    Padding="20,20,20,20" 
+                    Margin="0,0,0,20" 
+                    BorderBrush="Transparent" 
+                    BorderThickness="0">
+                <Calendar x:Name="MainCalendar"
+                          Background="{DynamicResource CardBackground}" 
+                          Foreground="{DynamicResource TextPrimary}"
+                          BorderThickness="0"
+                          BorderBrush="Transparent"
+                          SelectedDate="{Binding SelectedDate}"
+                          Padding="10"
+                          Style="{StaticResource ChicCalendarStyle}"
+                          DisplayDateChanged="Calendar_DisplayDateChanged">
+                    <Calendar.Resources>
+                        <Style TargetType="CalendarDayButton" BasedOn="{StaticResource ChicCalendarDayButtonStyle}"/>
+                    </Calendar.Resources>
+                </Calendar>
+            </Border>
+
+            <StackPanel>
+                <TextBlock Text="Statistiques" Foreground="{DynamicResource TextPrimary}" FontSize="16" FontWeight="Bold" Margin="0,0,0,10"/>
+                <Border Background="{DynamicResource CardBackground}" CornerRadius="10" Padding="15" Margin="0,5" BorderBrush="Transparent" BorderThickness="0">
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+                        <StackPanel>
+                            <TextBlock Text="Aujourd'hui" Foreground="{DynamicResource TextSecondary}" FontSize="12"/>
+                            <TextBlock Text="{Binding TodayCount}" Foreground="{DynamicResource AccentColor}" FontSize="24" FontWeight="Bold"/>
+                        </StackPanel>
+                        <StackPanel Grid.Column="1">
+                            <TextBlock Text="Cette Semaine" Foreground="{DynamicResource TextSecondary}" FontSize="12"/>
+                            <TextBlock Text="{Binding WeekCount}" Foreground="{DynamicResource AccentColor}" FontSize="24" FontWeight="Bold"/>
+                        </StackPanel>
+                    </Grid>
+                </Border>
+            </StackPanel>
+        </StackPanel>
+
+        <StackPanel Grid.Column="1" Margin="20">
+            <Grid Margin="0,0,0,20">
+                <StackPanel VerticalAlignment="Center">
+                    <TextBlock Text="Rendez-Vous du Jour" Foreground="{DynamicResource TextPrimary}" FontSize="20" FontWeight="Bold"/>
+                    <TextBlock x:Name="DateLabel" Text="{Binding DateLabel}" Foreground="{DynamicResource TextSecondary}" FontSize="14"/>
+                </StackPanel>
+                <Button Content="+ Nouveau RDV" HorizontalAlignment="Right" 
+                        Style="{StaticResource ButtonStyle}"
+                        Height="45" Width="150"
+                        Command="{Binding OpenModalCommand}"
+                        x:Name="NewRdvButton"/>
+            </Grid>
+
+            <ListBox Background="Transparent" BorderThickness="0" 
+                     ItemsSource="{Binding RendezVousList}"
+                     ScrollViewer.VerticalScrollBarVisibility="Auto">
+                <ListBox.ItemContainerStyle>
+                    <Style TargetType="ListBoxItem">
+                        <Setter Property="Background" Value="Transparent"/>
+                        <Setter Property="BorderThickness" Value="0"/>
+                        <Setter Property="Padding" Value="0"/>
+                    </Style>
+                </ListBox.ItemContainerStyle>
+                <ListBox.ItemTemplate>
+                    <DataTemplate>
+                        <Grid>
+                            <Border Background="{DynamicResource CardBackground}" CornerRadius="10" Padding="15" Margin="0,5" 
+                                    MouseLeftButtonUp="OnRendezVousClicked"
+                                    Cursor="Hand" BorderBrush="{DynamicResource BorderColor}" BorderThickness="1">
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="60"/>
+                                        <ColumnDefinition Width="40"/>
+                                        <ColumnDefinition Width="*"/>
+                                        <ColumnDefinition Width="Auto"/>
+                                    </Grid.ColumnDefinitions>
+                                    <TextBlock Text="{Binding Heure}" Foreground="{DynamicResource TextPrimary}" VerticalAlignment="Center" FontSize="14" FontWeight="Bold"/>
+                                    <Border Grid.Column="1" Width="30" Height="30" CornerRadius="15" Background="{DynamicResource SecondaryBackground}">
+                                        <TextBlock Text="{Binding InitialesPatient}" Foreground="{DynamicResource AccentColor}" 
+                                                   HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="10" FontWeight="Bold"/>
+                                    </Border>
+                                    <StackPanel Grid.Column="2" Margin="10,0" VerticalAlignment="Center">
+                                        <TextBlock Text="{Binding NomPatient}" Foreground="{DynamicResource TextPrimary}" FontWeight="SemiBold"/>
+                                        <TextBlock Text="{Binding Motif}" Foreground="{DynamicResource TextSecondary}" FontSize="12"/>
+                                    </StackPanel>
+                                    <Border Grid.Column="3" Background="{DynamicResource SecondaryBackground}" CornerRadius="12" Padding="10,4" BorderBrush="{DynamicResource AccentColor}" BorderThickness="1">
+                                        <TextBlock Text="{Binding Statut}" Foreground="{DynamicResource AccentColor}" FontSize="12" FontWeight="Bold"/>
+                                    </Border>
+                                </Grid>
+                            </Border>
+                        </Grid>
+                    </DataTemplate>
+                </ListBox.ItemTemplate>
+            </ListBox>
+        </StackPanel>
+
+        <Grid x:Name="ModalOverlay" Grid.ColumnSpan="2" Background="#AA000000" 
+              Visibility="{Binding IsModalVisible, Converter={StaticResource BooleanToVisibilityConverter}}">
+            <Border Width="500" VerticalAlignment="Center" HorizontalAlignment="Center" 
+                    Background="{DynamicResource CardBackground}" CornerRadius="15" Padding="25" BorderBrush="{DynamicResource BorderColor}" BorderThickness="1">
+                <StackPanel>
+                    <Grid Margin="0,0,0,20">
+                        <TextBlock Text="{Binding ModalTitle}" Foreground="{DynamicResource TextPrimary}" FontSize="20" FontWeight="Bold"/>
+                        <Button Content="X" HorizontalAlignment="Right" Background="Transparent" 
+                               Foreground="{DynamicResource TextSecondary}" BorderThickness="0" FontSize="16"
+                               Command="{Binding CloseModalCommand}"
+                               x:Name="CloseModalButton"/>
+                    </Grid>
+
+                    <TextBlock Text="PATIENT" Foreground="{DynamicResource TextSecondary}" FontSize="12" FontWeight="Bold" Margin="0,15,0,5"/>
+                    <TextBox Height="40" Style="{StaticResource TextBoxStyle}"
+                             Text="{Binding PatientSearchViewModel.SearchText, UpdateSourceTrigger=PropertyChanged}"
+                             x:Name="PatientSearchBox"/>
+                    
+                    <ItemsControl ItemsSource="{Binding PatientSearchViewModel.SuggestedPatients}"
+                                  Visibility="{Binding PatientSearchViewModel.IsSuggestionsVisible, Converter={StaticResource BooleanToVisibilityConverter}}"
+                                  Margin="0,5,0,10"
+                                  MaxHeight="150">
+                        <ItemsControl.ItemTemplate>
+                            <DataTemplate>
+                                <Border Padding="10,8" BorderThickness="0,1,0,0" BorderBrush="{DynamicResource BorderColor}"
+                                        Background="{DynamicResource CardBackground}" 
+                                        MouseLeftButtonUp="OnPatientSuggestionClicked"
+                                        Cursor="Hand">
+                                    <TextBlock Foreground="{DynamicResource TextPrimary}" FontSize="12">
+                                        <Run Text="{Binding Nom, Mode=OneWay}"/>
+                                        <Run Text=" "/>
+                                        <Run Text="{Binding Prenom, Mode=OneWay}"/>
+                                    </TextBlock>
+                                </Border>
+                            </DataTemplate>
+                        </ItemsControl.ItemTemplate>
+                    </ItemsControl>
+
+                    <Border Background="{DynamicResource SecondaryBackground}" BorderBrush="{DynamicResource BorderColor}" BorderThickness="1" Padding="10,8" 
+                            Visibility="{Binding SelectedPatient, Converter={StaticResource NullToVisibilityConverter}}"
+                            Margin="0,0,0,15">
+                        <TextBlock Foreground="{DynamicResource AccentColor}" FontWeight="Bold" FontSize="11">
+                            <Run Text="Patient: "/>
+                            <Run Text="{Binding SelectedPatient.Nom, Mode=OneWay}"/>
+                            <Run Text=" "/>
+                            <Run Text="{Binding SelectedPatient.Prenom, Mode=OneWay}"/>
+                        </TextBlock>
+                    </Border>
+
+                    <TextBlock Text="DATE" Foreground="{DynamicResource TextSecondary}" FontSize="12" FontWeight="Bold" Margin="0,15,0,5"/>
+                    <DatePicker SelectedDate="{Binding NewRendezVousDate}"
+                                Style="{StaticResource DatePickerStyleCustom}"/>
+
+                    <TextBlock Text="CRENEAU HORAIRE" Foreground="{DynamicResource TextSecondary}" FontSize="12" FontWeight="Bold" Margin="0,15,0,10"/>
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                        </Grid.RowDefinitions>
+
+                        <ToggleButton Grid.Row="0" Grid.Column="0" Content="08:30" Margin="2" Style="{StaticResource TimeSlotStyle}" Tag="08:30" Click="OnTimeSlotClicked"/>
+                        <ToggleButton Grid.Row="0" Grid.Column="1" Content="09:00" Margin="2" Style="{StaticResource TimeSlotStyle}" Tag="09:00" Click="OnTimeSlotClicked"/>
+                        <ToggleButton Grid.Row="0" Grid.Column="2" Content="09:30" Margin="2" Style="{StaticResource TimeSlotStyle}" Tag="09:30" Click="OnTimeSlotClicked"/>
+                        <ToggleButton Grid.Row="0" Grid.Column="3" Content="10:00" Margin="2" Style="{StaticResource TimeSlotStyle}" Tag="10:00" Click="OnTimeSlotClicked"/>
+                        <ToggleButton Grid.Row="1" Grid.Column="0" Content="10:30" Margin="2" Style="{StaticResource TimeSlotStyle}" Tag="10:30" Click="OnTimeSlotClicked"/>
+                        <ToggleButton Grid.Row="1" Grid.Column="1" Content="11:00" Margin="2" Style="{StaticResource TimeSlotStyle}" Tag="11:00" Click="OnTimeSlotClicked"/>
+                        <ToggleButton Grid.Row="1" Grid.Column="2" Content="11:30" Margin="2" Style="{StaticResource TimeSlotStyle}" Tag="11:30" Click="OnTimeSlotClicked"/>
+                        <ToggleButton Grid.Row="1" Grid.Column="3" Content="14:00" Margin="2" Style="{StaticResource TimeSlotStyle}" Tag="14:00" Click="OnTimeSlotClicked"/>
+                    </Grid>
+
+                    <TextBlock Text="MOTIF / NOTES" Foreground="{DynamicResource TextSecondary}" FontSize="12" FontWeight="Bold" Margin="0,15,0,5"/>
+                    <TextBox Height="80" Style="{StaticResource TextBoxStyle}" 
+                             Text="{Binding NewMotif, UpdateSourceTrigger=PropertyChanged}"
+                             x:Name="MotifTextBox"/>
+
+                    <DockPanel Margin="0,15">
+                        <TextBlock Text="Rappel SMS" Foreground="{DynamicResource TextPrimary}" VerticalAlignment="Center" FontWeight="Bold"/>
+                        <CheckBox HorizontalAlignment="Right" IsChecked="{Binding SmsReminder}"/>
+                    </DockPanel>
+
+                    <Grid Margin="0,20,0,0">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+                        <Button Content="Annuler" Background="{DynamicResource BorderColor}" Foreground="{DynamicResource TextPrimary}" 
+                                FontWeight="Bold" Height="45" Margin="0,0,5,0" BorderThickness="0"
+                                Command="{Binding CloseModalCommand}"
+                                x:Name="CancelButton">
+                            <Button.Template>
+                                <ControlTemplate TargetType="Button">
+                                    <Border Background="{TemplateBinding Background}" CornerRadius="10" Padding="15,10">
+                                        <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                    </Border>
+                                </ControlTemplate>
+                            </Button.Template>
+                        </Button>
+                        <Button Grid.Column="1" Content="Confirmer RDV" Style="{StaticResource ButtonStyle}" 
+                               Height="45" Margin="5,0,0,0"
+                               Command="{Binding SaveRendezVousCommand}"
+                               x:Name="ConfirmButton"/>
+                    </Grid>
+                </StackPanel>
+            </Border>
+        </Grid>
+    </Grid>
+</UserControl>

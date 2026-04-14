@@ -60,6 +60,7 @@ namespace Dental_App
             containerRegistry.RegisterForNavigation<CommandeProthesisteView, CommandeProthesisteViewModel>();
             containerRegistry.RegisterForNavigation<AntecedentView, AntecedentViewModel>();
             containerRegistry.RegisterForNavigation<CaisseView, CaisseViewModel>();
+            containerRegistry.RegisterForNavigation<RendezVousView, RendezVousViewModel>();
             containerRegistry.RegisterForNavigation<MainView>();
         }
 
