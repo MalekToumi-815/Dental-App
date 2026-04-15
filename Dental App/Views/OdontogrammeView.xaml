@@ -103,11 +103,15 @@
             <!-- Dental Schema Section -->
             <Border Grid.Column="0" Background="{DynamicResource CardBackground}" CornerRadius="12" BorderThickness="1" BorderBrush="{DynamicResource BorderColor}" Padding="30" Margin="0,0,20,0">
                 <!-- Dental Schema with Template Image -->
-                <Border Background="{DynamicResource SecondaryBackground}" CornerRadius="8" ClipToBounds="True">
-                    <Image Source="pack://application:,,,/Assets/Images/OrdontogrameTemplate.png" 
+                <Grid>
+                    <!-- Background Image -->
+                    <Image x:Name="OdontogrammeImage"
                            Stretch="UniformToFill" 
                            RenderOptions.BitmapScalingMode="HighQuality"/>
-                </Border>
+                    
+                    <!-- Tooth Paths Overlay loaded from XAML -->
+                    <Grid x:Name="ToothOverlayGrid" Panel.ZIndex="10" MouseDown="ToothOverlay_MouseDown"/>
+                </Grid>
             </Border>
 
             <!-- Right Panel - Historiques des Actes -->

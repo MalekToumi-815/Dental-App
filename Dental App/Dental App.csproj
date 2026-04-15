@@ -22,11 +22,21 @@
 
   <ItemGroup>
     <Folder Include="Assets\Images\" />
+    <Folder Include="Assets\xaml_chart\" />
     <Folder Include="Models\" />
   </ItemGroup>
 
   <ItemGroup>
     <Resource Include="Assets\Images\OrdontogrameTemplate.png" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="Assets\Images\OrdontogrameTemplate.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Assets\xaml_chart\**\*">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
   </ItemGroup>
 
 </Project>
