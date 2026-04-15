@@ -116,6 +116,27 @@ namespace Dental_App.ViewModels
             get => _newMotif;
             set => SetProperty(ref _newMotif, value); }
 
+        private string _selectedStatus = "en attente";
+        public string SelectedStatus
+        {
+            get => _selectedStatus;
+            set => SetProperty(ref _selectedStatus, value);
+        }
+
+        private bool _isEditingExistingAppointment;
+        public bool IsEditingExistingAppointment
+        {
+            get => _isEditingExistingAppointment;
+            set => SetProperty(ref _isEditingExistingAppointment, value);
+        }
+
+        private ObservableCollection<string> _statusList;
+        public ObservableCollection<string> StatusList
+        {
+            get => _statusList;
+            set => SetProperty(ref _statusList, value);
+        }
+
         private bool _smsReminder = true;
         public bool SmsReminder
         {
@@ -137,6 +158,7 @@ namespace Dental_App.ViewModels
             _patientService = patientService ?? throw new ArgumentNullException(nameof(patientService));
 
             RendezVousList = new ObservableCollection<RendezVousItemViewModel>();
+            StatusList = new ObservableCollection<string> { "en attente", "termine", "annule" };
 
             // Initialiser le ViewModel de recherche patient
             PatientSearchViewModel = new PatientSearchViewModel(_patientService);
@@ -261,10 +283,12 @@ namespace Dental_App.ViewModels
             Debug.WriteLine("[OpenModal] Ouverture de la modal");
             ModalTitle = "Nouveau Rendez-Vous";
             _selectedRendezVous = null;
+            IsEditingExistingAppointment = false;
             SelectedPatient = null;
             NewRendezVousDate = SelectedDate;
             SelectedTimeSlot = null;
             NewMotif = string.Empty;
+            SelectedStatus = "en attente";
             SmsReminder = true;
 
             // Réinitialiser la recherche de patient
@@ -292,10 +316,12 @@ namespace Dental_App.ViewModels
                 if (_selectedRendezVous != null)
                 {
                     ModalTitle = "Modifier le Rendez-Vous";
+                    IsEditingExistingAppointment = true;
 
                     SelectedPatient = _selectedRendezVous.Patient;
                     NewRendezVousDate = _selectedRendezVous.DateDebut.Date;
                     SelectedTimeSlot = _selectedRendezVous.DateDebut.ToString("HH:mm");
+                    SelectedStatus = _selectedRendezVous.Statut ?? "en attente";
 
                     // Mettre à jour la recherche avec le patient courant
                     PatientSearchViewModel.SearchText = $"{_selectedRendezVous.Patient.Nom} {_selectedRendezVous.Patient.Prenom}";
@@ -350,7 +376,7 @@ namespace Dental_App.ViewModels
                     {
                         PatientId = SelectedPatient.Id,
                         DateDebut = dateDebut,
-                        Statut = "en attente"
+                        Statut = SelectedStatus
                     });
                     MessageBox.Show("Rendez-vous créé avec succès.", "Succès", MessageBoxButton.OK, MessageBoxImage.Information);
                 }
@@ -360,6 +386,7 @@ namespace Dental_App.ViewModels
                     Debug.WriteLine($"[SaveRendezVous] Mise à jour du rendez-vous {_selectedRendezVous.Id}");
                     _selectedRendezVous.PatientId = SelectedPatient.Id;
                     _selectedRendezVous.DateDebut = dateDebut;
+                    _selectedRendezVous.Statut = SelectedStatus;
                     await _rendezVousService.UpdateAsync(_selectedRendezVous);
                     MessageBox.Show("Rendez-vous mis à jour avec succès.", "Succès", MessageBoxButton.OK, MessageBoxImage.Information);
                 }

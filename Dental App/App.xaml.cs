@@ -51,6 +51,7 @@ namespace Dental_App
             containerRegistry.RegisterSingleton<IOrdonnanceService, OrdonnanceService>();
             containerRegistry.RegisterSingleton<IRadioImageService, RadioImageService>();
             containerRegistry.RegisterSingleton<IOdontogrammeLibreService, OdontogrammeLibreService>();
+            containerRegistry.RegisterSingleton<IHolidayService, HolidayService>();
 
             // Register Views for Navigation
             containerRegistry.RegisterForNavigation<SidebarView, SidebarViewModel>();
