@@ -107,7 +107,8 @@
                     <!-- Background Image -->
                     <Image x:Name="OdontogrammeImage"
                            Stretch="UniformToFill" 
-                           RenderOptions.BitmapScalingMode="HighQuality"/>
+                           RenderOptions.BitmapScalingMode="HighQuality"
+                           Width="645.0" Height="553.0"/>
                     
                     <!-- Tooth Paths Overlay loaded from XAML -->
                     <Grid x:Name="ToothOverlayGrid" Panel.ZIndex="10" MouseDown="ToothOverlay_MouseDown"/>
