@@ -8,6 +8,7 @@ namespace Dental_App.Services
         Task InitializeTeethForPatientAsync(int patientId);
         Task<List<Dent>> GetTeethByPatientIdAsync(int patientId);
         Task<Dent?> GetDentByPatientAndFdiAsync(int patientId, int fdiCode);
+        Task<List<ToothActHistoryDto>> GetActesByPatientAndFdiAsync(int patientId, int fdiCode);
     }
 
     public class DentService : IDentService
@@ -109,5 +110,90 @@ namespace Dental_App.Services
                 return null;
             }
         }
+
+        /// <summary>
+        /// Get all acts performed on a specific tooth for a patient, with consultation dates
+        /// </summary>
+        /// <param name="patientId">The patient ID</param>
+        /// <param name="fdiCode">The FDI code of the tooth</param>
+        /// <returns>List of acts with their consultation dates</returns>
+        public async Task<List<ToothActHistoryDto>> GetActesByPatientAndFdiAsync(int patientId, int fdiCode)
+        {
+            if (patientId <= 0)
+                throw new ArgumentException("Le PatientId doit être supérieur à 0.", nameof(patientId));
+
+            if (fdiCode <= 0)
+                throw new ArgumentException("Le code FDI doit être supérieur à 0.", nameof(fdiCode));
+
+            try
+            {
+                // Find the dent for this patient with the specified FDI code
+                var dent = await _context.Dents
+                    .FirstOrDefaultAsync(d => d.CodeFdi == fdiCode && d.PatientId == patientId);
+
+                if (dent == null)
+                {
+                    System.Diagnostics.Debug.WriteLine($"[DentService] Dent non trouvée pour PatientId={patientId}, FDI={fdiCode}");
+                    return new List<ToothActHistoryDto>();
+                }
+
+                // Get all consultations for this dent, including their acts
+                var consultations = await _context.Consultations
+                    .Where(c => c.PatientId == patientId && c.IdDent == dent.Id)
+                    .Include(c => c.IdActes)
+                    .OrderByDescending(c => c.DateConsultation)
+                    .ToListAsync();
+
+                // Build the result DTOs
+                var result = new List<ToothActHistoryDto>();
+
+                foreach (var consultation in consultations)
+                {
+                    var actes = consultation.IdActes?.Select(a => new ActeDto
+                    {
+                        Id = a.Id,
+                        Libelle = a.Libelle
+                    }).ToList() ?? new List<ActeDto>();
+
+                    result.Add(new ToothActHistoryDto
+                    {
+                        ConsultationId = consultation.Id,
+                        ConsultationDate = consultation.DateConsultation ?? DateTime.Now,
+                        FdiCode = fdiCode,
+                        Actes = actes,
+                        Notes = consultation.Note
+                    });
+                }
+
+                System.Diagnostics.Debug.WriteLine($"[DentService] Found {result.Count} consultations for PatientId={patientId}, FDI={fdiCode}");
+                return result;
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"[DentService] Error getting acts by patient and FDI: {ex.Message}");
+                throw;
+            }
+        }
+    }
+
+    /// <summary>
+    /// DTO for act history on a specific tooth
+    /// </summary>
+    public class ToothActHistoryDto
+    {
+        public int ConsultationId { get; set; }
+        public DateTime ConsultationDate { get; set; }
+        public int FdiCode { get; set; }
+        public List<ActeDto> Actes { get; set; } = new List<ActeDto>();
+        public string? Notes { get; set; }
+    }
+
+    /// <summary>
+    /// DTO for medical act information
+    /// </summary>
+    public class ActeDto
+    {
+        public int Id { get; set; }
+        public string Libelle { get; set; } = null!;
     }
 }
