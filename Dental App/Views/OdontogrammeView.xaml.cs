@@ -6,6 +6,7 @@ using System.IO;
 using System.Windows.Media.Imaging;
 using System.Windows.Media;
 using System.Windows.Shapes;
+using Dental_App.ViewModels;
 
 namespace Dental_App.Views
 {
@@ -138,6 +139,13 @@ namespace Dental_App.Views
                     if (!string.IsNullOrEmpty(toothTag))
                     {
                         System.Diagnostics.Debug.WriteLine($"? TOOTH CLICKED: {toothTag}");
+                        
+                        // Execute the command with the FDI code
+                        var viewModel = this.DataContext as OdontogrammeViewModel;
+                        if (viewModel?.ToothClickedCommand.CanExecute(toothTag) == true)
+                        {
+                            viewModel.ToothClickedCommand.Execute(toothTag);
+                        }
                     }
                 }
             }

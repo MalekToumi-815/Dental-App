@@ -8,6 +8,7 @@
         <!-- Converters -->
         <converters:BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"/>
         <converters:InvertedBooleanConverter x:Key="InvertedBooleanConverter"/>
+        <converters:InvertedBooleanToVisibilityConverter x:Key="InvertedBooleanToVisibilityConverter"/>
         
         <!-- Dark Theme Colors (Default) -->
         <Color x:Key="PrimaryBackgroundColor">#0D1117</Color>
