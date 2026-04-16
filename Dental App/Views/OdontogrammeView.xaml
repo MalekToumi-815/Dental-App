@@ -62,9 +62,63 @@
             </Setter>
         </Style>
 
+        <!-- Toggle Switch Style -->
+        <Style x:Key="ToggleSwitchStyle" TargetType="Button">
+            <Setter Property="Width" Value="120"/>
+            <Setter Property="Height" Value="50"/>
+            <Setter Property="Background" Value="{DynamicResource BorderColor}"/>
+            <Setter Property="Foreground" Value="{DynamicResource TextSecondary}"/>
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Grid ClipToBounds="True">
+                            <!-- Background -->
+                            <Border x:Name="bg" CornerRadius="25" Background="{TemplateBinding Background}" BorderThickness="0"/>
+                            
+                            <!-- Left label container -->
+                            <StackPanel x:Name="leftContainer" Orientation="Horizontal" Margin="8,0,0,0" VerticalAlignment="Center" HorizontalAlignment="Left" Width="55">
+                                <TextBlock Text="[H]" FontSize="12" Foreground="White" VerticalAlignment="Center" HorizontalAlignment="Center" Width="55" TextAlignment="Center" FontWeight="Bold"/>
+                            </StackPanel>
+                            
+                            <!-- Right label container -->
+                            <StackPanel x:Name="rightContainer" Orientation="Horizontal" Margin="0,0,8,0" VerticalAlignment="Center" HorizontalAlignment="Right" Width="55">
+                                <TextBlock Text="[E]" FontSize="12" Foreground="{DynamicResource TextSecondary}" VerticalAlignment="Center" HorizontalAlignment="Center" Width="55" TextAlignment="Center" FontWeight="Bold"/>
+                            </StackPanel>
+                            
+                            <!-- Animated circle -->
+                            <Border x:Name="thumb" CornerRadius="20" Background="White" Width="40" Height="40" 
+                                    HorizontalAlignment="Left" Margin="5,0,0,0" VerticalAlignment="Center">
+                            </Border>
+                        </Grid>
+                        
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsPressed" Value="True">
+                                <Setter TargetName="bg" Property="Opacity" Value="0.9"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <!-- Data Trigger Animation Helper -->
+        <Style x:Key="ToggleSwitchAnimatedStyle" TargetType="Button" BasedOn="{StaticResource ToggleSwitchStyle}">
+        </Style>
+
         <!-- Tooth Logo Geometry -->
         <Geometry x:Key="IconLogo">
             M12,2C10,2 9.5,3.5 8,4.5C6,5.5 4,6 4,11C4,15 5.5,20 7.5,21C9.5,22 11,21 12,20C13,21 14.5,22 16.5,21C18.5,20 20,15 20,11C20,6 18,5.5 16,4.5C14.5,3.5 14,2 12,2Z
+        </Geometry>
+
+        <!-- History/Clock Icon -->
+        <Geometry x:Key="IconHistory">
+            M12,2C6.48,2 2,6.48 2,12C2,17.52 6.48,22 12,22C17.52,22 22,17.52 22,12C22,6.48 17.52,2 12,2M12,4C16.41,4 20,7.59 20,12C20,16.41 16.41,20 12,20C7.59,20 4,16.41 4,12C4,7.59 7.59,4 12,4M12.5,6H11V13L17.2,16.2L18.0,15.1L12.5,12.2V6Z
+        </Geometry>
+
+        <!-- Pen/Edit Icon -->
+        <Geometry x:Key="IconPen">
+            M3,17.25V21h3.75L17.81,9.94l-3.75,-3.75L3,17.25Z M20.71,7.04c0.39,-0.39 0.39,-1.02 0,-1.41l-2.34,-2.34c-0.39,-0.39 -1.02,-0.39 -1.41,0l-1.83,1.83 3.75,3.75 1.83,-1.83Z
         </Geometry>
 
         <!-- DataTemplate for Acts History Items -->
@@ -165,6 +219,38 @@
 
             <!-- Action Buttons -->
             <StackPanel Grid.Column="1" Orientation="Horizontal" VerticalAlignment="Center">
+                <!-- Toggle Switch -->
+                <Border Width="130" Height="50" CornerRadius="25" Background="{DynamicResource BorderColor}" 
+                        Cursor="Hand" MouseDown="ToggleSwitch_MouseDown" Margin="0,0,16,0">
+                    <Grid ClipToBounds="True">
+                        <!-- Background -->
+                        <Border x:Name="ToggleBg" CornerRadius="25" Background="{DynamicResource BorderColor}"/>
+                        
+                        <!-- Left section (History) -->
+                        <Grid HorizontalAlignment="Left" Width="65" Margin="5,0,0,0" ClipToBounds="True">
+                            <Path Data="{StaticResource IconHistory}" Fill="White" 
+                                  Width="18" Height="18" 
+                                  Stretch="Uniform"
+                                  VerticalAlignment="Center" HorizontalAlignment="Left"
+                                  Margin="8,0,0,0"/>
+                        </Grid>
+                        
+                        <!-- Right section (Edit) -->
+                        <Grid HorizontalAlignment="Right" Width="65" Margin="0,0,5,0" ClipToBounds="True">
+                            <Path Data="{StaticResource IconPen}" Fill="{DynamicResource TextSecondary}" 
+                                  Width="18" Height="18" 
+                                  Stretch="Uniform"
+                                  VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                        </Grid>
+                        
+                        <!-- Animated circle thumb with higher Z-index -->
+                        <Ellipse x:Name="ToggleThumb" Width="40" Height="40" Fill="White" 
+                                 HorizontalAlignment="Left" Margin="5,0,0,0" VerticalAlignment="Center"
+                                 Panel.ZIndex="100"/>
+                    </Grid>
+                </Border>
+                
+                <!-- Patient Selection Button -->
                 <Button Content="Choisir Patient" Style="{StaticResource OdontogrammeButtonStyle}" Command="{Binding ChoisirPatientCommand}"/>
             </StackPanel>
         </Grid>

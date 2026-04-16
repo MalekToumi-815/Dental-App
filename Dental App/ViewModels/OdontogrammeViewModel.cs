@@ -14,6 +14,7 @@ namespace Dental_App.ViewModels
         private string _patientInfo = "Aucun patient sélectionné";
         private DelegateCommand _choisirPatientCommand;
         private DelegateCommand<string> _toothClickedCommand;
+        private DelegateCommand _toggleViewModeCommand;
         private int? _selectedPatientId;
         private string _selectedPatientName;
         private readonly IPatientService _patientService;
@@ -23,6 +24,7 @@ namespace Dental_App.ViewModels
         private bool _isNoActsMessage = true;
         private bool _isNoActsFound = false;
         private string _noToothSelectedMessage = "Cliquez sur une dent pour voir l'historique des actes";
+        private bool _isHistoryMode = true;
 
         public OdontogrammeViewModel(IPatientService patientService, IDentService dentService)
         {
@@ -32,6 +34,7 @@ namespace Dental_App.ViewModels
             
             ChoisirPatientCommand = new DelegateCommand(ExecuteChoisirPatient);
             ToothClickedCommand = new DelegateCommand<string>(ExecuteToothClicked);
+            ToggleViewModeCommand = new DelegateCommand(ExecuteToggleViewMode);
         }
 
         public string PatientInfo
@@ -64,6 +67,12 @@ namespace Dental_App.ViewModels
             set => SetProperty(ref _toothClickedCommand, value);
         }
 
+        public DelegateCommand ToggleViewModeCommand
+        {
+            get => _toggleViewModeCommand;
+            set => SetProperty(ref _toggleViewModeCommand, value);
+        }
+
         public ObservableCollection<ToothActDisplayItem> ActsHistory
         {
             get => _actsHistory;
@@ -92,6 +101,12 @@ namespace Dental_App.ViewModels
         {
             get => _noToothSelectedMessage;
             set => SetProperty(ref _noToothSelectedMessage, value);
+        }
+
+        public bool IsHistoryMode
+        {
+            get => _isHistoryMode;
+            set => SetProperty(ref _isHistoryMode, value);
         }
 
         private void ExecuteChoisirPatient()
@@ -201,6 +216,12 @@ namespace Dental_App.ViewModels
                 MessageBox.Show($"Erreur lors du chargement des actes:\n{ex.Message}", "Erreur", MessageBoxButton.OK, MessageBoxImage.Error);
                 ClearActsHistory();
             }
+        }
+
+        private void ExecuteToggleViewMode()
+        {
+            IsHistoryMode = !IsHistoryMode;
+            System.Diagnostics.Debug.WriteLine($"[OdontogrammeViewModel] View mode toggled: {(IsHistoryMode ? "History" : "Edit")}");
         }
 
         private void ClearActsHistory()

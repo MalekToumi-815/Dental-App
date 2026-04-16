@@ -150,5 +150,53 @@ namespace Dental_App.Views
                 }
             }
         }
+
+        private void ToggleSwitch_MouseDown(object sender, MouseButtonEventArgs e)
+        {
+            var viewModel = this.DataContext as OdontogrammeViewModel;
+            if (viewModel?.ToggleViewModeCommand != null)
+            {
+                viewModel.ToggleViewModeCommand.Execute();
+                AnimateToggle();
+            }
+        }
+
+        private void AnimateToggle()
+        {
+            if (FindName("ToggleThumb") is Ellipse thumb && FindName("ToggleBg") is Border bg)
+            {
+                var viewModel = this.DataContext as OdontogrammeViewModel;
+                bool isHistoryMode = viewModel?.IsHistoryMode ?? true;
+
+                // Create animation for the thumb position
+                var thumbAnimation = new System.Windows.Media.Animation.ThicknessAnimation
+                {
+                    From = isHistoryMode ? new Thickness(75, 0, 0, 0) : new Thickness(5, 0, 0, 0),
+                    To = isHistoryMode ? new Thickness(5, 0, 0, 0) : new Thickness(75, 0, 0, 0),
+                    Duration = new Duration(TimeSpan.FromMilliseconds(300)),
+                    EasingFunction = new System.Windows.Media.Animation.CubicEase { EasingMode = System.Windows.Media.Animation.EasingMode.EaseInOut }
+                };
+
+                // Animate the thumb position
+                thumb.BeginAnimation(System.Windows.Controls.Grid.MarginProperty, thumbAnimation);
+                
+                // For color animation, we need to create a new non-frozen brush
+                var newBrush = new System.Windows.Media.SolidColorBrush(
+                    isHistoryMode ? System.Windows.Media.Colors.Green : System.Windows.Media.Colors.Gray
+                );
+                
+                var colorAnimation = new System.Windows.Media.Animation.ColorAnimation
+                {
+                    From = isHistoryMode ? System.Windows.Media.Colors.Gray : System.Windows.Media.Colors.Green,
+                    To = isHistoryMode ? System.Windows.Media.Colors.Green : System.Windows.Media.Colors.Gray,
+                    Duration = new Duration(TimeSpan.FromMilliseconds(300)),
+                    EasingFunction = new System.Windows.Media.Animation.CubicEase { EasingMode = System.Windows.Media.Animation.EasingMode.EaseInOut }
+                };
+
+                // Animate on the new brush instead of the existing one
+                newBrush.BeginAnimation(System.Windows.Media.SolidColorBrush.ColorProperty, colorAnimation);
+                bg.Background = newBrush;
+            }
+        }
     }
 }
