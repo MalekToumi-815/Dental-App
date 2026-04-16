@@ -1,4 +1,4 @@
-using Prism.Mvvm;
+﻿using Prism.Mvvm;
 using Prism.Commands;
 using System;
 using System.Collections.ObjectModel;
@@ -11,7 +11,7 @@ namespace Dental_App.ViewModels
 {
     public class OdontogrammeViewModel : BindableBase
     {
-        private string _patientInfo = "Aucun patient s�lectionn�";
+        private string _patientInfo = "Aucun patient sélectionné";
         private DelegateCommand _choisirPatientCommand;
         private DelegateCommand<string> _toothClickedCommand;
         private DelegateCommand _toggleViewModeCommand;
@@ -24,7 +24,7 @@ namespace Dental_App.ViewModels
         private bool _isNoActsMessage = true;
         private bool _isNoActsFound = false;
         private string _noToothSelectedMessage = "Cliquez sur une dent pour voir l'historique des actes";
-        private bool _isHistoryMode = true;
+        private bool _isHistoryMode = false;
 
         public OdontogrammeViewModel(IPatientService patientService, IDentService dentService)
         {
@@ -140,7 +140,7 @@ namespace Dental_App.ViewModels
                         PatientInfo = $"Patient: {result.PatientName} (ID: {result.PatientId})";
                         ClearActsHistory();
                         
-                        System.Diagnostics.Debug.WriteLine($"[OdontogrammeViewModel] ? Patient selected successfully");
+                        System.Diagnostics.Debug.WriteLine($"[OdontogrammeViewModel] ✓ Patient selected successfully");
                         System.Diagnostics.Debug.WriteLine($"[OdontogrammeViewModel] - Name: {result.PatientName}");
                         System.Diagnostics.Debug.WriteLine($"[OdontogrammeViewModel] - ID: {result.PatientId}");
                     }
@@ -155,7 +155,7 @@ namespace Dental_App.ViewModels
             }
             catch (Exception ex)
             {
-                System.Diagnostics.Debug.WriteLine($"[OdontogrammeViewModel] ? Error in ExecuteChoisirPatient: {ex.Message}");
+                System.Diagnostics.Debug.WriteLine($"[OdontogrammeViewModel] ✗ Error in ExecuteChoisirPatient: {ex.Message}");
                 MessageBox.Show($"Erreur lors de l'ouverture du dialogue:\n{ex.Message}", "Erreur", MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }
@@ -165,7 +165,7 @@ namespace Dental_App.ViewModels
             if (!SelectedPatientId.HasValue || SelectedPatientId.Value <= 0)
             {
                 System.Diagnostics.Debug.WriteLine("[OdontogrammeViewModel] No patient selected. Please select a patient first.");
-                MessageBox.Show("Veuillez d'abord s�lectionner un patient.", "Attention", MessageBoxButton.OK, MessageBoxImage.Information);
+                MessageBox.Show("Veuillez d'abord sélectionner un patient.", "Attention", MessageBoxButton.OK, MessageBoxImage.Information);
                 return;
             }
 
@@ -185,7 +185,7 @@ namespace Dental_App.ViewModels
                 {
                     System.Diagnostics.Debug.WriteLine($"[OdontogrammeViewModel] No acts found for tooth {parsedFdiCode}");
                     SelectedToothInfo = $"Dent FDI: {parsedFdiCode}";
-                    NoToothSelectedMessage = "Aucun acte trouv� pour cette dent";
+                    NoToothSelectedMessage = "Aucun acte trouvé pour cette dent";
                     IsNoActsMessage = true;
                     IsNoActsFound = true;
                     ActsHistory.Clear();
@@ -208,11 +208,11 @@ namespace Dental_App.ViewModels
                     });
                 }
 
-                System.Diagnostics.Debug.WriteLine($"[OdontogrammeViewModel] ? Loaded {ActsHistory.Count} records for tooth {parsedFdiCode}");
+                System.Diagnostics.Debug.WriteLine($"[OdontogrammeViewModel] ✓ Loaded {ActsHistory.Count} records for tooth {parsedFdiCode}");
             }
             catch (Exception ex)
             {
-                System.Diagnostics.Debug.WriteLine($"[OdontogrammeViewModel] ? Error loading acts: {ex.Message}");
+                System.Diagnostics.Debug.WriteLine($"[OdontogrammeViewModel] ✗ Error loading acts: {ex.Message}");
                 MessageBox.Show($"Erreur lors du chargement des actes:\n{ex.Message}", "Erreur", MessageBoxButton.OK, MessageBoxImage.Error);
                 ClearActsHistory();
             }

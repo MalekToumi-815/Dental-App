@@ -22,7 +22,8 @@ namespace Dental_App.Views
             Loaded += (s, e) =>
             {
                 LoadOdontogrammeImage();
-                LoadToothOverlay();
+                // Load tooth overlay only in history mode
+                UpdateToothOverlayVisibility();
             };
         }
 
@@ -124,6 +125,36 @@ namespace Dental_App.Views
             }
         }
 
+        private void ClearToothOverlay()
+        {
+            if (FindName("ToothOverlayGrid") is Grid overlayGrid)
+            {
+                overlayGrid.Children.Clear();
+                System.Diagnostics.Debug.WriteLine($"? TOOTH OVERLAY CLEARED");
+            }
+        }
+
+        private void UpdateToothOverlayVisibility()
+        {
+            var viewModel = this.DataContext as OdontogrammeViewModel;
+            if (viewModel != null)
+            {
+                if (viewModel.IsHistoryMode)
+                {
+                    // Load tooth overlay in history mode
+                    if (FindName("ToothOverlayGrid") is Grid overlayGrid && overlayGrid.Children.Count == 0)
+                    {
+                        LoadToothOverlay();
+                    }
+                }
+                else
+                {
+                    // Clear tooth overlay in edit mode
+                    ClearToothOverlay();
+                }
+            }
+        }
+
         private void ToothOverlay_MouseDown(object sender, MouseButtonEventArgs e)
         {
             if (e.LeftButton == MouseButtonState.Pressed)
@@ -153,50 +184,38 @@ namespace Dental_App.Views
 
         private void ToggleSwitch_MouseDown(object sender, MouseButtonEventArgs e)
         {
+            // Mark as handled to prevent event from bubbling
+            e.Handled = true;
+            
             var viewModel = this.DataContext as OdontogrammeViewModel;
             if (viewModel?.ToggleViewModeCommand != null)
             {
+                // Execute the toggle command - this will update IsHistoryMode
+                // The XAML DataTriggers will handle the animation automatically
                 viewModel.ToggleViewModeCommand.Execute();
-                AnimateToggle();
+                
+                // Update tooth overlay visibility after animation completes (300ms)
+                System.Windows.Threading.DispatcherTimer timer = new System.Windows.Threading.DispatcherTimer();
+                timer.Interval = System.TimeSpan.FromMilliseconds(350);
+                timer.Tick += (s, args) =>
+                {
+                    timer.Stop();
+                    UpdateToothOverlayVisibility();
+                };
+                timer.Start();
             }
         }
 
-        private void AnimateToggle()
+        private void UserControl_DataContextChanged(object sender, DependencyPropertyChangedEventArgs e)
         {
-            if (FindName("ToggleThumb") is Ellipse thumb && FindName("ToggleBg") is Border bg)
+            // Unload the current tooth overlay if needed
+            if (FindName("ToothOverlayGrid") is Grid overlayGrid)
             {
-                var viewModel = this.DataContext as OdontogrammeViewModel;
-                bool isHistoryMode = viewModel?.IsHistoryMode ?? true;
-
-                // Create animation for the thumb position
-                var thumbAnimation = new System.Windows.Media.Animation.ThicknessAnimation
-                {
-                    From = isHistoryMode ? new Thickness(75, 0, 0, 0) : new Thickness(5, 0, 0, 0),
-                    To = isHistoryMode ? new Thickness(5, 0, 0, 0) : new Thickness(75, 0, 0, 0),
-                    Duration = new Duration(TimeSpan.FromMilliseconds(300)),
-                    EasingFunction = new System.Windows.Media.Animation.CubicEase { EasingMode = System.Windows.Media.Animation.EasingMode.EaseInOut }
-                };
-
-                // Animate the thumb position
-                thumb.BeginAnimation(System.Windows.Controls.Grid.MarginProperty, thumbAnimation);
-                
-                // For color animation, we need to create a new non-frozen brush
-                var newBrush = new System.Windows.Media.SolidColorBrush(
-                    isHistoryMode ? System.Windows.Media.Colors.Green : System.Windows.Media.Colors.Gray
-                );
-                
-                var colorAnimation = new System.Windows.Media.Animation.ColorAnimation
-                {
-                    From = isHistoryMode ? System.Windows.Media.Colors.Gray : System.Windows.Media.Colors.Green,
-                    To = isHistoryMode ? System.Windows.Media.Colors.Green : System.Windows.Media.Colors.Gray,
-                    Duration = new Duration(TimeSpan.FromMilliseconds(300)),
-                    EasingFunction = new System.Windows.Media.Animation.CubicEase { EasingMode = System.Windows.Media.Animation.EasingMode.EaseInOut }
-                };
-
-                // Animate on the new brush instead of the existing one
-                newBrush.BeginAnimation(System.Windows.Media.SolidColorBrush.ColorProperty, colorAnimation);
-                bg.Background = newBrush;
+                overlayGrid.Children.Clear();
             }
+
+            // Reload the tooth overlay based on the new mode
+            LoadToothOverlay();
         }
     }
 }

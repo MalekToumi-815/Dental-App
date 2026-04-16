@@ -121,6 +121,39 @@
             M3,17.25V21h3.75L17.81,9.94l-3.75,-3.75L3,17.25Z M20.71,7.04c0.39,-0.39 0.39,-1.02 0,-1.41l-2.34,-2.34c-0.39,-0.39 -1.02,-0.39 -1.41,0l-1.83,1.83 3.75,3.75 1.83,-1.83Z
         </Geometry>
 
+        <!-- Thumb Animation Style -->
+        <Style x:Key="ThumbAnimationStyle" TargetType="Ellipse">
+            <Setter Property="Margin" Value="0,0,25,0"/>
+            <Style.Triggers>
+                <DataTrigger Binding="{Binding IsHistoryMode}" Value="False">
+                    <DataTrigger.EnterActions>
+                        <BeginStoryboard>
+                            <Storyboard>
+                                <ThicknessAnimation Storyboard.TargetProperty="Margin"
+                                                    To="0,0,75,0" Duration="0:0:0.3">
+                                    <ThicknessAnimation.EasingFunction>
+                                        <CubicEase EasingMode="EaseInOut"/>
+                                    </ThicknessAnimation.EasingFunction>
+                                </ThicknessAnimation>
+                            </Storyboard>
+                        </BeginStoryboard>
+                    </DataTrigger.EnterActions>
+                    <DataTrigger.ExitActions>
+                        <BeginStoryboard>
+                            <Storyboard>
+                                <ThicknessAnimation Storyboard.TargetProperty="Margin"
+                                                    To="0,0,25,0" Duration="0:0:0.3">
+                                    <ThicknessAnimation.EasingFunction>
+                                        <CubicEase EasingMode="EaseInOut"/>
+                                    </ThicknessAnimation.EasingFunction>
+                                </ThicknessAnimation>
+                            </Storyboard>
+                        </BeginStoryboard>
+                    </DataTrigger.ExitActions>
+                </DataTrigger>
+            </Style.Triggers>
+        </Style>
+
         <!-- DataTemplate for Acts History Items -->
         <DataTemplate x:Key="ActsHistoryTemplate">
             <Border Background="{DynamicResource SecondaryBackground}" 
@@ -224,29 +257,34 @@
                         Cursor="Hand" MouseDown="ToggleSwitch_MouseDown" Margin="0,0,16,0">
                     <Grid ClipToBounds="True">
                         <!-- Background -->
-                        <Border x:Name="ToggleBg" CornerRadius="25" Background="{DynamicResource BorderColor}"/>
+                        <Border x:Name="ToggleBg" CornerRadius="25" Background="{DynamicResource BorderColor}" />
                         
-                        <!-- Left section (History) -->
-                        <Grid HorizontalAlignment="Left" Width="65" Margin="5,0,0,0" ClipToBounds="True">
-                            <Path Data="{StaticResource IconHistory}" Fill="White" 
-                                  Width="18" Height="18" 
-                                  Stretch="Uniform"
-                                  VerticalAlignment="Center" HorizontalAlignment="Left"
-                                  Margin="8,0,0,0"/>
-                        </Grid>
-                        
-                        <!-- Right section (Edit) -->
-                        <Grid HorizontalAlignment="Right" Width="65" Margin="0,0,5,0" ClipToBounds="True">
-                            <Path Data="{StaticResource IconPen}" Fill="{DynamicResource TextSecondary}" 
-                                  Width="18" Height="18" 
-                                  Stretch="Uniform"
-                                  VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                        <!-- Icons Container (behind the thumb) -->
+                        <Grid Panel.ZIndex="1">
+                            <!-- Left section (History) -->
+                            <Grid HorizontalAlignment="Left" Width="65" Margin="15,0,0,0" ClipToBounds="True">
+                                <Path Data="{StaticResource IconHistory}" Fill="White" 
+                                      Width="18" Height="18" 
+                                      Stretch="Uniform"
+                                      VerticalAlignment="Center" HorizontalAlignment="Left"
+                                      Margin="8,0,0,0"/>
+                            </Grid>
+                            
+                            <!-- Right section (Edit/Pen) -->
+                            <Grid HorizontalAlignment="Right" Width="65" Margin="0,0,5,0" ClipToBounds="True">
+                                <Path Data="{StaticResource IconPen}" Fill="{DynamicResource TextSecondary}" 
+                                      Width="18" Height="18" 
+                                      Stretch="Uniform"
+                                      VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                            </Grid>
                         </Grid>
                         
                         <!-- Animated circle thumb with higher Z-index -->
                         <Ellipse x:Name="ToggleThumb" Width="40" Height="40" Fill="White" 
-                                 HorizontalAlignment="Left" Margin="5,0,0,0" VerticalAlignment="Center"
-                                 Panel.ZIndex="100"/>
+                                 HorizontalAlignment="Right" 
+                                 VerticalAlignment="Center"
+                                 Panel.ZIndex="100"
+                                 Style="{StaticResource ThumbAnimationStyle}"/>
                     </Grid>
                 </Border>
                 
