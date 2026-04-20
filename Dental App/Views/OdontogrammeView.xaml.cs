@@ -7,6 +7,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Media;
 using System.Windows.Shapes;
 using Dental_App.ViewModels;
+using System.Windows.Ink;
 
 namespace Dental_App.Views
 {
@@ -24,7 +25,116 @@ namespace Dental_App.Views
                 LoadOdontogrammeImage();
                 // Load tooth overlay only in history mode
                 UpdateToothOverlayVisibility();
+                
+                // Enable InkCanvas for drawing
+                if (FindName("FreeDrawCanvas") is System.Windows.Controls.InkCanvas canvas)
+                {
+                    canvas.EditingMode = System.Windows.Controls.InkCanvasEditingMode.Ink;
+                    System.Diagnostics.Debug.WriteLine("? InkCanvas enabled for drawing");
+                }
             };
+        }
+
+        private void SetPenMode(object sender, RoutedEventArgs e)
+        {
+            if (FindName("FreeDrawCanvas") is System.Windows.Controls.InkCanvas canvas)
+            {
+                canvas.EditingMode = InkCanvasEditingMode.Ink;
+                System.Diagnostics.Debug.WriteLine("? Pen mode activated");
+            }
+        }
+
+        private void SetEraserMode(object sender, RoutedEventArgs e)
+        {
+            if (FindName("FreeDrawCanvas") is System.Windows.Controls.InkCanvas canvas)
+            {
+                canvas.EditingMode = InkCanvasEditingMode.EraseByStroke;
+                System.Diagnostics.Debug.WriteLine("? Eraser mode activated");
+            }
+        }
+
+        private void ThicknessSlider_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
+        {
+            if (FindName("FreeDrawCanvas") is System.Windows.Controls.InkCanvas canvas)
+            {
+                canvas.DefaultDrawingAttributes.Width = e.NewValue;
+                canvas.DefaultDrawingAttributes.Height = e.NewValue;
+                
+                // Update the thickness value display
+                if (FindName("ThicknessValue") is TextBlock thicknessText)
+                {
+                    thicknessText.Text = ((int)e.NewValue).ToString();
+                }
+                
+                System.Diagnostics.Debug.WriteLine($"? Thickness changed to: {e.NewValue}");
+            }
+        }
+
+        private void PickColor_Click(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                // Create a simple color selection menu
+                var colorMenu = new System.Windows.Controls.ContextMenu();
+                
+                // Define predefined colors
+                var colors = new System.Collections.Generic.List<Color>
+                {
+                    Colors.Red, Colors.Blue, Colors.Green, Colors.Yellow,
+                    Colors.Orange, Colors.Purple, Colors.Pink, Colors.Brown,
+                    Colors.Black, Colors.Gray, Colors.Cyan, Colors.Magenta
+                };
+
+                foreach (var color in colors)
+                {
+                    var menuItem = new System.Windows.Controls.MenuItem();
+                    menuItem.Header = color.ToString();
+                    menuItem.Background = new SolidColorBrush(color);
+                    menuItem.Foreground = (color.R + color.G + color.B) > 382 ? Brushes.Black : Brushes.White;
+                    
+                    menuItem.Click += (s, args) =>
+                    {
+                        if (FindName("FreeDrawCanvas") is System.Windows.Controls.InkCanvas canvas)
+                        {
+                            canvas.DefaultDrawingAttributes.Color = color;
+                            
+                            // Update the color preview rectangle
+                            if (FindName("ColorPreview") is Rectangle colorRect)
+                            {
+                                colorRect.Fill = new SolidColorBrush(color);
+                            }
+                            
+                            System.Diagnostics.Debug.WriteLine($"? Color changed to {color}");
+                        }
+                    };
+                    
+                    colorMenu.Items.Add(menuItem);
+                }
+
+                if (sender is Button btn)
+                {
+                    colorMenu.PlacementTarget = btn;
+                    colorMenu.Placement = System.Windows.Controls.Primitives.PlacementMode.Bottom;
+                    colorMenu.IsOpen = true;
+                }
+            }
+            catch (Exception ex)
+            {
+                System.Windows.MessageBox.Show($"Error opening color picker: {ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                System.Diagnostics.Debug.WriteLine($"[ERROR] PickColor_Click: {ex.Message}");
+            }
+        }
+
+        private void ClearCanvas_Click(object sender, RoutedEventArgs e)
+        {
+            if (System.Windows.MessageBox.Show("Clear all drawings?", "Confirm", MessageBoxButton.YesNo, MessageBoxImage.Question) == MessageBoxResult.Yes)
+            {
+                if (FindName("FreeDrawCanvas") is System.Windows.Controls.InkCanvas canvas)
+                {
+                    canvas.Strokes.Clear();
+                    System.Diagnostics.Debug.WriteLine("? Canvas cleared");
+                }
+            }
         }
 
         private void LoadOdontogrammeImage()

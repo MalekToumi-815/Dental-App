@@ -2,6 +2,7 @@
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:prism="http://prismlibrary.com/"
+             xmlns:ink="clr-namespace:System.Windows.Ink;assembly=PresentationCore"
              prism:ViewModelLocator.AutoWireViewModel="True"
              Background="{DynamicResource PrimaryBackground}">
 
@@ -304,14 +305,117 @@
             <Border Grid.Column="0" Background="{DynamicResource CardBackground}" CornerRadius="12" BorderThickness="1" BorderBrush="{DynamicResource BorderColor}" Padding="30" Margin="0,0,20,0">
                 <!-- Dental Schema with Template Image -->
                 <Grid>
-                    <!-- Background Image -->
-                    <Image x:Name="OdontogrammeImage"
-                           Stretch="UniformToFill" 
-                           RenderOptions.BitmapScalingMode="HighQuality"
-                           Width="645.0" Height="553.0"/>
-                    
-                    <!-- Tooth Paths Overlay loaded from XAML -->
-                    <Grid x:Name="ToothOverlayGrid" Panel.ZIndex="10" MouseDown="ToothOverlay_MouseDown"/>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="*"/>
+                    </Grid.RowDefinitions>
+
+                    <!-- Drawing Toolbar - Only visible in Edit Mode -->
+                    <Border Grid.Row="0" 
+                            Background="#F0F0F0" 
+                            Padding="10" 
+                            CornerRadius="8" 
+                            Margin="0,0,0,10" 
+                            BorderBrush="#DDD" 
+                            BorderThickness="1"
+                            Visibility="{Binding IsHistoryMode, Converter={StaticResource InvertedBooleanToVisibilityConverter}}">
+                        <StackPanel Orientation="Horizontal">
+                            <!-- Pen Mode Button -->
+                            <RadioButton x:Name="PenBtn" 
+                                         Content="?? Pen" 
+                                         IsChecked="True" 
+                                         Style="{StaticResource {x:Type ToggleButton}}" 
+                                         Checked="SetPenMode" 
+                                         Margin="0,0,10,0" 
+                                         Padding="10,5"
+                                         Foreground="{DynamicResource TextPrimary}"/>
+                            
+                            <!-- Eraser Mode Button -->
+                            <RadioButton x:Name="EraserBtn" 
+                                         Content="?? Eraser" 
+                                         Style="{StaticResource {x:Type ToggleButton}}" 
+                                         Checked="SetEraserMode" 
+                                         Margin="0,0,10,0" 
+                                         Padding="10,5"
+                                         Foreground="{DynamicResource TextPrimary}"/>
+
+                            <!-- Separator -->
+                            <Separator Margin="10,0" Background="{DynamicResource BorderColor}"/>
+
+                            <!-- Thickness Control -->
+                            <TextBlock Text="Size:" 
+                                       VerticalAlignment="Center" 
+                                       Margin="0,0,5,0"
+                                       Foreground="{DynamicResource TextPrimary}"/>
+                            <Slider x:Name="ThicknessSlider" 
+                                    Width="100" 
+                                    Minimum="1" 
+                                    Maximum="20" 
+                                    Value="2" 
+                                    VerticalAlignment="Center" 
+                                    ValueChanged="ThicknessSlider_ValueChanged"/>
+                            <TextBlock x:Name="ThicknessValue" 
+                                       Text="2" 
+                                       VerticalAlignment="Center" 
+                                       Margin="5,0,0,0"
+                                       Foreground="{DynamicResource TextPrimary}"
+                                       Width="20"/>
+
+                            <!-- Separator -->
+                            <Separator Margin="10,0" Background="{DynamicResource BorderColor}"/>
+
+                            <!-- Color Control -->
+                            <TextBlock Text="Color:" 
+                                       VerticalAlignment="Center" 
+                                       Margin="0,0,5,0"
+                                       Foreground="{DynamicResource TextPrimary}"/>
+                            <Button Content="Choose Color" 
+                                    Click="PickColor_Click" 
+                                    Padding="10,5"
+                                    Style="{StaticResource OdontogrammeSecondaryButtonStyle}"/>
+                            <Rectangle x:Name="ColorPreview" 
+                                       Width="20" 
+                                       Height="20" 
+                                       Fill="Red" 
+                                       Margin="5,0" 
+                                       Stroke="Black"
+                                       StrokeThickness="1"/>
+                            
+                            <!-- Separator -->
+                            <Separator Margin="10,0" Background="{DynamicResource BorderColor}"/>
+                            
+                            <!-- Clear Canvas Button -->
+                            <Button Content="??? Clear All" 
+                                    Click="ClearCanvas_Click" 
+                                    Background="#FFE5E5" 
+                                    Padding="10,5"
+                                    Foreground="{DynamicResource TextPrimary}"
+                                    Style="{StaticResource OdontogrammeSecondaryButtonStyle}"/>
+                        </StackPanel>
+                    </Border>
+
+                    <!-- Dental Schema Container -->
+                    <Grid Grid.Row="1">
+                        <!-- Background Image -->
+                        <Image x:Name="OdontogrammeImage"
+                               Stretch="UniformToFill" 
+                               RenderOptions.BitmapScalingMode="HighQuality"
+                               Width="645.0" Height="553.0"/>
+                        
+                        <!-- Tooth Paths Overlay loaded from XAML -->
+                        <Grid x:Name="ToothOverlayGrid" Panel.ZIndex="10" MouseDown="ToothOverlay_MouseDown"/>
+
+                        <!-- InkCanvas for Drawing - Only visible in Edit Mode (when IsHistoryMode = False) -->
+                        <InkCanvas x:Name="FreeDrawCanvas"
+                                   Panel.ZIndex="20"
+                                   Background="Transparent"
+                                   EditingMode="Ink"
+                                   Visibility="{Binding IsHistoryMode, Converter={StaticResource InvertedBooleanToVisibilityConverter}}">
+                            <InkCanvas.DefaultDrawingAttributes>
+                                <DrawingAttributes x:Name="CurrentAttributes" Color="Red" Width="2" Height="2"/>
+                            </InkCanvas.DefaultDrawingAttributes>
+                        </InkCanvas>
+                    </Grid>
                 </Grid>
             </Border>
 
