@@ -9,6 +9,12 @@ public interface IOdontogrammeLibreService
 
     // Generates the absolute path from a relative path stored in DB
     string GetFullPath(string relativePath);
+
+    // Saves ink stream to file
+    Task SaveInkAsync(string relativePath, Stream inkStream);
+
+    // Checks if file exists
+    bool FileExists(string relativePath);
 }
 public class OdontogrammeLibreService : IOdontogrammeLibreService
 {
@@ -74,5 +80,25 @@ public class OdontogrammeLibreService : IOdontogrammeLibreService
     {
         if (string.IsNullOrEmpty(relativePath)) return string.Empty;
         return Path.Combine(_appDataRoot, relativePath);
+    }
+
+    public async Task SaveInkAsync(string relativePath, Stream inkStream)
+    {
+        string fullPath = GetFullPath(relativePath);
+        
+        // Ensure directory exists before writing
+        string directory = Path.GetDirectoryName(fullPath);
+        if (!Directory.Exists(directory)) Directory.CreateDirectory(directory);
+
+        using (var fileStream = new FileStream(fullPath, FileMode.Create, FileAccess.Write))
+        {
+            await inkStream.CopyToAsync(fileStream);
+        }
+    }
+
+    public bool FileExists(string relativePath)
+    {
+        if (string.IsNullOrEmpty(relativePath)) return false;
+        return File.Exists(GetFullPath(relativePath));
     }
 }
