@@ -74,48 +74,44 @@ namespace Dental_App.Views
         {
             try
             {
-                // Create a simple color selection menu
-                var colorMenu = new System.Windows.Controls.ContextMenu();
+                // Create and show the color picker dialog
+                var colorPickerDialog = new ColorPickerDialog();
                 
-                // Define predefined colors
-                var colors = new System.Collections.Generic.List<Color>
+                // Set current color if available
+                if (FindName("FreeDrawCanvas") is System.Windows.Controls.InkCanvas canvas)
                 {
-                    Colors.Red, Colors.Blue, Colors.Green, Colors.Yellow,
-                    Colors.Orange, Colors.Purple, Colors.Pink, Colors.Brown,
-                    Colors.Black, Colors.Gray, Colors.Cyan, Colors.Magenta
-                };
-
-                foreach (var color in colors)
-                {
-                    var menuItem = new System.Windows.Controls.MenuItem();
-                    menuItem.Header = color.ToString();
-                    menuItem.Background = new SolidColorBrush(color);
-                    menuItem.Foreground = (color.R + color.G + color.B) > 382 ? Brushes.Black : Brushes.White;
-                    
-                    menuItem.Click += (s, args) =>
-                    {
-                        if (FindName("FreeDrawCanvas") is System.Windows.Controls.InkCanvas canvas)
-                        {
-                            canvas.DefaultDrawingAttributes.Color = color;
-                            
-                            // Update the color preview rectangle
-                            if (FindName("ColorPreview") is Rectangle colorRect)
-                            {
-                                colorRect.Fill = new SolidColorBrush(color);
-                            }
-                            
-                            System.Diagnostics.Debug.WriteLine($"? Color changed to {color}");
-                        }
-                    };
-                    
-                    colorMenu.Items.Add(menuItem);
+                    colorPickerDialog.SelectedColor = canvas.DefaultDrawingAttributes.Color;
                 }
 
-                if (sender is Button btn)
+                // Create a window to host the dialog
+                var window = new Window
                 {
-                    colorMenu.PlacementTarget = btn;
-                    colorMenu.Placement = System.Windows.Controls.Primitives.PlacementMode.Bottom;
-                    colorMenu.IsOpen = true;
+                    Title = "Color Picker",
+                    Content = colorPickerDialog,
+                    WindowStartupLocation = WindowStartupLocation.CenterOwner,
+                    Owner = Window.GetWindow(this),
+                    SizeToContent = SizeToContent.WidthAndHeight,
+                    ResizeMode = ResizeMode.NoResize,
+                    WindowStyle = WindowStyle.SingleBorderWindow,
+                    Background = new SolidColorBrush(Colors.White),
+                };
+
+                if (window.ShowDialog() == true)
+                {
+                    var selectedColor = colorPickerDialog.SelectedColor;
+
+                    if (FindName("FreeDrawCanvas") is System.Windows.Controls.InkCanvas updateCanvas)
+                    {
+                        updateCanvas.DefaultDrawingAttributes.Color = selectedColor;
+
+                        // Update the color preview rectangle
+                        if (FindName("ColorPreview") is Rectangle colorRect)
+                        {
+                            colorRect.Fill = new SolidColorBrush(selectedColor);
+                        }
+
+                        System.Diagnostics.Debug.WriteLine($"? Color changed to #{selectedColor.R:X2}{selectedColor.G:X2}{selectedColor.B:X2}");
+                    }
                 }
             }
             catch (Exception ex)
