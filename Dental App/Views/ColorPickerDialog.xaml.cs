@@ -83,47 +83,10 @@ namespace Dental_App.Views
 
         private void UpdateColorSquare()
         {
-            // Create saturation-value gradient
-            var squareGradient = new LinearGradientBrush();
-            squareGradient.StartPoint = new Point(0, 1);
-            squareGradient.EndPoint = new Point(1, 0);
-
-            // Base hue color
             var hueColor = HsvToRgb(_currentHue, 1, 1);
-
-            // Horizontal: white to hue (saturation)
-            var leftGradient = new LinearGradientBrush();
-            leftGradient.StartPoint = new Point(0, 0);
-            leftGradient.EndPoint = new Point(1, 0);
-            leftGradient.GradientStops.Add(new GradientStop(Colors.White, 0));
-            leftGradient.GradientStops.Add(new GradientStop(hueColor, 1));
-
-            // Vertical: color to black (value)
-            var finalGradient = new LinearGradientBrush();
-            finalGradient.StartPoint = new Point(0, 0);
-            finalGradient.EndPoint = new Point(0, 1);
-            finalGradient.GradientStops.Add(new GradientStop(Colors.Transparent, 0));
-            finalGradient.GradientStops.Add(new GradientStop(Colors.Black, 1));
-
-            // Create a visual brush stack effect (we'll use a different approach)
-            // For simplicity, we'll use a linear gradient that approximates the 2D color space
-            var approximateGradient = new LinearGradientBrush();
-            approximateGradient.StartPoint = new Point(0, 1);
-            approximateGradient.EndPoint = new Point(1, 0);
-
-            // Create corner colors
-            var topLeft = Colors.White;
-            var topRight = hueColor;
-            var bottomLeft = Colors.Black;
-            var bottomRight = HsvToRgb(_currentHue, 1, 0);
-
-            // Approximate with stops
-            approximateGradient.GradientStops.Add(new GradientStop(hueColor, 0));
-            approximateGradient.GradientStops.Add(new GradientStop(Colors.Black, 1));
-
-            if (ColorSquare != null)
+            if (ColorSquareHue != null)
             {
-                ColorSquare.Fill = leftGradient;
+                ColorSquareHue.Fill = new SolidColorBrush(hueColor);
             }
             
             UpdateSelectedColor();
@@ -158,12 +121,6 @@ namespace Dental_App.Views
             UpdateSelectedColor();
         }
 
-        private void ValueSlider_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
-        {
-            _currentValue = e.NewValue / 100.0;
-            UpdateSelectedColor();
-        }
-
         private void UpdateSelectedColor()
         {
             SelectedColor = HsvToRgb(_currentHue, _currentSaturation, _currentValue);
@@ -186,7 +143,6 @@ namespace Dental_App.Views
             _currentHue = h;
             _currentSaturation = s;
             _currentValue = v;
-            ValueSlider.Value = _currentValue * 100;
             UpdateColorSquare();
         }
 

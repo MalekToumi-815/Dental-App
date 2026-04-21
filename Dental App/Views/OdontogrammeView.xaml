@@ -7,6 +7,37 @@
              Background="{DynamicResource PrimaryBackground}">
 
     <UserControl.Resources>
+        <!-- Toolbar Toggle Button Style -->
+        <Style x:Key="ToolbarToggleButtonStyle" TargetType="RadioButton">
+            <Setter Property="Background" Value="Transparent"/>
+            <Setter Property="Foreground" Value="{DynamicResource TextPrimary}"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="BorderBrush" Value="Transparent"/>
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="RadioButton">
+                        <Border x:Name="border" CornerRadius="6" 
+                                Background="{TemplateBinding Background}" 
+                                BorderBrush="{TemplateBinding BorderBrush}" 
+                                BorderThickness="{TemplateBinding BorderThickness}" 
+                                Padding="{TemplateBinding Padding}">
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="border" Property="Background" Value="{DynamicResource PrimaryBackground}"/>
+                            </Trigger>
+                            <Trigger Property="IsChecked" Value="True">
+                                <Setter TargetName="border" Property="Background" Value="{DynamicResource AccentColor}"/>
+                                <Setter Property="Foreground" Value="White"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
         <Style x:Key="OdontogrammeButtonStyle" TargetType="Button">
             <Setter Property="Background" Value="{DynamicResource AccentColor}"/>
             <Setter Property="Foreground" Value="White"/>
@@ -120,6 +151,11 @@
         <!-- Pen/Edit Icon -->
         <Geometry x:Key="IconPen">
             M3,17.25V21h3.75L17.81,9.94l-3.75,-3.75L3,17.25Z M20.71,7.04c0.39,-0.39 0.39,-1.02 0,-1.41l-2.34,-2.34c-0.39,-0.39 -1.02,-0.39 -1.41,0l-1.83,1.83 3.75,3.75 1.83,-1.83Z
+        </Geometry>
+
+        <!-- Eraser Icon -->
+        <Geometry x:Key="IconEraser">
+            M2.5 17.5L5.4 20.4H22V18.4H17.3L21.4 14.3C22 13.5 22 12.3 21.4 11.5L16.6 6.6C16.2 6.2 15.6 6 15.1 6C14.6 6 14.1 6.2 13.7 6.6L2.5 17.5Zm12.6-9.6L20 12.7L17.5 15.2L12.6 10.4L15.1 7.9ZM11.2 11.8L16 16.7L10.2 22.4H5.4L4 21L11.2 11.8Z
         </Geometry>
 
         <!-- Thumb Animation Style -->
@@ -312,38 +348,44 @@
 
                     <!-- Drawing Toolbar - Only visible in Edit Mode -->
                     <Border Grid.Row="0" 
-                            Background="#F0F0F0" 
+                            Background="{DynamicResource SecondaryBackground}" 
                             Padding="10" 
                             CornerRadius="8" 
                             Margin="0,0,0,10" 
-                            BorderBrush="#DDD" 
+                            BorderBrush="{DynamicResource BorderColor}" 
                             BorderThickness="1"
                             Visibility="{Binding IsHistoryMode, Converter={StaticResource InvertedBooleanToVisibilityConverter}}">
-                        <StackPanel Orientation="Horizontal">
+                        <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
                             <!-- Pen Mode Button -->
                             <RadioButton x:Name="PenBtn" 
-                                         Content="?? Pen" 
                                          IsChecked="True" 
-                                         Style="{StaticResource {x:Type ToggleButton}}" 
+                                         Style="{StaticResource ToolbarToggleButtonStyle}" 
                                          Checked="SetPenMode" 
                                          Margin="0,0,10,0" 
-                                         Padding="10,5"
-                                         Foreground="{DynamicResource TextPrimary}"/>
+                                         Padding="10,5">
+                                <StackPanel Orientation="Horizontal">
+                                    <Path Data="{StaticResource IconPen}" Fill="{Binding Foreground, RelativeSource={RelativeSource AncestorType=RadioButton}}" Width="16" Height="16" Stretch="Uniform" Margin="0,0,6,0" VerticalAlignment="Center"/>
+                                    <TextBlock Text="Stylo" VerticalAlignment="Center"/>
+                                </StackPanel>
+                            </RadioButton>
                             
                             <!-- Eraser Mode Button -->
                             <RadioButton x:Name="EraserBtn" 
-                                         Content="?? Eraser" 
-                                         Style="{StaticResource {x:Type ToggleButton}}" 
+                                         Style="{StaticResource ToolbarToggleButtonStyle}" 
                                          Checked="SetEraserMode" 
                                          Margin="0,0,10,0" 
-                                         Padding="10,5"
-                                         Foreground="{DynamicResource TextPrimary}"/>
+                                         Padding="10,5">
+                                <StackPanel Orientation="Horizontal">
+                                    <Path Data="{StaticResource IconEraser}" Fill="{Binding Foreground, RelativeSource={RelativeSource AncestorType=RadioButton}}" Width="16" Height="16" Stretch="Uniform" Margin="0,0,6,0" VerticalAlignment="Center"/>
+                                    <TextBlock Text="Gomme" VerticalAlignment="Center"/>
+                                </StackPanel>
+                            </RadioButton>
 
                             <!-- Separator -->
                             <Separator Margin="10,0" Background="{DynamicResource BorderColor}"/>
 
                             <!-- Thickness Control -->
-                            <TextBlock Text="Size:" 
+                            <TextBlock Text="Taille :" 
                                        VerticalAlignment="Center" 
                                        Margin="0,0,5,0"
                                        Foreground="{DynamicResource TextPrimary}"/>
@@ -365,12 +407,12 @@
                             <Separator Margin="10,0" Background="{DynamicResource BorderColor}"/>
 
                             <!-- Color Control -->
-                            <TextBlock Text="Color:" 
+                            <TextBlock Text="Couleur :" 
                                        VerticalAlignment="Center" 
                                        Margin="0,0,5,0"
                                        Foreground="{DynamicResource TextPrimary}"/>
                             <Button x:Name="ColorPickerButton"
-                                    Content="Pick Color" 
+                                    Content="Choisir" 
                                     Click="PickColor_Click" 
                                     Padding="10,5"
                                     Style="{StaticResource OdontogrammeSecondaryButtonStyle}"/>
@@ -379,19 +421,8 @@
                                        Height="20" 
                                        Fill="Red" 
                                        Margin="5,0" 
-                                       Stroke="Black"
+                                       Stroke="{DynamicResource BorderColor}"
                                        StrokeThickness="1"/>
-                            
-                            <!-- Separator -->
-                            <Separator Margin="10,0" Background="{DynamicResource BorderColor}"/>
-                            
-                            <!-- Clear Canvas Button -->
-                            <Button Content="??? Clear All" 
-                                    Click="ClearCanvas_Click" 
-                                    Background="#FFE5E5" 
-                                    Padding="10,5"
-                                    Foreground="{DynamicResource TextPrimary}"
-                                    Style="{StaticResource OdontogrammeSecondaryButtonStyle}"/>
                         </StackPanel>
                     </Border>
 
