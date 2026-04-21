@@ -131,10 +131,13 @@ namespace Dental_App.ViewModels
         public DelegateCommand SaveInkCommand { get; }
 
         public event Action<string> LoadInkRequested;
-        public event Action<string> SaveInkRequested;
+        public event Action<string, bool> SaveInkRequested; // filePath, isAutoSave
 
         private async void ExecuteChoisirPatient()
         {
+            // Auto-save before potentially changing patient
+            AutoSaveInk();
+
             try
             {
                 System.Diagnostics.Debug.WriteLine("[OdontogrammeViewModel] Opening patient selection dialog...");
@@ -219,7 +222,15 @@ namespace Dental_App.ViewModels
         {
             if (CanExecuteSaveInk())
             {
-                SaveInkRequested?.Invoke(CurrentInkFilePath);
+                SaveInkRequested?.Invoke(CurrentInkFilePath, false);
+            }
+        }
+
+        public void AutoSaveInk()
+        {
+            if (CanExecuteSaveInk())
+            {
+                SaveInkRequested?.Invoke(CurrentInkFilePath, true);
             }
         }
 
@@ -283,6 +294,12 @@ namespace Dental_App.ViewModels
 
         private void ExecuteToggleViewMode()
         {
+            // Auto-save when leaving edit mode
+            if (!IsHistoryMode) 
+            {
+                AutoSaveInk();
+            }
+            
             IsHistoryMode = !IsHistoryMode;
             System.Diagnostics.Debug.WriteLine($"[OdontogrammeViewModel] View mode toggled: {(IsHistoryMode ? "History" : "Edit")}");
         }

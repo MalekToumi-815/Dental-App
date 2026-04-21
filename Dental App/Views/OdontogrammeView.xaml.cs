@@ -38,16 +38,38 @@ namespace Dental_App.Views
                     // Starts as disabled based on ViewModel binding, but ensure setup
                     System.Diagnostics.Debug.WriteLine("? InkCanvas loaded");
                 }
+
+                if (Application.Current != null && Application.Current.MainWindow != null)
+                {
+                    Application.Current.MainWindow.Closing += MainWindow_Closing;
+                }
             };
 
             Unloaded += (s, e) =>
             {
+                if (Application.Current != null && Application.Current.MainWindow != null)
+                {
+                    Application.Current.MainWindow.Closing -= MainWindow_Closing;
+                }
+
                 if (DataContext is OdontogrammeViewModel viewModel)
                 {
+                    // Trigger final autosave when the view is closed or tab is switched
+                    viewModel.AutoSaveInk();
+                    
                     viewModel.LoadInkRequested -= ViewModel_LoadInkRequested;
                     viewModel.SaveInkRequested -= ViewModel_SaveInkRequested;
                 }
             };
+        }
+
+        private void MainWindow_Closing(object sender, System.ComponentModel.CancelEventArgs e)
+        {
+            if (DataContext is OdontogrammeViewModel viewModel)
+            {
+                System.Diagnostics.Debug.WriteLine("[OdontogrammeView] App closing, triggering AutoSaveInk");
+                viewModel.AutoSaveInk();
+            }
         }
 
         private void ViewModel_LoadInkRequested(string filePath)
@@ -77,7 +99,7 @@ namespace Dental_App.Views
             }
         }
 
-        private void ViewModel_SaveInkRequested(string filePath)
+        private void ViewModel_SaveInkRequested(string filePath, bool isAutoSave)
         {
             if (FindName("FreeDrawCanvas") is System.Windows.Controls.InkCanvas canvas && !string.IsNullOrEmpty(filePath))
             {
@@ -94,13 +116,20 @@ namespace Dental_App.Views
                     {
                         canvas.Strokes.Save(fs);
                         System.Diagnostics.Debug.WriteLine($"? Saved ink to {filePath}");
-                        MessageBox.Show("Dessin sauvegardé avec succès.", "Succès", MessageBoxButton.OK, MessageBoxImage.Information);
+                        
+                        if (!isAutoSave)
+                        {
+                            MessageBox.Show("Dessin sauvegardé avec succès.", "Succès", MessageBoxButton.OK, MessageBoxImage.Information);
+                        }
                     }
                 }
                 catch (Exception ex)
                 {
                     System.Diagnostics.Debug.WriteLine($"[ERROR] Failed to save ink: {ex.Message}");
-                    MessageBox.Show($"Erreur lors de la sauvegarde: {ex.Message}", "Erreur", MessageBoxButton.OK, MessageBoxImage.Error);
+                    if (!isAutoSave)
+                    {
+                        MessageBox.Show($"Erreur lors de la sauvegarde: {ex.Message}", "Erreur", MessageBoxButton.OK, MessageBoxImage.Error);
+                    }
                 }
             }
         }
