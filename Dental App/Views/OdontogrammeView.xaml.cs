@@ -25,14 +25,84 @@ namespace Dental_App.Views
                 LoadOdontogrammeImage();
                 // Load tooth overlay only in history mode
                 UpdateToothOverlayVisibility();
+
+                if (DataContext is OdontogrammeViewModel viewModel)
+                {
+                    viewModel.LoadInkRequested += ViewModel_LoadInkRequested;
+                    viewModel.SaveInkRequested += ViewModel_SaveInkRequested;
+                }
                 
-                // Enable InkCanvas for drawing
+                // Enable InkCanvas for drawing if active
                 if (FindName("FreeDrawCanvas") is System.Windows.Controls.InkCanvas canvas)
                 {
-                    canvas.EditingMode = System.Windows.Controls.InkCanvasEditingMode.Ink;
-                    System.Diagnostics.Debug.WriteLine("? InkCanvas enabled for drawing");
+                    // Starts as disabled based on ViewModel binding, but ensure setup
+                    System.Diagnostics.Debug.WriteLine("? InkCanvas loaded");
                 }
             };
+
+            Unloaded += (s, e) =>
+            {
+                if (DataContext is OdontogrammeViewModel viewModel)
+                {
+                    viewModel.LoadInkRequested -= ViewModel_LoadInkRequested;
+                    viewModel.SaveInkRequested -= ViewModel_SaveInkRequested;
+                }
+            };
+        }
+
+        private void ViewModel_LoadInkRequested(string filePath)
+        {
+            if (FindName("FreeDrawCanvas") is System.Windows.Controls.InkCanvas canvas)
+            {
+                canvas.Strokes.Clear();
+
+                if (!string.IsNullOrEmpty(filePath) && File.Exists(filePath))
+                {
+                    try
+                    {
+                        using (var fs = new FileStream(filePath, FileMode.Open, FileAccess.Read))
+                        {
+                            if (fs.Length > 0)
+                            {
+                                canvas.Strokes = new StrokeCollection(fs);
+                                System.Diagnostics.Debug.WriteLine($"? Loaded ink from {filePath}");
+                            }
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        System.Diagnostics.Debug.WriteLine($"[ERROR] Failed to load ink: {ex.Message}");
+                    }
+                }
+            }
+        }
+
+        private void ViewModel_SaveInkRequested(string filePath)
+        {
+            if (FindName("FreeDrawCanvas") is System.Windows.Controls.InkCanvas canvas && !string.IsNullOrEmpty(filePath))
+            {
+                try
+                {
+                    // Ensure the directory exists
+                    var directory = System.IO.Path.GetDirectoryName(filePath);
+                    if (!Directory.Exists(directory))
+                    {
+                        Directory.CreateDirectory(directory);
+                    }
+
+                    using (var fs = new FileStream(filePath, FileMode.Create, FileAccess.Write))
+                    {
+                        canvas.Strokes.Save(fs);
+                        System.Diagnostics.Debug.WriteLine($"? Saved ink to {filePath}");
+                        MessageBox.Show("Dessin sauvegardé avec succès.", "Succès", MessageBoxButton.OK, MessageBoxImage.Information);
+                    }
+                }
+                catch (Exception ex)
+                {
+                    System.Diagnostics.Debug.WriteLine($"[ERROR] Failed to save ink: {ex.Message}");
+                    MessageBox.Show($"Erreur lors de la sauvegarde: {ex.Message}", "Erreur", MessageBoxButton.OK, MessageBoxImage.Error);
+                }
+            }
         }
 
         private void SetPenMode(object sender, RoutedEventArgs e)

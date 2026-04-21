@@ -148,6 +148,11 @@
             M12,2C6.48,2 2,6.48 2,12C2,17.52 6.48,22 12,22C17.52,22 22,17.52 22,12C22,6.48 17.52,2 12,2M12,4C16.41,4 20,7.59 20,12C20,16.41 16.41,20 12,20C7.59,20 4,16.41 4,12C4,7.59 7.59,4 12,4M12.5,6H11V13L17.2,16.2L18.0,15.1L12.5,12.2V6Z
         </Geometry>
 
+        <!-- Save Icon -->
+        <Geometry x:Key="IconSave">
+            M15,9H5V5H15M12,19A3,3 0 0,1 9,16A3,3 0 0,1 12,13A3,3 0 0,1 15,16A3,3 0 0,1 12,19M17,3H5C3.89,3 3,3.9 3,5V19A2,2 0 0,0 5,21H19A2,2 0 0,0 21,19V7L17,3Z
+        </Geometry>
+
         <!-- Pen/Edit Icon -->
         <Geometry x:Key="IconPen">
             M3,17.25V21h3.75L17.81,9.94l-3.75,-3.75L3,17.25Z M20.71,7.04c0.39,-0.39 0.39,-1.02 0,-1.41l-2.34,-2.34c-0.39,-0.39 -1.02,-0.39 -1.41,0l-1.83,1.83 3.75,3.75 1.83,-1.83Z
@@ -333,12 +338,12 @@
         <!-- Content Section -->
         <Grid Grid.Row="1">
             <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="2*"/>
-                <ColumnDefinition Width="1.2*"/>
+                <ColumnDefinition Width="2.5*"/>
+                <ColumnDefinition Width="1*"/>
             </Grid.ColumnDefinitions>
 
             <!-- Dental Schema Section -->
-            <Border Grid.Column="0" Background="{DynamicResource CardBackground}" CornerRadius="12" BorderThickness="1" BorderBrush="{DynamicResource BorderColor}" Padding="30" Margin="0,0,20,0">
+            <Border Grid.Column="0" Background="{DynamicResource CardBackground}" CornerRadius="12" BorderThickness="1" BorderBrush="{DynamicResource BorderColor}" Padding="20" Margin="0,0,20,0">
                 <!-- Dental Schema with Template Image -->
                 <Grid>
                     <Grid.RowDefinitions>
@@ -355,9 +360,10 @@
                             BorderBrush="{DynamicResource BorderColor}" 
                             BorderThickness="1"
                             Visibility="{Binding IsHistoryMode, Converter={StaticResource InvertedBooleanToVisibilityConverter}}">
-                        <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
-                            <!-- Pen Mode Button -->
-                            <RadioButton x:Name="PenBtn" 
+                        <ScrollViewer HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Disabled">
+                            <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+                                <!-- Pen Mode Button -->
+                                <RadioButton x:Name="PenBtn" 
                                          IsChecked="True" 
                                          Style="{StaticResource ToolbarToggleButtonStyle}" 
                                          Checked="SetPenMode" 
@@ -423,7 +429,21 @@
                                        Margin="5,0" 
                                        Stroke="{DynamicResource BorderColor}"
                                        StrokeThickness="1"/>
+
+                            <!-- Separator -->
+                            <Separator Margin="10,0" Background="{DynamicResource BorderColor}"/>
+
+                            <!-- Save Button -->
+                            <Button Command="{Binding SaveInkCommand}" 
+                                    Padding="10,5"
+                                    Style="{StaticResource OdontogrammeSecondaryButtonStyle}">
+                                <StackPanel Orientation="Horizontal">
+                                    <Path Data="{StaticResource IconSave}" Fill="{DynamicResource TextPrimary}" Width="16" Height="16" Stretch="Uniform" Margin="0,0,6,0" VerticalAlignment="Center"/>
+                                    <TextBlock Text="Sauvegarder" VerticalAlignment="Center"/>
+                                </StackPanel>
+                            </Button>
                         </StackPanel>
+                        </ScrollViewer>
                     </Border>
 
                     <!-- Dental Schema Container -->
@@ -437,12 +457,13 @@
                         <!-- Tooth Paths Overlay loaded from XAML -->
                         <Grid x:Name="ToothOverlayGrid" Panel.ZIndex="10" MouseDown="ToothOverlay_MouseDown"/>
 
-                        <!-- InkCanvas for Drawing - Only visible in Edit Mode (when IsHistoryMode = False) -->
+                        <!-- InkCanvas for Drawing -->
                         <InkCanvas x:Name="FreeDrawCanvas"
                                    Panel.ZIndex="20"
                                    Background="Transparent"
                                    EditingMode="Ink"
-                                   Visibility="{Binding IsHistoryMode, Converter={StaticResource InvertedBooleanToVisibilityConverter}}">
+                                   Visibility="{Binding IsInkCanvasEnabled, Converter={StaticResource BooleanToVisibilityConverter}}"
+                                   IsHitTestVisible="{Binding IsHistoryMode, Converter={StaticResource InvertedBooleanConverter}}">
                             <InkCanvas.DefaultDrawingAttributes>
                                 <DrawingAttributes x:Name="CurrentAttributes" Color="Red" Width="2" Height="2"/>
                             </InkCanvas.DefaultDrawingAttributes>

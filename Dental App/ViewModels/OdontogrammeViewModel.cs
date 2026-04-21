@@ -6,6 +6,8 @@ using System.Windows;
 using Dental_App.Views;
 using Dental_App.Services;
 using System.Linq;
+using System.Threading.Tasks;
+using System.IO;
 
 namespace Dental_App.ViewModels
 {
@@ -19,22 +21,27 @@ namespace Dental_App.ViewModels
         private string _selectedPatientName;
         private readonly IPatientService _patientService;
         private readonly IDentService _dentService;
+        private readonly IOdontogrammeLibreService _odontogrammeLibreService;
         private ObservableCollection<ToothActDisplayItem> _actsHistory;
         private string _selectedToothInfo = "";
         private bool _isNoActsMessage = true;
         private bool _isNoActsFound = false;
         private string _noToothSelectedMessage = "Cliquez sur une dent pour voir l'historique des actes";
         private bool _isHistoryMode = false;
+        private string _currentInkFilePath;
+        private bool _isInkCanvasEnabled = false;
 
-        public OdontogrammeViewModel(IPatientService patientService, IDentService dentService)
+        public OdontogrammeViewModel(IPatientService patientService, IDentService dentService, IOdontogrammeLibreService odontogrammeLibreService)
         {
             _patientService = patientService ?? throw new ArgumentNullException(nameof(patientService));
             _dentService = dentService ?? throw new ArgumentNullException(nameof(dentService));
+            _odontogrammeLibreService = odontogrammeLibreService ?? throw new ArgumentNullException(nameof(odontogrammeLibreService));
             _actsHistory = new ObservableCollection<ToothActDisplayItem>();
             
             ChoisirPatientCommand = new DelegateCommand(ExecuteChoisirPatient);
             ToothClickedCommand = new DelegateCommand<string>(ExecuteToothClicked);
             ToggleViewModeCommand = new DelegateCommand(ExecuteToggleViewMode);
+            SaveInkCommand = new DelegateCommand(ExecuteSaveInk, CanExecuteSaveInk).ObservesProperty(() => IsInkCanvasEnabled);
         }
 
         public string PatientInfo
@@ -109,7 +116,24 @@ namespace Dental_App.ViewModels
             set => SetProperty(ref _isHistoryMode, value);
         }
 
-        private void ExecuteChoisirPatient()
+        public string CurrentInkFilePath
+        {
+            get => _currentInkFilePath;
+            private set => SetProperty(ref _currentInkFilePath, value);
+        }
+
+        public bool IsInkCanvasEnabled
+        {
+            get => _isInkCanvasEnabled;
+            private set => SetProperty(ref _isInkCanvasEnabled, value);
+        }
+
+        public DelegateCommand SaveInkCommand { get; }
+
+        public event Action<string> LoadInkRequested;
+        public event Action<string> SaveInkRequested;
+
+        private async void ExecuteChoisirPatient()
         {
             try
             {
@@ -131,7 +155,7 @@ namespace Dental_App.ViewModels
                     ResizeMode = ResizeMode.NoResize
                 };
 
-                dialogViewModel.CloseDialog = (result) =>
+                dialogViewModel.CloseDialog = async (result) =>
                 {
                     if (result != null && result.PatientId > 0)
                     {
@@ -140,6 +164,8 @@ namespace Dental_App.ViewModels
                         PatientInfo = $"Patient: {result.PatientName} (ID: {result.PatientId})";
                         ClearActsHistory();
                         
+                        await InitializeInkCanvasForPatient(result.PatientId);
+
                         System.Diagnostics.Debug.WriteLine($"[OdontogrammeViewModel] ✓ Patient selected successfully");
                         System.Diagnostics.Debug.WriteLine($"[OdontogrammeViewModel] - Name: {result.PatientName}");
                         System.Diagnostics.Debug.WriteLine($"[OdontogrammeViewModel] - ID: {result.PatientId}");
@@ -157,6 +183,43 @@ namespace Dental_App.ViewModels
             {
                 System.Diagnostics.Debug.WriteLine($"[OdontogrammeViewModel] ✗ Error in ExecuteChoisirPatient: {ex.Message}");
                 MessageBox.Show($"Erreur lors de l'ouverture du dialogue:\n{ex.Message}", "Erreur", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+        }
+
+        private async Task InitializeInkCanvasForPatient(int patientId)
+        {
+            try
+            {
+                var record = await _odontogrammeLibreService.GetOrCreateRecordingAsync(patientId);
+                CurrentInkFilePath = _odontogrammeLibreService.GetFullPath(record.InkFilePath);
+                IsInkCanvasEnabled = true;
+
+                if (File.Exists(CurrentInkFilePath))
+                {
+                    LoadInkRequested?.Invoke(CurrentInkFilePath);
+                }
+                else
+                {
+                    LoadInkRequested?.Invoke(null); // Clear canvas
+                }
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"[OdontogrammeViewModel] ✗ Error initializing ink canvas: {ex.Message}");
+                IsInkCanvasEnabled = false;
+            }
+        }
+
+        private bool CanExecuteSaveInk()
+        {
+            return IsInkCanvasEnabled && !string.IsNullOrEmpty(CurrentInkFilePath);
+        }
+
+        private void ExecuteSaveInk()
+        {
+            if (CanExecuteSaveInk())
+            {
+                SaveInkRequested?.Invoke(CurrentInkFilePath);
             }
         }
 
