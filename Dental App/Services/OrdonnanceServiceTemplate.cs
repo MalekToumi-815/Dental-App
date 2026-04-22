@@ -10,6 +10,7 @@ using System.Windows.Documents;
 using System.Windows.Markup;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
+using System.Linq;
 
 namespace Dental_App.Services
 {
@@ -25,7 +26,7 @@ namespace Dental_App.Services
 
         // --- The Printing Engine ---
         // This takes the list of meds and the saved coordinates to build the print job
-        FixedDocument CreatePrintDocument(IEnumerable<string> medicaments, Point startPoint , bool isPreview);
+        FixedDocument CreatePrintDocument(IEnumerable<string> medicaments, Point startPoint, bool isPreview = false);
     }
     public class OrdonnanceServiceTemplate : IOrdonnanceServiceTemplate
     {
@@ -106,43 +107,85 @@ namespace Dental_App.Services
 
         public FixedDocument CreatePrintDocument(IEnumerable<string> medicaments, Point startPoint, bool isPreview = false)
         {
-            var fixedDoc = new FixedDocument();
-            fixedDoc.DocumentPaginator.PageSize = new Size(793, 1122); // A4
+            var doc = new FixedDocument();
 
-            FixedPage fixedPage = new FixedPage { Width = 793, Height = 1122 };
-
-            // If it's a preview, show the background image
-            if (isPreview)
+            try
             {
-                string path = GetTemplatePathAsync().Result; // Simple way for this context
-                if (File.Exists(path))
+                // Try to load background image if available
+                string templateFullPath = null;
+                var template = _context.OrdonnanceTemplates.FirstOrDefault();
+                if (template != null && !string.IsNullOrWhiteSpace(template.TemplatePath))
                 {
-                    fixedPage.Children.Add(new Image
-                    {
-                        Source = new BitmapImage(new Uri(path)),
-                        Width = 793,
-                        Height = 1122,
-                        Opacity = 0.5 // Make it faint so text is clear
-                    });
+                    templateFullPath = Path.Combine(_appDataRoot, template.TemplatePath);
+                    if (!File.Exists(templateFullPath))
+                        templateFullPath = null;
                 }
-            }
 
-            // Add Medications
-            StackPanel list = new StackPanel();
-            foreach (var med in medicaments)
+                BitmapImage background = null;
+                double pageWidth = 800;
+                double pageHeight = 1100;
+
+                if (!string.IsNullOrEmpty(templateFullPath))
+                {
+                    background = new BitmapImage();
+                    background.BeginInit();
+                    background.UriSource = new Uri(templateFullPath, UriKind.Absolute);
+                    background.CacheOption = BitmapCacheOption.OnLoad;
+                    background.EndInit();
+                    background.Freeze();
+
+                    pageWidth = background.PixelWidth;
+                    pageHeight = background.PixelHeight;
+                }
+
+                // Build a single page document. You can extend to multiple pages if needed.
+                var pageContent = new PageContent();
+                var fixedPage = new FixedPage
+                {
+                    Width = pageWidth,
+                    Height = pageHeight,
+                    Background = Brushes.White
+                };
+
+                if (background != null && isPreview)
+                {
+                    var image = new Image
+                    {
+                        Source = background,
+                        Width = pageWidth,
+                        Height = pageHeight,
+                        Stretch = Stretch.Fill
+                    };
+                    FixedPage.SetLeft(image, 0);
+                    FixedPage.SetTop(image, 0);
+                    fixedPage.Children.Add(image);
+                }
+
+                // Compose text block for the medicaments
+                var textBlock = new TextBlock
+                {
+                    FontSize = 14,
+                    Foreground = Brushes.Black,
+                    TextWrapping = TextWrapping.Wrap
+                };
+
+                var lines = medicaments?.ToArray() ?? Array.Empty<string>();
+                textBlock.Text = string.Join(Environment.NewLine, lines);
+
+                FixedPage.SetLeft(textBlock, startPoint.X);
+                FixedPage.SetTop(textBlock, startPoint.Y);
+
+                fixedPage.Children.Add(textBlock);
+
+                ((System.Windows.Markup.IAddChild)pageContent).AddChild(fixedPage);
+                doc.Pages.Add(pageContent);
+            }
+            catch
             {
-                list.Children.Add(new TextBlock { Text = med, FontSize = 16, Margin = new Thickness(0, 0, 0, 10) });
+                // On any error, return an empty FixedDocument instead of crashing the caller
             }
 
-            FixedPage.SetLeft(list, startPoint.X);
-            FixedPage.SetTop(list, startPoint.Y);
-            fixedPage.Children.Add(list);
-
-            PageContent pc = new PageContent();
-            ((IAddChild)pc).AddChild(fixedPage);
-            fixedDoc.Pages.Add(pc);
-
-            return fixedDoc;
+            return doc;
         }
     }
 }

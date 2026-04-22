@@ -45,6 +45,11 @@ namespace Dental_App.ViewModels
                             MessageBox.Show($"Erreur lors du chargement de l'image : {ex.Message}");
                         }
                     }
+                    else
+                    {
+                        // Clear the loaded image if path is cleared
+                        ImageSource = null;
+                    }
                 }
             }
         }
@@ -121,22 +126,14 @@ namespace Dental_App.ViewModels
         {
             try
             {
+                // Only load the saved coordinates. Do NOT automatically reload the saved image on dialog open
+                // to avoid holding the image in memory and causing UI lag when reopening the dialog.
                 var startingPoint = await _templateService.GetStartingCoordinatesAsync();
                 X = startingPoint.X;
                 Y = startingPoint.Y;
 
-                var currentPath = await _templateService.GetTemplatePathAsync();
-                
-                // Construct full path if it's relative
-                if (!string.IsNullOrEmpty(currentPath))
-                {
-                    string documents = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
-                    string fullPath = Path.Combine(documents, "DentalApp_Data", currentPath);
-                    if (File.Exists(fullPath))
-                    {
-                        ImagePath = fullPath;
-                    }
-                }
+                // Intentionally do not set ImagePath here. The user must re-import the image each time the dialog opens.
+                // This keeps the dialog lightweight and avoids image resource retention across opens.
             }
             catch (Exception ex)
             {
