@@ -16,6 +16,7 @@ namespace Dental_App.ViewModels
     {
         private readonly IPatientService _patientService;
         private readonly IOrdonnanceService _ordonnanceService;
+        private readonly IOrdonnanceServiceTemplate _templateService;
 
         private ObservableCollection<PatientForOrdonnance> _allPatients;
         private ObservableCollection<PatientForOrdonnance> _filteredPatients;
@@ -25,19 +26,22 @@ namespace Dental_App.ViewModels
         private bool _isLoading;
         private string _headerSubtitle = "Sélectionnez un patient pour commencer";
         private DelegateCommand _addOrdonnanceCommand;
+        private DelegateCommand _addTemplateCommand;
         private DelegateCommand<OrdonnanceDisplayRow> _printOrdonnanceCommand;
         private DelegateCommand<OrdonnanceDisplayRow> _viewOrdonnanceCommand;
 
-        public OrdonnanceViewModel(IPatientService patientService, IOrdonnanceService ordonnanceService)
+        public OrdonnanceViewModel(IPatientService patientService, IOrdonnanceService ordonnanceService, IOrdonnanceServiceTemplate templateService)
         {
             _patientService = patientService ?? throw new ArgumentNullException(nameof(patientService));
             _ordonnanceService = ordonnanceService ?? throw new ArgumentNullException(nameof(ordonnanceService));
+            _templateService = templateService ?? throw new ArgumentNullException(nameof(templateService));
 
             AllPatients = new ObservableCollection<PatientForOrdonnance>();
             FilteredPatients = new ObservableCollection<PatientForOrdonnance>();
             Ordonnances = new ObservableCollection<OrdonnanceDisplayRow>();
 
             AddOrdonnanceCommand = new DelegateCommand(AddOrdonnance);
+            AddTemplateCommand = new DelegateCommand(AddTemplate);
             PrintOrdonnanceCommand = new DelegateCommand<OrdonnanceDisplayRow>(PrintOrdonnance);
             ViewOrdonnanceCommand = new DelegateCommand<OrdonnanceDisplayRow>(ViewOrdonnance);
 
@@ -107,6 +111,12 @@ namespace Dental_App.ViewModels
         {
             get => _addOrdonnanceCommand;
             set => SetProperty(ref _addOrdonnanceCommand, value);
+        }
+
+        public DelegateCommand AddTemplateCommand
+        {
+            get => _addTemplateCommand;
+            set => SetProperty(ref _addTemplateCommand, value);
         }
 
         public DelegateCommand<OrdonnanceDisplayRow> PrintOrdonnanceCommand
@@ -254,6 +264,43 @@ namespace Dental_App.ViewModels
                     {
                         _ = OnPatientSelectedAsync(SelectedPatient);
                     }
+                    window.Close();
+                };
+
+                window.ShowDialog();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Erreur: {ex.Message}", "Erreur", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+        }
+
+        private void AddTemplate()
+        {
+            try
+            {
+                var dialogViewModel = new OrdonnanceTemplateDialogViewModel(_templateService);
+                var dialogView = new OrdonnanceTemplateDialogView { DataContext = dialogViewModel };
+
+                var window = new Window
+                {
+                    Content = dialogView,
+                    SizeToContent = SizeToContent.WidthAndHeight,
+                    WindowStyle = WindowStyle.None,
+                    AllowsTransparency = true,
+                    Background = System.Windows.Media.Brushes.Transparent,
+                    WindowStartupLocation = WindowStartupLocation.CenterScreen, // Re-center it
+                    Left = SystemParameters.WorkArea.Left + (SystemParameters.WorkArea.Width / 2) - 400, // manual override just in case
+                    Top = SystemParameters.WorkArea.Top + 10,   // Make it appear at the very top of the monitor rather than center-screen since it isn't draggable and images might be tall
+                    Owner = Application.Current.MainWindow,
+                    Padding = new Thickness(10)
+                };
+                
+                // Allow user to drag by dragging anywhere on the underlying window transparent background
+                window.MouseLeftButtonDown += (s, e) => window.DragMove();
+
+                dialogViewModel.CloseDialog = (result) =>
+                {
                     window.Close();
                 };
 

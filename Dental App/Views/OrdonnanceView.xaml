@@ -176,10 +176,18 @@
             <ColumnDefinition Width="*"/>
         </Grid.ColumnDefinitions>
 
-        <StackPanel Grid.Row="0" Grid.ColumnSpan="2" Margin="0,0,0,25">
-            <TextBlock Text="Ordonnances" FontSize="32" FontWeight="Bold" Foreground="{DynamicResource TextPrimary}"/>
-            <TextBlock Text="{Binding HeaderSubtitle}" FontSize="14" Foreground="{DynamicResource TextSecondary}" Margin="0,4,0,0"/>
-        </StackPanel>
+        <Grid Grid.Row="0" Grid.ColumnSpan="2" Margin="0,0,0,25">
+            <StackPanel HorizontalAlignment="Left">
+                <TextBlock Text="Ordonnances" FontSize="32" FontWeight="Bold" Foreground="{DynamicResource TextPrimary}"/>
+                <TextBlock Text="{Binding HeaderSubtitle}" FontSize="14" Foreground="{DynamicResource TextSecondary}" Margin="0,4,0,0"/>
+            </StackPanel>
+            
+            <Button Content="Ajouter un modèle d'ordonnance" 
+                    HorizontalAlignment="Right" 
+                    VerticalAlignment="Center" 
+                    Style="{StaticResource ConsultationAddButtonStyle}"
+                    Command="{Binding AddTemplateCommand}"/>
+        </Grid>
 
         <Grid Grid.Row="1" Grid.Column="0" Margin="0,0,20,0">
             <Grid.RowDefinitions>
