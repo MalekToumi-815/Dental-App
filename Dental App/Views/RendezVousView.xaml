@@ -274,20 +274,44 @@
                     Padding="20,20,20,20" 
                     Margin="0,0,0,20" 
                     BorderBrush="Transparent" 
-                    BorderThickness="0">
-                <Calendar x:Name="MainCalendar"
-                          Background="{DynamicResource CardBackground}" 
-                          Foreground="{DynamicResource TextPrimary}"
-                          BorderThickness="0"
-                          BorderBrush="Transparent"
-                          SelectedDate="{Binding SelectedDate}"
-                          Padding="10"
-                          Style="{StaticResource ChicCalendarStyle}"
-                          DisplayDateChanged="Calendar_DisplayDateChanged">
-                    <Calendar.Resources>
-                        <Style TargetType="CalendarDayButton" BasedOn="{StaticResource ChicCalendarDayButtonStyle}"/>
-                    </Calendar.Resources>
-                </Calendar>
+                    BorderThickness="0"
+                    ClipToBounds="True">
+                <Grid>
+                    <Calendar x:Name="MainCalendar"
+                              Background="{DynamicResource CardBackground}" 
+                              Foreground="{DynamicResource TextPrimary}"
+                              BorderThickness="2"
+                              BorderBrush="White"
+                              SelectedDate="{Binding SelectedDate}"
+                              Padding="0"
+                              Style="{StaticResource ChicCalendarStyle}"
+                              DisplayDateChanged="Calendar_DisplayDateChanged">
+                        <Calendar.Resources>
+                            <Style TargetType="CalendarDayButton" BasedOn="{StaticResource ChicCalendarDayButtonStyle}"/>
+                        </Calendar.Resources>
+                    </Calendar>
+                    <!-- Overlay grid to hide the white border -->
+                    <Grid IsHitTestVisible="False">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="2"/>
+                            <RowDefinition Height="*"/>
+                            <RowDefinition Height="2"/>
+                        </Grid.RowDefinitions>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="2"/>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="2"/>
+                        </Grid.ColumnDefinitions>
+                        <!-- Top border cover -->
+                        <Rectangle Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="3" Fill="{DynamicResource CardBackground}"/>
+                        <!-- Bottom border cover -->
+                        <Rectangle Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="3" Fill="{DynamicResource CardBackground}"/>
+                        <!-- Left border cover -->
+                        <Rectangle Grid.Row="0" Grid.Column="0" Grid.RowSpan="3" Fill="{DynamicResource CardBackground}"/>
+                        <!-- Right border cover -->
+                        <Rectangle Grid.Row="0" Grid.Column="2" Grid.RowSpan="3" Fill="{DynamicResource CardBackground}"/>
+                    </Grid>
+                </Grid>
             </Border>
 
             <StackPanel>
@@ -317,11 +341,21 @@
                     <TextBlock Text="Rendez-Vous du Jour" Foreground="{DynamicResource TextPrimary}" FontSize="20" FontWeight="Bold"/>
                     <TextBlock x:Name="DateLabel" Text="{Binding DateLabel}" Foreground="{DynamicResource TextSecondary}" FontSize="14"/>
                 </StackPanel>
-                <Button Content=" + Nouveau RDV" HorizontalAlignment="Right" 
+                <Button HorizontalAlignment="Right" 
                         Style="{StaticResource ButtonStyle}"
-                        Height="45" Width="150"
+                        Padding="20,0" Height="42"
                         Command="{Binding OpenModalCommand}"
-                        x:Name="NewRdvButton"/>
+                        x:Name="NewRdvButton">
+                    <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                        <TextBlock Text="+"
+                                   FontSize="20" FontWeight="Bold"
+                                   Margin="0,0,8,2"
+                                   VerticalAlignment="Center"/>
+                        <TextBlock Text="Nouveau RDV"
+                                   FontSize="14" FontWeight="SemiBold"
+                                   VerticalAlignment="Center"/>
+                    </StackPanel>
+                </Button>
             </Grid>
 
             <ListBox Background="Transparent" BorderThickness="0" 

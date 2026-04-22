@@ -193,8 +193,8 @@ namespace Dental_App.ViewModels
                     var transaction = new TransactionDisplayItem
                     {
                         Date = caisse.DateDuJour,
-                        Description = caisse.IsRevenu ? "Revenu" : "Dépense",
-                        Type = caisse.IsRevenu ? "Revenu" : "Dépense",
+                        Description = caisse.IsRevenu ? "Revenu" : "Depense",
+                        Type = caisse.IsRevenu ? "Revenu" : "Depense",
                         Montant = caisse.Montant ?? 0
                     };
                     AllTransactions.Add(transaction);
@@ -234,7 +234,7 @@ namespace Dental_App.ViewModels
                 TotalDepenses = totalDepense;
                 SoldeNet = totalRevenu - totalDepense;
 
-                Debug.WriteLine($"[UpdateStatisticsAsync] Revenus: {TotalRevenus}, Dépenses: {TotalDepenses}, Solde: {SoldeNet}");
+                Debug.WriteLine($"[UpdateStatisticsAsync] Revenus: {TotalRevenus}, Depenses: {TotalDepenses}, Solde: {SoldeNet}");
             }
             catch (Exception ex)
             {

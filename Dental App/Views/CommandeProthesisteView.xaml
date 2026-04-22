@@ -236,7 +236,7 @@
                         Command="{Binding ClearSearchCommand}"
                         ToolTip="Effacer la recherche"
                         IsEnabled="{Binding IsLoading, Converter={StaticResource InverseBoolToVis}}">
-					<TextBlock Text="X"
+                    <TextBlock Text="✕"
                                Foreground="{DynamicResource PrimaryBackground}"
                                FontSize="18"
                                FontWeight="Bold"/>
