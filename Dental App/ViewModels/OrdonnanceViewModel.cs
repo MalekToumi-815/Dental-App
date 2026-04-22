@@ -1,14 +1,15 @@
 using Dental_App.Models;
 using Dental_App.Services;
-using Prism.Mvvm;
+using Dental_App.Views;
 using Prism.Commands;
+using Prism.Mvvm;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
-using Dental_App.Views;
+using System.Windows.Controls;
 
 namespace Dental_App.ViewModels
 {
@@ -312,13 +313,29 @@ namespace Dental_App.ViewModels
             }
         }
 
-        private void PrintOrdonnance(OrdonnanceDisplayRow ordonnance)
+        private async void PrintOrdonnance(OrdonnanceDisplayRow ordonnance)
         {
-            if (ordonnance == null)
-                return;
+            if (ordonnance?.OrdonnanceObj == null) return;
 
-            // Empty placeholder for functionality
-            MessageBox.Show($"Printing ordonnance {ordonnance.Id}");
+            try
+            {
+                // 1. Get current dynamic settings
+                Point coords = await _templateService.GetStartingCoordinatesAsync();
+                var meds = ordonnance.OrdonnanceObj.Medicaments
+                                     .Select(m => $"{m.Nom} - {m.Posologie}").ToList();
+
+                // 2. Generate the document with the background visible for the preview
+                var documentForPreview = _templateService.CreatePrintDocument(meds, coords, isPreview: true);
+
+                // 3. Show the window you saw in your image
+                var previewWin = new PrintPreviewWindow(documentForPreview);
+                previewWin.Owner = Application.Current.MainWindow;
+                previewWin.ShowDialog();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Erreur d'aperçu: {ex.Message}");
+            }
         }
 
         private void ViewOrdonnance(OrdonnanceDisplayRow ordonnance)
