@@ -95,6 +95,28 @@
             </Setter>
         </Style>
 
+        <Style x:Key="EditButtonStyle" TargetType="Button">
+            <Setter Property="Background" Value="Transparent"/>
+            <Setter Property="Foreground" Value="{DynamicResource TextSecondary}"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border Background="Transparent" Padding="4">
+                            <Path Data="M14.06,9L15,9.94L5.92,19H5V18.08L14.06,9M17.66,3C17.41,3 17.15,3.1 16.96,3.29L15.13,5.12L18.88,8.87L20.71,7.04C21.1,6.65 21.1,6 20.71,5.63L18.37,3.29C18.17,3.09 17.92,3 17.66,3M14.06,6.19L3,17.25V21H6.75L17.81,9.94L14.06,6.19Z" 
+                                  Fill="{TemplateBinding Foreground}" Stretch="Uniform" Width="14" Height="14"/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter Property="Foreground" Value="{DynamicResource AccentColor}"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
         <Style x:Key="CancelButtonStyle" TargetType="Button">
             <Setter Property="Background" Value="Transparent"/>
             <Setter Property="Foreground" Value="#EF4444"/>
@@ -210,10 +232,16 @@
 
                 <!-- Header -->
                 <Grid Grid.Row="0" Margin="0,0,0,24">
-                    <TextBlock Text="Nouvelle Ordonnance" FontSize="20" FontWeight="Bold" Foreground="{DynamicResource TextPrimary}"/>
-                    <Button HorizontalAlignment="Right" VerticalAlignment="Top" 
-                            Style="{StaticResource CloseButtonStyle}" 
-                            Command="{Binding CancelCommand}"/>
+                    <TextBlock Text="{Binding Title}" FontSize="20" FontWeight="Bold" Foreground="{DynamicResource TextPrimary}"/>
+                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" VerticalAlignment="Top">
+                        <Button Style="{StaticResource EditButtonStyle}" 
+                                Command="{Binding ToggleEditCommand}"
+                                Visibility="{Binding ShowEditButton, Converter={StaticResource BooleanToVisibilityConverter}}"
+                                Margin="0,0,8,0"
+                                ToolTip="Modifier"/>
+                        <Button Style="{StaticResource CloseButtonStyle}" 
+                                Command="{Binding CancelCommand}"/>
+                    </StackPanel>
                 </Grid>
 
                 <!-- Top Inputs -->
@@ -226,6 +254,7 @@
                                 CornerRadius="6" 
                                 Background="Transparent">
                             <DatePicker SelectedDate="{Binding Date}" 
+                                        IsEnabled="{Binding IsEditable}"
                                         Style="{StaticResource FormDatePickerStyle}"/>
                         </Border>
                     </StackPanel>
@@ -236,6 +265,7 @@
                     <TextBlock Text="MEDICAMENTS" FontSize="12" FontWeight="SemiBold" Foreground="{DynamicResource TextSecondary}" VerticalAlignment="Center" Margin="12,0,0,0"/>
                     <Button HorizontalAlignment="Right" VerticalAlignment="Center"
                             Background="Transparent" BorderThickness="0" Cursor="Hand"
+                            Visibility="{Binding IsEditable, Converter={StaticResource BooleanToVisibilityConverter}}"
                             Command="{Binding AddMedicamentCommand}">
                         <StackPanel Orientation="Horizontal">
                             <TextBlock Text="+ Ajouter" Foreground="#0D9488" FontWeight="SemiBold" FontSize="14"/>
@@ -259,17 +289,20 @@
                                     <TextBox Grid.Column="0" Margin="0,0,12,0" 
                                              Style="{StaticResource DialogInputStyle}" 
                                              Text="{Binding Nom, UpdateSourceTrigger=PropertyChanged}" 
+                                             IsReadOnly="{Binding DataContext.IsReadOnlyMode, RelativeSource={RelativeSource AncestorType=ItemsControl}}"
                                              Tag="Medicament"/>
                                              
                                     <!-- Posologie -->
                                     <TextBox Grid.Column="1" Margin="0,0,12,0" 
                                              Style="{StaticResource DialogInputStyle}" 
                                              Text="{Binding Posologie, UpdateSourceTrigger=PropertyChanged}" 
+                                             IsReadOnly="{Binding DataContext.IsReadOnlyMode, RelativeSource={RelativeSource AncestorType=ItemsControl}}"
                                              Tag="Posologie"/>
 
                                     <!-- Remove Button -->
                                     <Button Grid.Column="2" 
                                             Style="{StaticResource CancelButtonStyle}"
+                                            Visibility="{Binding DataContext.IsEditable, RelativeSource={RelativeSource AncestorType=ItemsControl}, Converter={StaticResource BooleanToVisibilityConverter}}"
                                             Command="{Binding DataContext.RemoveMedicamentCommand, RelativeSource={RelativeSource AncestorType=ItemsControl}}"
                                             CommandParameter="{Binding}"/>
                                 </Grid>
@@ -281,6 +314,7 @@
                 <!-- Save Button -->
                 <Button Grid.Row="4" 
                         Content="Enregistrer" 
+                        Visibility="{Binding IsEditable, Converter={StaticResource BooleanToVisibilityConverter}}"
                         Style="{StaticResource SaveButtonStyle}" 
                         Command="{Binding SaveCommand}"/>
             </Grid>

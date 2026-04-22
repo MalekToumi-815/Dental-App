@@ -137,6 +137,40 @@ namespace Dental_App.Services
             existing.PatientId = ordonnance.PatientId;
             existing.DateCreation = ordonnance.DateCreation;
 
+            // Handle Medicament additions/updates/deletions
+            if (ordonnance.Medicaments != null)
+            {
+                // Delete missing medicaments
+                var medicamentsToRemove = existing.Medicaments
+                    .Where(m => !ordonnance.Medicaments.Any(om => om.Id == m.Id && om.Id != 0))
+                    .ToList();
+                
+                foreach (var toRemove in medicamentsToRemove)
+                {
+                    _context.Medicaments.Remove(toRemove);
+                }
+
+                foreach (var medicament in ordonnance.Medicaments)
+                {
+                    if (medicament.Id == 0)
+                    {
+                        // Add new medicament
+                        medicament.OrdonnanceId = existing.Id;
+                        _context.Medicaments.Add(medicament);
+                    }
+                    else
+                    {
+                        // Update existing medicament
+                        var existingMedicament = existing.Medicaments.FirstOrDefault(m => m.Id == medicament.Id);
+                        if (existingMedicament != null)
+                        {
+                            existingMedicament.Nom = medicament.Nom;
+                            existingMedicament.Posologie = medicament.Posologie;
+                        }
+                    }
+                }
+            }
+
             _context.Ordonnances.Update(existing);
             await _context.SaveChangesAsync();
             System.Diagnostics.Debug.WriteLine($"✓ Ordonnance mise à jour : Id={existing.Id}");

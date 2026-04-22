@@ -26,7 +26,7 @@ namespace Dental_App.ViewModels
         private string _headerSubtitle = "Sélectionnez un patient pour commencer";
         private DelegateCommand _addOrdonnanceCommand;
         private DelegateCommand<OrdonnanceDisplayRow> _printOrdonnanceCommand;
-        private DelegateCommand<OrdonnanceDisplayRow> _deleteOrdonnanceCommand;
+        private DelegateCommand<OrdonnanceDisplayRow> _viewOrdonnanceCommand;
 
         public OrdonnanceViewModel(IPatientService patientService, IOrdonnanceService ordonnanceService)
         {
@@ -39,7 +39,7 @@ namespace Dental_App.ViewModels
 
             AddOrdonnanceCommand = new DelegateCommand(AddOrdonnance);
             PrintOrdonnanceCommand = new DelegateCommand<OrdonnanceDisplayRow>(PrintOrdonnance);
-            DeleteOrdonnanceCommand = new DelegateCommand<OrdonnanceDisplayRow>(DeleteOrdonnance);
+            ViewOrdonnanceCommand = new DelegateCommand<OrdonnanceDisplayRow>(ViewOrdonnance);
 
             _ = LoadPatientsAsync();
         }
@@ -115,10 +115,10 @@ namespace Dental_App.ViewModels
             set => SetProperty(ref _printOrdonnanceCommand, value);
         }
 
-        public DelegateCommand<OrdonnanceDisplayRow> DeleteOrdonnanceCommand
+        public DelegateCommand<OrdonnanceDisplayRow> ViewOrdonnanceCommand
         {
-            get => _deleteOrdonnanceCommand;
-            set => SetProperty(ref _deleteOrdonnanceCommand, value);
+            get => _viewOrdonnanceCommand;
+            set => SetProperty(ref _viewOrdonnanceCommand, value);
         }
 
         public bool IsPatientSelected => SelectedPatient != null;
@@ -201,7 +201,8 @@ namespace Dental_App.ViewModels
                             {
                                 Id = o.Id,
                                 Date = o.DateCreation ?? DateTime.Now,
-                                MedicamentsCount = o.Medicaments?.Count ?? 0
+                                MedicamentsCount = o.Medicaments?.Count ?? 0,
+                                OrdonnanceObj = o
                             });
                         }
                     }
@@ -273,13 +274,48 @@ namespace Dental_App.ViewModels
             MessageBox.Show($"Printing ordonnance {ordonnance.Id}");
         }
 
-        private void DeleteOrdonnance(OrdonnanceDisplayRow ordonnance)
+        private void ViewOrdonnance(OrdonnanceDisplayRow ordonnance)
         {
-            if (ordonnance == null)
+            if (ordonnance == null || SelectedPatient == null)
                 return;
 
-            // Empty placeholder for functionality
-            MessageBox.Show($"Deleting ordonnance {ordonnance.Id}");
+            try
+            {
+                var dialogViewModel = new OrdonnanceDialogViewModel(
+                    _ordonnanceService, 
+                    SelectedPatient.Id, 
+                    SelectedPatient.FullName, 
+                    ordonnance.OrdonnanceObj);
+
+                var dialogView = new OrdonnanceDialogView { DataContext = dialogViewModel };
+
+                var window = new Window
+                {
+                    Content = dialogView,
+                    SizeToContent = SizeToContent.WidthAndHeight,
+                    WindowStyle = WindowStyle.None,
+                    AllowsTransparency = true,
+                    Background = System.Windows.Media.Brushes.Transparent,
+                    WindowStartupLocation = WindowStartupLocation.CenterOwner,
+                    Owner = Application.Current.MainWindow,
+                    Padding = new Thickness(10)
+                };
+
+                dialogViewModel.CloseDialog = (result) =>
+                {
+                    if (result == true)
+                    {
+                        _ = OnPatientSelectedAsync(SelectedPatient);
+                    }
+                    window.Close();
+                };
+
+                window.ShowDialog();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Erreur: {ex.Message}", "Erreur", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
         }
     }
 
@@ -298,6 +334,7 @@ namespace Dental_App.ViewModels
     {
         public int Id { get; set; }
         public DateTime Date { get; set; }
+        public Ordonnance OrdonnanceObj { get; set; }
         
         private int _medicamentsCount;
         public int MedicamentsCount 
