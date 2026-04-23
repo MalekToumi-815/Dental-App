@@ -51,6 +51,7 @@ namespace Dental_App
             containerRegistry.RegisterSingleton<IConsultationService, ConsultationService>();
             containerRegistry.RegisterSingleton<IRendezVousService, RendezVousService>();
             containerRegistry.RegisterSingleton<IOrdonnanceService, OrdonnanceService>();
+            containerRegistry.RegisterSingleton<IOrdonnanceServiceTemplate, OrdonnanceServiceTemplate>();
             containerRegistry.RegisterSingleton<IRadioImageService, RadioImageService>();
             containerRegistry.RegisterSingleton<IOdontogrammeLibreService, OdontogrammeLibreService>();
             containerRegistry.RegisterSingleton<IHolidayService, HolidayService>();
@@ -69,6 +70,8 @@ namespace Dental_App
             containerRegistry.RegisterForNavigation<AntecedentView, AntecedentViewModel>();
             containerRegistry.RegisterForNavigation<CaisseView, CaisseViewModel>();
             containerRegistry.RegisterForNavigation<RendezVousView, RendezVousViewModel>();
+            containerRegistry.RegisterForNavigation<OrdonnanceView, OrdonnanceViewModel>("OrdonnanceView");
+            containerRegistry.RegisterForNavigation<OrdonnanceTemplateDialogView, OrdonnanceTemplateDialogViewModel>("OrdonnanceTemplateDialogView");
             containerRegistry.RegisterForNavigation<MainView>();
         }
 

@@ -140,7 +140,7 @@
                 
                 <Button Content="Ordonnances" Tag="{StaticResource IconOrdonnances}" 
                         x:Name="OrdonnancesButton"
-                        Command="{Binding NavigateCommand}" CommandParameter="OrdonnancesView"/>
+                        Command="{Binding NavigateCommand}" CommandParameter="OrdonnanceView"/>
                 
                 <Button Content="Actes Medicaux" Tag="{StaticResource IconActes}" 
                         x:Name="ActesMedicauxButton"

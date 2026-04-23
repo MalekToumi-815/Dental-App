@@ -34,6 +34,8 @@ public partial class DentalContext : DbContext
 
     public virtual DbSet<Ordonnance> Ordonnances { get; set; }
 
+    public virtual DbSet<OrdonnanceTemplate> OrdonnanceTemplates { get; set; }
+
     public virtual DbSet<Patient> Patients { get; set; }
 
     public virtual DbSet<Prothesiste> Prothesistes { get; set; }
@@ -54,6 +56,15 @@ public partial class DentalContext : DbContext
         modelBuilder.Entity<ActeMedical>(entity =>
         {
             entity.ToTable("ActeMedical");
+        });
+
+        modelBuilder.Entity<OrdonnanceTemplate>(entity =>
+        {
+            entity.ToTable("OrdonnanceTemplate");
+            entity.HasKey(e => e.Id);
+            entity.Property(e => e.TemplateX).IsRequired();
+            entity.Property(e => e.TemplateY).IsRequired();
+            entity.Property(e => e.TemplatePath);
         });
 
         modelBuilder.Entity<Antecedant>(entity =>

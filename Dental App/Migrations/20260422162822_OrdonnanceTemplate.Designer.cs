@@ -3,6 +3,7 @@ using System;
 using Dental_App.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -10,9 +11,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Dental_App.Migrations
 {
     [DbContext(typeof(DentalContext))]
-    partial class DentalContextModelSnapshot : ModelSnapshot
+    [Migration("20260422162822_OrdonnanceTemplate")]
+    partial class OrdonnanceTemplate
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder.HasAnnotation("ProductVersion", "8.0.24");
@@ -77,7 +80,9 @@ namespace Dental_App.Migrations
                         .HasColumnType("TEXT");
 
                     b.Property<bool>("IsRevenu")
-                        .HasColumnType("BOOLEAN");
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("BOOLEAN")
+                        .HasDefaultValue(true);
 
                     b.Property<decimal?>("Montant")
                         .ValueGeneratedOnAdd()
