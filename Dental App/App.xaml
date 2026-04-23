@@ -4,12 +4,28 @@
              xmlns:local="clr-namespace:Dental_App"
              xmlns:converters="clr-namespace:Dental_App.Converters"
              xmlns:prism="http://prismlibrary.com/">
+
     <prism:PrismApplication.Resources>
         <!-- Converters -->
         <converters:BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"/>
         <converters:InvertedBooleanConverter x:Key="InvertedBooleanConverter"/>
         <converters:InvertedBooleanToVisibilityConverter x:Key="InvertedBooleanToVisibilityConverter"/>
-        
+
+        <converters:InverseBooleanConverter x:Key="InverseBooleanConverter"/>
+        <converters:NullToVisibilityConverter x:Key="NullToVisibilityConverter"/>
+        <converters:StringEqualityConverter x:Key="StringEqualityConverter"/>
+        <converters:DateToMonthYearConverter x:Key="DateToMonthYearConverter"/>
+        <converters:StatutToColorConverter x:Key="StatutToColorConverter"/>
+        <converters:DayBackgroundConverter x:Key="DayBackgroundConverter"/>
+        <converters:DayTextColorConverter x:Key="DayTextColorConverter"/>
+        <converters:YearConverter x:Key="YearConverter"/>
+        <converters:MonthConverter x:Key="MonthConverter"/>
+        <converters:DateToStringConverter x:Key="DateToStringConverter"/>
+        <converters:StringToDateConverter x:Key="StringToDateConverter"/>
+        <converters:DateHasAppointmentConverter x:Key="DateHasAppointmentConverter"/>
+        <converters:EmptyListToVisibilityConverter x:Key="EmptyListToVisibilityConverter"/>
+        <converters:DateTimeToDateOnlyConverter x:Key="DateTimeToDateOnlyConverter"/>
+
         <!-- Dark Theme Colors (Default) -->
         <Color x:Key="PrimaryBackgroundColor">#0D1117</Color>
         <Color x:Key="SecondaryBackgroundColor">#0F172A</Color>
@@ -38,5 +54,139 @@
         <Geometry x:Key="IconSun">
             M12,18A6,6 0 1,1 12,6A6,6 0 1,1 12,18M12,2L14.8,5.6H9.2L12,2M12,22L9.2,18.4H14.8L12,22M2,12L5.6,9.2V14.8L2,12M22,12L18.4,14.8V9.2L22,12M4.9,4.9L8.5,6.1L6.1,8.5L4.9,4.9M19.1,19.1L15.5,17.9L17.9,15.5L19.1,19.1M19.1,4.9L17.9,8.5L15.5,6.1L19.1,4.9M4.9,19.1L6.1,15.5L8.5,17.9L4.9,19.1Z
         </Geometry>
+
+        <Style TargetType="CalendarItem">
+            <Setter Property="Background" Value="Transparent"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="CalendarItem">
+                        <Grid x:Name="PART_Root" Background="Transparent" Margin="0">
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="*"/>
+                            </Grid.RowDefinitions>
+
+                            <Grid Grid.Row="0" Margin="0,5,0,15">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="Auto"/>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="Auto"/>
+                                </Grid.ColumnDefinitions>
+
+                                <Button x:Name="PART_PreviousButton" Grid.Column="0" 
+                                        Width="35" Height="35"
+                                        Focusable="False" Background="Transparent" BorderThickness="0"
+                                        Foreground="{DynamicResource TextPrimary}" Cursor="Hand"
+                                        Padding="0">
+                                    <Button.Template>
+                                        <ControlTemplate TargetType="Button">
+                                            <Border Background="Transparent" Padding="{TemplateBinding Padding}">
+                                                <Path Data="M 8,0 L 0,4 L 8,8" Stroke="{TemplateBinding Foreground}" 
+                                                      StrokeThickness="2" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                            </Border>
+                                        </ControlTemplate>
+                                    </Button.Template>
+                                </Button>
+
+                                <Button x:Name="PART_HeaderButton" Grid.Column="1" 
+                                        Focusable="False" Background="Transparent" BorderThickness="0"
+                                        VerticalAlignment="Center" HorizontalAlignment="Center"
+                                        Padding="0">
+                                    <Button.Template>
+                                        <ControlTemplate TargetType="Button">
+                                            <ContentPresenter HorizontalAlignment="Center" 
+                                                              VerticalAlignment="Center"
+                                                              Margin="5,0">
+                                                <ContentPresenter.Resources>
+                                                    <Style TargetType="TextBlock">
+                                                        <Setter Property="FontSize" Value="16"/>
+                                                        <Setter Property="FontWeight" Value="Bold"/>
+                                                        <Setter Property="Foreground" Value="{DynamicResource AccentColor}"/>
+                                                    </Style>
+                                                </ContentPresenter.Resources>
+                                            </ContentPresenter>
+                                        </ControlTemplate>
+                                    </Button.Template>
+                                </Button>
+
+                                <Button x:Name="PART_NextButton" Grid.Column="2" 
+                                        Width="35" Height="35"
+                                        Focusable="False" Background="Transparent" BorderThickness="0"
+                                        Foreground="{DynamicResource TextPrimary}" Cursor="Hand"
+                                        Padding="0">
+                                    <Button.Template>
+                                        <ControlTemplate TargetType="Button">
+                                            <Border Background="Transparent" Padding="{TemplateBinding Padding}">
+                                                <Path Data="M 0,0 L 8,4 L 0,8" Stroke="{TemplateBinding Foreground}" 
+                                                      StrokeThickness="2" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                            </Border>
+                                        </ControlTemplate>
+                                    </Button.Template>
+                                </Button>
+                            </Grid>
+
+                            <Border x:Name="PART_MonthViewBorder" Grid.Row="1" Background="Transparent" Margin="0" Padding="0">
+                                <Grid x:Name="PART_MonthView" Visibility="Visible"/>
+                            </Border>
+                            
+                            <Border x:Name="PART_YearViewBorder" Grid.Row="1" Background="Transparent" Margin="0" Padding="0">
+                                <Grid x:Name="PART_YearView" Visibility="Hidden"/>
+                            </Border>
+                        </Grid>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <Style x:Key="ChicCalendarDayButtonStyle" TargetType="CalendarDayButton">
+            <Setter Property="Background" Value="Transparent"/>
+            <Setter Property="Foreground" Value="{DynamicResource TextPrimary}"/>
+            <Setter Property="Width" Value="50"/>
+            <Setter Property="Height" Value="50"/>
+            <Setter Property="HorizontalContentAlignment" Value="Center"/>
+            <Setter Property="VerticalContentAlignment" Value="Center"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="CalendarDayButton">
+                        <Grid>
+                            <Ellipse x:Name="SelectedBackground" Fill="{DynamicResource AccentColor}" Opacity="0" Width="38" Height="38"/>
+                            <ContentPresenter x:Name="NormalText" HorizontalAlignment="Center" VerticalAlignment="Center">
+                                <ContentPresenter.Resources>
+                                    <Style TargetType="TextBlock">
+                                        <Setter Property="FontSize" Value="14"/>
+                                        <Setter Property="FontWeight" Value="SemiBold"/>
+                                    </Style>
+                                </ContentPresenter.Resources>
+                            </ContentPresenter>
+                        </Grid>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsSelected" Value="True">
+                                <Setter TargetName="SelectedBackground" Property="Opacity" Value="1"/>
+                                <Setter Property="Foreground" Value="{DynamicResource PrimaryBackground}"/>
+                            </Trigger>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter Property="Opacity" Value="0.7"/>
+                            </Trigger>
+                            <Trigger Property="IsInactive" Value="True">
+                                <Setter Property="Foreground" Value="{DynamicResource TextSecondary}"/>
+                                <Setter Property="Opacity" Value="0.3"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <Style x:Key="ChicCalendarStyle" TargetType="Calendar">
+            <Setter Property="Background" Value="{DynamicResource CardBackground}"/>
+            <Setter Property="Foreground" Value="{DynamicResource TextPrimary}"/>
+            <Setter Property="BorderBrush" Value="{DynamicResource CardBackground}"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="Padding" Value="0"/>
+            <Setter Property="Margin" Value="0"/>
+            <Setter Property="CalendarDayButtonStyle" Value="{StaticResource ChicCalendarDayButtonStyle}"/>
+            <Setter Property="FocusVisualStyle" Value="{x:Null}"/>
+        </Style>
+
     </prism:PrismApplication.Resources>
 </prism:PrismApplication>

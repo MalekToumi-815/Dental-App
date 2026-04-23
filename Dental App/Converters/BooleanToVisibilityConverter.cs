@@ -22,7 +22,7 @@ namespace Dental_App.Converters
                 bool result = isInverted ? intValue == 0 : intValue != 0;
                 return result ? Visibility.Visible : Visibility.Collapsed;
             }
-            
+
             return Visibility.Collapsed;
         }
 

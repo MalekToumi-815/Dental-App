@@ -13,6 +13,8 @@ namespace Dental_App.Services
         Task<CommandeProthesiste?> GetByIdAsync(int id);
         Task<List<CommandeProthesiste>> GetAllAsync();
         Task<List<CommandeProthesiste>> GetByProthesisteAsync(int prothesisteId);
+        Task<List<CommandeProthesiste>> GetByProthesisteNameAsync(string nomProthesiste);
+        Task<List<CommandeProthesiste>> GetByProthesistePhoneAsync(string telProthesiste);
         Task<CommandeProthesiste> UpdateAsync(CommandeProthesiste commande);
         Task<bool> DeleteAsync(int id);
         Task<int> CountAsync();
@@ -68,6 +70,36 @@ namespace Dental_App.Services
             if (prothesisteId <= 0) throw new ArgumentException("Le prothesisteId doit être > 0.", nameof(prothesisteId));
             return await _context.CommandeProthesistes
                 .Where(c => c.IdProthesiste == prothesisteId)
+                .Include(c => c.IdProthesisteNavigation)
+                .OrderByDescending(c => c.Date)
+                .ToListAsync();
+        }
+
+        /// <summary>
+        /// Recherche les commandes d'un prothésiste par son nom (insensible à la casse).
+        /// </summary>
+        public async Task<List<CommandeProthesiste>> GetByProthesisteNameAsync(string nomProthesiste)
+        {
+            if (string.IsNullOrWhiteSpace(nomProthesiste)) return new List<CommandeProthesiste>();
+            
+            var searchTerm = nomProthesiste.ToLower();
+            return await _context.CommandeProthesistes
+                .Where(c => c.IdProthesisteNavigation != null && c.IdProthesisteNavigation.Nom.ToLower().Contains(searchTerm))
+                .Include(c => c.IdProthesisteNavigation)
+                .OrderByDescending(c => c.Date)
+                .ToListAsync();
+        }
+
+        /// <summary>
+        /// Recherche les commandes d'un prothésiste par son numéro de téléphone (insensible à la casse).
+        /// </summary>
+        public async Task<List<CommandeProthesiste>> GetByProthesistePhoneAsync(string telProthesiste)
+        {
+            if (string.IsNullOrWhiteSpace(telProthesiste)) return new List<CommandeProthesiste>();
+            
+            var searchTerm = telProthesiste.ToLower();
+            return await _context.CommandeProthesistes
+                .Where(c => c.IdProthesisteNavigation != null && c.IdProthesisteNavigation.Tel != null && c.IdProthesisteNavigation.Tel.ToLower().Contains(searchTerm))
                 .Include(c => c.IdProthesisteNavigation)
                 .OrderByDescending(c => c.Date)
                 .ToListAsync();

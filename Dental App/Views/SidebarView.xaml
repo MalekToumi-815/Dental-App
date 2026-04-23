@@ -136,7 +136,7 @@
                 
                 <Button Content="Antecedents" Tag="{StaticResource IconAntecedents}" 
                         x:Name="AntecedentsButton"
-                        Command="{Binding NavigateCommand}" CommandParameter="AntecedentsView"/>
+                        Command="{Binding NavigateCommand}" CommandParameter="AntecedentView"/>
                 
                 <Button Content="Ordonnances" Tag="{StaticResource IconOrdonnances}" 
                         x:Name="OrdonnancesButton"
@@ -170,7 +170,7 @@
                 
                 <Button Content="Protesistes" Tag="{StaticResource IconProthesistes}" 
                         x:Name="ProthesistesButton"
-                        Command="{Binding NavigateCommand}" CommandParameter="ProthesistesView"/>
+                        Command="{Binding NavigateCommand}" CommandParameter="ProthesisteView"/>
             </StackPanel>
         </ScrollViewer>
     </Grid>
