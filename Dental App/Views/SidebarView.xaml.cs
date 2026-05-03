@@ -34,14 +34,14 @@ namespace Dental_App.Views
                 { "RendezVousView", RendezVousButton },
                 { "ConsultationView", ConsultationButton },
                 { "PatientsView", PatientsButton },
-                { "AntecedentsView", AntecedentsButton },
-                { "OrdonnancesView", OrdonnancesButton },
+                { "AntecedentView", AntecedentsButton }, // Fixed
+                { "OrdonnanceView", OrdonnancesButton }, // Fixed
                 { "ActesMedicauxView", ActesMedicauxButton },
                 { "RadioImagesView", RadioImagesButton },
                 { "OdontogrammeView", OdontogrammeButton },
                 { "CaisseView", CaisseButton },
                 { "CommandeProthesisteView", CommandeProthesisteButton },
-                { "ProthesistesView", ProthesistesButton }
+                { "ProthesisteView", ProthesistesButton } // Fixed
             };
 
             this.Loaded += SidebarView_Loaded;
