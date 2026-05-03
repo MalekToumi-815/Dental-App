@@ -58,7 +58,7 @@ namespace Dental_App.Services
             if (string.IsNullOrWhiteSpace(name)) return new List<Prothesiste>();
             var searchTerm = name.ToLower();
             return await _context.Prothesistes
-                .Where(p => p.Nom.ToLower().Contains(searchTerm))
+                .Where(p => p.Nom.ToLower().StartsWith(searchTerm))
                 .Include(p => p.CommandeProthesistes)
                 .ToListAsync();
         }
@@ -68,7 +68,7 @@ namespace Dental_App.Services
             if (string.IsNullOrWhiteSpace(phone)) return new List<Prothesiste>();
             var searchTerm = phone.ToLower();
             return await _context.Prothesistes
-                .Where(p => p.Tel != null && p.Tel.ToLower().Contains(searchTerm))
+                .Where(p => p.Tel != null && p.Tel.ToLower().StartsWith(searchTerm))
                 .Include(p => p.CommandeProthesistes)
                 .ToListAsync();
         }

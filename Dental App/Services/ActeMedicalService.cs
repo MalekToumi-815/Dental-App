@@ -57,7 +57,7 @@ namespace Dental_App.Services
         {
             if (string.IsNullOrWhiteSpace(libelle)) return new List<ActeMedical>();
             return await _context.ActeMedicals
-                .Where(a => EF.Functions.Like(a.Libelle, "%" + libelle + "%"))
+                .Where(a => EF.Functions.Like(a.Libelle,  libelle + "%"))
                 .Include(a => a.IdConsuls)
                 .ToListAsync();
         }

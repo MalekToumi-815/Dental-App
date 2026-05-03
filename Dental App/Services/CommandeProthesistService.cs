@@ -84,7 +84,7 @@ namespace Dental_App.Services
             
             var searchTerm = nomProthesiste.ToLower();
             return await _context.CommandeProthesistes
-                .Where(c => c.IdProthesisteNavigation != null && c.IdProthesisteNavigation.Nom.ToLower().Contains(searchTerm))
+                .Where(c => c.IdProthesisteNavigation != null && c.IdProthesisteNavigation.Nom.ToLower().StartsWith(searchTerm))
                 .Include(c => c.IdProthesisteNavigation)
                 .OrderByDescending(c => c.Date)
                 .ToListAsync();
@@ -99,7 +99,7 @@ namespace Dental_App.Services
             
             var searchTerm = telProthesiste.ToLower();
             return await _context.CommandeProthesistes
-                .Where(c => c.IdProthesisteNavigation != null && c.IdProthesisteNavigation.Tel != null && c.IdProthesisteNavigation.Tel.ToLower().Contains(searchTerm))
+                .Where(c => c.IdProthesisteNavigation != null && c.IdProthesisteNavigation.Tel != null && c.IdProthesisteNavigation.Tel.ToLower().StartsWith(searchTerm))
                 .Include(c => c.IdProthesisteNavigation)
                 .OrderByDescending(c => c.Date)
                 .ToListAsync();
