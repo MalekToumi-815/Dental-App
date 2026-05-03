@@ -45,6 +45,9 @@ namespace Dental_App.Services
                 // Wait for the debounce interval
                 await Task.Delay(_debounceDelay, token);
 
+                // Re-check cancellation to avoid a tiny race window
+                token.ThrowIfCancellationRequested();
+
                 // Fetch data from the injected source func
                 var results = await searchSource(searchTerm);
 
