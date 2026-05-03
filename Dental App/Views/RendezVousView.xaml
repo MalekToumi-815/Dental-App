@@ -73,78 +73,80 @@
             <Setter Property="TextWrapping" Value="Wrap"/>
         </Style>
 
-        <Style x:Key="DatePickerStyleCustom" TargetType="DatePicker">
+        <!-- DatePickerTextBox style for consistent date input appearance -->
+        <Style TargetType="{x:Type DatePickerTextBox}">
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="{x:Type DatePickerTextBox}">
+                        <ScrollViewer x:Name="PART_ContentHost" 
+                                      Focusable="False" 
+                                      HorizontalContentAlignment="{TemplateBinding HorizontalContentAlignment}" 
+                                      VerticalContentAlignment="{TemplateBinding VerticalContentAlignment}" />
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <!-- FormDatePickerStyle copied from ConsultationDialogView for unified styling -->
+        <Style x:Key="FormDatePickerStyle" TargetType="DatePicker">
+            <Setter Property="Background" Value="Transparent"/>
             <Setter Property="Foreground" Value="{DynamicResource TextPrimary}"/>
-            <Setter Property="Background" Value="{DynamicResource SecondaryBackground}"/>
-            <Setter Property="BorderBrush" Value="{DynamicResource BorderColor}"/>
-            <Setter Property="Height" Value="40"/>
+            <Setter Property="IsTodayHighlighted" Value="True"/>
+            <Setter Property="SelectedDateFormat" Value="Short"/>
             <Setter Property="Template">
                 <Setter.Value>
                     <ControlTemplate TargetType="DatePicker">
-                        <Border BorderBrush="{TemplateBinding BorderBrush}"
-                                BorderThickness="1"
-                                Background="{TemplateBinding Background}"
-                                CornerRadius="8"
-                                Padding="0">
-                            <Grid>
-                                <Grid.ColumnDefinitions>
-                                    <ColumnDefinition Width="*"/>
-                                    <ColumnDefinition Width="Auto"/>
-                                </Grid.ColumnDefinitions>
+                        <Grid x:Name="DatePickerRoot">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="Auto"/>
+                            </Grid.ColumnDefinitions>
 
-                                <DatePickerTextBox x:Name="PART_TextBox" 
-                                                   Grid.Column="0"
-                                                   Margin="10,0,5,0"
-                                                   Background="Transparent"
-                                                   Foreground="{DynamicResource TextPrimary}"
-                                                   BorderThickness="0"
-                                                   FontSize="14"
-                                                   VerticalContentAlignment="Center"
-                                                   Padding="0"/>
+                            <DatePickerTextBox x:Name="PART_TextBox"
+                                               Grid.Column="0"
+                                               Focusable="{TemplateBinding Focusable}"
+                                               HorizontalContentAlignment="Stretch"
+                                               VerticalContentAlignment="Center"
+                                               Background="Transparent"
+                                               Foreground="{TemplateBinding Foreground}"
+                                               BorderThickness="0"
+                                               Padding="12,2"
+                                               FontSize="13"
+                                               VerticalAlignment="Center"
+                                               CaretBrush="{DynamicResource AccentColor}"/>
 
-                                <Button x:Name="PART_Button"
-                                        Grid.Column="1"
-                                        Width="40"
-                                        Height="40"
-                                        Background="Transparent"
-                                        BorderThickness="0"
-                                        Cursor="Hand"
-                                        Margin="0"
-                                        Padding="10">
-                                    <Viewbox Width="18" Height="18" VerticalAlignment="Center">
-                                        <Path Fill="{DynamicResource AccentColor}" 
-                                              Data="M19,4H17V3a1,1,0,0,0-2,0V4H9V3A1,1,0,0,0,7,3V4H5V7H19ZM9,8V7a1,1,0,0,1,2,0V8Zm4,0V7a1,1,0,0,1,2,0V8ZM5,10H19V9H5ZM19,12H5v-1H19ZM5,14H19v-1H5ZM19,16H5v-1H19Z"
-                                              Stretch="Uniform"/>
-                                    </Viewbox>
-                                </Button>
+                            <Button Grid.Column="1"
+                                    x:Name="PART_Button"
+                                    Background="Transparent"
+                                    BorderThickness="0"
+                                    Padding="8"
+                                    Foreground="{DynamicResource TextPrimary}"
+                                    Cursor="Hand"
+                                    Focusable="False">
+                                <Viewbox Width="20" Height="20">
+                                    <Path Data="M 4 2 L 4 4 L 3 4 L 3 21 L 21 21 L 21 4 L 20 4 L 20 2 L 18 2 L 18 4 L 6 4 L 6 2 L 4 2 M 5 8 L 5 20 L 20 20 L 20 8 L 5 8 M 7 10 L 9 10 L 9 12 L 7 12 L 7 10 M 12 10 L 14 10 L 14 12 L 12 12 L 12 10 M 17 10 L 19 10 L 19 12 L 17 12 L 17 10 M 7 14 L 9 14 L 9 16 L 7 16 L 7 14 M 12 14 L 14 14 L 14 16 L 12 16 L 12 14 M 17 14 L 19 14 L 19 16 L 17 16 L 17 14 M 7 18 L 9 18 L 9 20 L 7 20 L 7 18 M 12 18 L 14 18 L 14 20 L 12 20 L 12 18 M 17 18 L 19 18 L 19 20 L 17 20 L 17 18 Z"
+                                          Fill="{DynamicResource TextPrimary}"/>
+                                </Viewbox>
+                            </Button>
 
-                                <Popup x:Name="PART_Popup"
-                                       PlacementTarget="{Binding ElementName=PART_TextBox}"
-                                       AllowsTransparency="True"
-                                       Placement="Bottom"
-                                       StaysOpen="False">
-                                    <Border Background="{DynamicResource CardBackground}"
-                                            BorderBrush="Transparent"
-                                            BorderThickness="0"
-                                            CornerRadius="8"
-                                            Padding="10">
-                                        <StackPanel>
-                                            <Calendar x:Name="PART_Calendar"
-                                                      Background="{DynamicResource CardBackground}"
-                                                      Foreground="{DynamicResource TextPrimary}"
-                                                      BorderThickness="0"
-                                                      BorderBrush="Transparent"
-                                                      Padding="0"
-                                                      Style="{StaticResource ChicCalendarStyle}">
-                                                <Calendar.Resources>
-                                                    <Style TargetType="CalendarDayButton" BasedOn="{StaticResource ChicCalendarDayButtonStyle}"/>
-                                                </Calendar.Resources>
-                                            </Calendar>
-                                        </StackPanel>
-                                    </Border>
-                                </Popup>
-                            </Grid>
-                        </Border>
+                            <Popup x:Name="PART_Popup"
+                                   AllowsTransparency="True"
+                                   Placement="Bottom"
+                                   IsOpen="{Binding IsOpen, RelativeSource={RelativeSource TemplatedParent}}"
+                                   PopupAnimation="Fade">
+                                <Border Background="{DynamicResource CardBackground}"
+                                        BorderBrush="{DynamicResource BorderColor}"
+                                        BorderThickness="1"
+                                        CornerRadius="6"
+                                        Margin="0,5,0,0">
+                                    <Calendar x:Name="PART_Calendar"
+                                              SelectedDate="{Binding SelectedDate, RelativeSource={RelativeSource TemplatedParent}}"
+                                              DisplayDate="{Binding DisplayDate, RelativeSource={RelativeSource TemplatedParent}}"
+                                              Background="{DynamicResource CardBackground}"
+                                              Foreground="{DynamicResource TextPrimary}"/>
+                                </Border>
+                            </Popup>
+                        </Grid>
                     </ControlTemplate>
                 </Setter.Value>
             </Setter>
@@ -515,9 +517,14 @@
                         <TextBlock Text="DATE" Foreground="{DynamicResource TextSecondary}" FontSize="12" FontWeight="Bold"/>
                         <TextBlock Text=" *" Foreground="#EF4444" FontSize="14" FontWeight="SemiBold"/>
                     </StackPanel>
-                    <DatePicker SelectedDate="{Binding NewRendezVousDate}"
-                                Style="{StaticResource DatePickerStyleCustom}"/>
-
+                    <Border Background="{DynamicResource SecondaryBackground}" 
+                            BorderBrush="{DynamicResource BorderColor}" 
+                            BorderThickness="1" 
+                            CornerRadius="8">
+                        <DatePicker SelectedDate="{Binding NewRendezVousDate}"
+                                    Style="{StaticResource FormDatePickerStyle}"/>
+                    </Border>
+                        
                     <StackPanel Orientation="Horizontal" Margin="0,15,0,10">
                         <TextBlock Text="CRENEAU HORAIRE" Foreground="{DynamicResource TextSecondary}" FontSize="12" FontWeight="Bold"/>
                         <TextBlock Text=" *" Foreground="#EF4444" FontSize="14" FontWeight="SemiBold"/>
@@ -532,6 +539,10 @@
                         <Grid.RowDefinitions>
                             <RowDefinition Height="Auto"/>
                             <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
                         </Grid.RowDefinitions>
 
                         <ToggleButton Grid.Row="0" Grid.Column="0" Content="08:30" Margin="2" Style="{StaticResource TimeSlotStyle}" Tag="08:30" Click="OnTimeSlotClicked"/>
@@ -541,7 +552,20 @@
                         <ToggleButton Grid.Row="1" Grid.Column="0" Content="10:30" Margin="2" Style="{StaticResource TimeSlotStyle}" Tag="10:30" Click="OnTimeSlotClicked"/>
                         <ToggleButton Grid.Row="1" Grid.Column="1" Content="11:00" Margin="2" Style="{StaticResource TimeSlotStyle}" Tag="11:00" Click="OnTimeSlotClicked"/>
                         <ToggleButton Grid.Row="1" Grid.Column="2" Content="11:30" Margin="2" Style="{StaticResource TimeSlotStyle}" Tag="11:30" Click="OnTimeSlotClicked"/>
-                        <ToggleButton Grid.Row="1" Grid.Column="3" Content="14:00" Margin="2" Style="{StaticResource TimeSlotStyle}" Tag="14:00" Click="OnTimeSlotClicked"/>
+                        <ToggleButton Grid.Row="1" Grid.Column="3" Content="12:00" Margin="2" Style="{StaticResource TimeSlotStyle}" Tag="12:00" Click="OnTimeSlotClicked"/>
+                        <ToggleButton Grid.Row="2" Grid.Column="0" Content="12:30" Margin="2" Style="{StaticResource TimeSlotStyle}" Tag="12:30" Click="OnTimeSlotClicked"/>
+                        <ToggleButton Grid.Row="2" Grid.Column="1" Content="13:00" Margin="2" Style="{StaticResource TimeSlotStyle}" Tag="13:00" Click="OnTimeSlotClicked"/>
+                        <ToggleButton Grid.Row="2" Grid.Column="2" Content="13:30" Margin="2" Style="{StaticResource TimeSlotStyle}" Tag="13:30" Click="OnTimeSlotClicked"/>
+                        <ToggleButton Grid.Row="2" Grid.Column="3" Content="14:00" Margin="2" Style="{StaticResource TimeSlotStyle}" Tag="14:00" Click="OnTimeSlotClicked"/>
+                        <ToggleButton Grid.Row="3" Grid.Column="0" Content="14:30" Margin="2" Style="{StaticResource TimeSlotStyle}" Tag="14:30" Click="OnTimeSlotClicked"/>
+                        <ToggleButton Grid.Row="3" Grid.Column="1" Content="15:00" Margin="2" Style="{StaticResource TimeSlotStyle}" Tag="15:00" Click="OnTimeSlotClicked"/>
+                        <ToggleButton Grid.Row="3" Grid.Column="2" Content="15:30" Margin="2" Style="{StaticResource TimeSlotStyle}" Tag="15:30" Click="OnTimeSlotClicked"/>
+                        <ToggleButton Grid.Row="3" Grid.Column="3" Content="16:00" Margin="2" Style="{StaticResource TimeSlotStyle}" Tag="16:00" Click="OnTimeSlotClicked"/>
+                        <ToggleButton Grid.Row="4" Grid.Column="0" Content="16:30" Margin="2" Style="{StaticResource TimeSlotStyle}" Tag="16:30" Click="OnTimeSlotClicked"/>
+                        <ToggleButton Grid.Row="4" Grid.Column="1" Content="17:00" Margin="2" Style="{StaticResource TimeSlotStyle}" Tag="17:00" Click="OnTimeSlotClicked"/>
+                        <ToggleButton Grid.Row="4" Grid.Column="2" Content="17:30" Margin="2" Style="{StaticResource TimeSlotStyle}" Tag="17:30" Click="OnTimeSlotClicked"/>
+                        <ToggleButton Grid.Row="4" Grid.Column="3" Content="18:00" Margin="2" Style="{StaticResource TimeSlotStyle}" Tag="18:00" Click="OnTimeSlotClicked"/>
+                        <ToggleButton Grid.Row="5" Grid.Column="0" Content="18:30" Margin="2" Style="{StaticResource TimeSlotStyle}" Tag="18:30" Click="OnTimeSlotClicked"/>
                     </Grid>
 
                     <TextBlock Text="STATUT" Foreground="{DynamicResource TextSecondary}" FontSize="12" FontWeight="Bold" Margin="0,15,0,5"
