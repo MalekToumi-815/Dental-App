@@ -40,6 +40,7 @@ namespace Dental_App
             });
 
             // Register all services
+            containerRegistry.RegisterSingleton(typeof(ILiveSearchService<>), typeof(LiveSearchService<>));
             containerRegistry.RegisterSingleton<IActeMedicalService, ActeMedicalService>();
             containerRegistry.RegisterSingleton<IAntecedentService, AntecedentService>();
             containerRegistry.RegisterSingleton<IDentService, DentService>();
