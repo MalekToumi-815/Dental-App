@@ -14,8 +14,7 @@ namespace Dental_App.ViewModels
     public class ProthesisteViewModel : BindableBase
     {
         private readonly IProthesisteService _prothesisteService;
-        private Timer _searchDebounceTimer;
-        private const int DEBOUNCE_DELAY_MS = 300;
+        private readonly ILiveSearchService<Prothesiste> _liveSearchService;
 
         // Liste des prothésistes
         private ObservableCollection<ProthesisteDisplayItem> _prosthesists;
@@ -34,14 +33,7 @@ namespace Dental_App.ViewModels
             {
                 if (SetProperty(ref _searchText, value))
                 {
-                    // Débouncer la recherche pour éviter trop d'appels réseau
-                    _searchDebounceTimer?.Dispose();
-                    _searchDebounceTimer = new Timer(
-                        _ => Application.Current?.Dispatcher?.Invoke(() => _ = FilterProthesistesAsync()),
-                        null,
-                        DEBOUNCE_DELAY_MS,
-                        Timeout.Infinite
-                    );
+                    _ = FilterProthesistesAsync();
                 }
             }
         }
@@ -85,9 +77,10 @@ namespace Dental_App.ViewModels
         public DelegateCommand<ProthesisteDisplayItem> EditCommand { get; }
         public DelegateCommand ClearSearchCommand { get; }
 
-        public ProthesisteViewModel(IProthesisteService prothesisteService)
+        public ProthesisteViewModel(IProthesisteService prothesisteService, ILiveSearchService<Prothesiste> liveSearchService)
         {
             _prothesisteService = prothesisteService ?? throw new ArgumentNullException(nameof(prothesisteService));
+            _liveSearchService = liveSearchService ?? throw new ArgumentNullException(nameof(liveSearchService));
 
             Prosthesists = new ObservableCollection<ProthesisteDisplayItem>();
 
@@ -145,18 +138,21 @@ namespace Dental_App.ViewModels
                     return;
                 }
 
-                List<Prothesiste> results;
+                var results = await _liveSearchService.SearchAsync(SearchText, async (searchTerm) => 
+                {
+                    // Si la saisie contient uniquement des chiffres -> Recherche par téléphone
+                    if (searchTerm.All(char.IsDigit) || searchTerm.All(c => char.IsDigit(c) || c == ' ' || c == '-' || c == '+'))
+                    {
+                        return await _prothesisteService.GetByPhoneAsync(searchTerm);
+                    }
+                    // Sinon -> Recherche par nom
+                    else
+                    {
+                        return await _prothesisteService.GetByNameAsync(searchTerm);
+                    }
+                });
 
-                // Si la saisie contient uniquement des chiffres -> Recherche par téléphone
-                if (SearchText.All(char.IsDigit) || SearchText.All(c => char.IsDigit(c) || c == ' ' || c == '-' || c == '+'))
-                {
-                    results = await _prothesisteService.GetByPhoneAsync(SearchText);
-                }
-                // Sinon -> Recherche par nom
-                else
-                {
-                    results = await _prothesisteService.GetByNameAsync(SearchText);
-                }
+                if (results == null) return; // Search was cancelled
 
                 // Mettre à jour la liste affichée
                 Prosthesists.Clear();
@@ -168,7 +164,7 @@ namespace Dental_App.ViewModels
                         Nom = p.Nom,
                         Adresse = p.Adresse ?? string.Empty,
                         Telephone = p.Tel ?? string.Empty,
-                        NbCommandes = p.CommandeProthesistes.Count
+                        NbCommandes = p.CommandeProthesistes?.Count ?? 0
                     });
                 }
             }

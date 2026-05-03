@@ -9,12 +9,14 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
+using System.Threading;
 
 namespace Dental_App.ViewModels
 {
     public class ActesMedicauxViewModel : BindableBase
     {
         private readonly IActeMedicalService _acteService;
+        private readonly ILiveSearchService<ActeMedical> _liveSearchService;
 
         // Removed duplicates. Initialized once.
         private ObservableCollection<ActeMedical> _actes = new();
@@ -24,7 +26,7 @@ namespace Dental_App.ViewModels
         private DelegateCommand? _addActeCommand;
         private DelegateCommand<ActeMedical>? _editActeCommand;
 
-        public ActesMedicauxViewModel(IActeMedicalService acteService)
+        public ActesMedicauxViewModel(IActeMedicalService acteService, ILiveSearchService<ActeMedical> liveSearchService)
         {
             try
             {
@@ -34,8 +36,14 @@ namespace Dental_App.ViewModels
                 {
                     throw new ArgumentNullException(nameof(acteService), "IActeMedicalService is not registered in the container");
                 }
+                
+                if (liveSearchService == null)
+                {
+                    throw new ArgumentNullException(nameof(liveSearchService), "ILiveSearchService is not registered in the container");
+                }
 
                 _acteService = acteService;
+                _liveSearchService = liveSearchService;
 
                 // Initialize Commands
                 _addActeCommand = new DelegateCommand(ExecuteAddActe);
@@ -68,7 +76,7 @@ namespace Dental_App.ViewModels
             {
                 if (SetProperty(ref _searchText, value))
                 {
-                    FilterActes();
+                    _ = FilterActesAsync();
                 }
             }
         }
@@ -122,21 +130,41 @@ namespace Dental_App.ViewModels
             }
         }
 
-        private void FilterActes()
+        private async Task FilterActesAsync()
         {
-            if (Actes == null) return;
-
             if (string.IsNullOrWhiteSpace(SearchText))
             {
-                FilteredActes = new ObservableCollection<ActeMedical>(Actes);
+                Application.Current.Dispatcher.Invoke(() =>
+                {
+                    FilteredActes = new ObservableCollection<ActeMedical>(Actes);
+                });
+                return;
             }
-            else
+
+            var results = await _liveSearchService.SearchAsync(SearchText, async (searchTerm) => 
             {
+                // Note: Normally this would query the service/DB, but in this case the previous implementation 
+                // just filtered the in-memory 'Actes' collection. To stick to the same behavior and avoid new repository methods
+                // we'll filter the loaded list here, but through the async search service for debouncing
                 var filtered = Actes
-                    .Where(a => a.Libelle != null && a.Libelle.Contains(SearchText, StringComparison.OrdinalIgnoreCase))
+                    .Where(a => a.Libelle != null && a.Libelle.Contains(searchTerm, StringComparison.OrdinalIgnoreCase))
                     .ToList();
-                FilteredActes = new ObservableCollection<ActeMedical>(filtered);
-            }
+                
+                return await Task.FromResult(filtered);
+            });
+
+            if (results == null) return; // Search was cancelled
+
+            Application.Current.Dispatcher.Invoke(() =>
+            {
+                FilteredActes = new ObservableCollection<ActeMedical>(results);
+            });
+        }
+
+        // Keep the original method for initial load or manual triggers (or point it to the async version)
+        private void FilterActes()
+        {
+            _ = FilterActesAsync();
         }
 
         private void ExecuteAddActe()

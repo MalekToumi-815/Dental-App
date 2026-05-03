@@ -17,8 +17,7 @@ namespace Dental_App.ViewModels
     {
         private readonly ICommandeProthesisteService _commandeService;
         private readonly IProthesisteService _prothesisteService;
-        private Timer _searchDebounceTimer;
-        private const int DEBOUNCE_DELAY_MS = 300;
+        private readonly ILiveSearchService<CommandeProthesiste> _liveSearchService;
 
         // --- Collections ---
         private ObservableCollection<CommandeProthesisteDisplayItem> _commandes;
@@ -47,18 +46,7 @@ namespace Dental_App.ViewModels
                 {
                     Debug.WriteLine($"[SearchText] Nouvelle valeur: '{value}'");
                     
-                    // Débouncer la recherche
-                    _searchDebounceTimer?.Dispose();
-                    _searchDebounceTimer = new Timer(
-                        _ => Application.Current?.Dispatcher?.Invoke(async () => 
-                        {
-                            Debug.WriteLine($"[Debounce] Déclenchement FilterCommandesAsync avec '{value}'");
-                            await FilterCommandesAsync();
-                        }),
-                        null,
-                        DEBOUNCE_DELAY_MS,
-                        Timeout.Infinite
-                    );
+                    _ = FilterCommandesAsync();
                 }
             }
         }
@@ -125,10 +113,11 @@ namespace Dental_App.ViewModels
         public DelegateCommand PrepareCommandeCommand { get; }
         public DelegateCommand ClearSearchCommand { get; }
 
-        public CommandeProthesisteViewModel(ICommandeProthesisteService commandeService, IProthesisteService prothesisteService)
+        public CommandeProthesisteViewModel(ICommandeProthesisteService commandeService, IProthesisteService prothesisteService, ILiveSearchService<CommandeProthesiste> liveSearchService)
         {
             _commandeService = commandeService ?? throw new ArgumentNullException(nameof(commandeService));
             _prothesisteService = prothesisteService ?? throw new ArgumentNullException(nameof(prothesisteService));
+            _liveSearchService = liveSearchService ?? throw new ArgumentNullException(nameof(liveSearchService));
 
             // Initialiser le ViewModel de recherche
             ProthesisteSearchViewModel = new ProthesisteSearchViewModel(_prothesisteService);
@@ -210,22 +199,25 @@ namespace Dental_App.ViewModels
                     return;
                 }
 
-                List<CommandeProthesiste> results;
-
-                // Si la saisie contient uniquement des chiffres -> Recherche par téléphone
-                if (SearchText.All(char.IsDigit) || SearchText.All(c => char.IsDigit(c) || c == ' ' || c == '-' || c == '+'))
+                var results = await _liveSearchService.SearchAsync(SearchText, async (searchTerm) => 
                 {
-                    Debug.WriteLine($"[FilterCommandesAsync] Recherche par TELEPHONE: {SearchText}");
-                    results = await _commandeService.GetByProthesistePhoneAsync(SearchText);
-                }
-                // Sinon -> Recherche par nom
-                else
-                {
-                    Debug.WriteLine($"[FilterCommandesAsync] Recherche par NOM: {SearchText}");
-                    results = await _commandeService.GetByProthesisteNameAsync(SearchText);
-                }
+                    // Si la saisie contient uniquement des chiffres -> Recherche par téléphone
+                    if (searchTerm.All(char.IsDigit) || searchTerm.All(c => char.IsDigit(c) || c == ' ' || c == '-' || c == '+'))
+                    {
+                        Debug.WriteLine($"[FilterCommandesAsync] Recherche par TELEPHONE: {searchTerm}");
+                        return await _commandeService.GetByProthesistePhoneAsync(searchTerm);
+                    }
+                    // Sinon -> Recherche par nom
+                    else
+                    {
+                        Debug.WriteLine($"[FilterCommandesAsync] Recherche par NOM: {searchTerm}");
+                        return await _commandeService.GetByProthesisteNameAsync(searchTerm);
+                    }
+                });
 
-                Debug.WriteLine($"[FilterCommandesAsync] {results.Count} résultats trouvés");
+                if (results == null) return; // Search was cancelled
+
+                Debug.WriteLine($"[FilterCommandesAsync] {results.Count()} résultats trouvés");
 
                 // Mettre à jour la liste affichée
                 Commandes.Clear();
