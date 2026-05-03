@@ -12,6 +12,7 @@ namespace Dental_App.ViewModels
     {
         private readonly IRendezVousService _rendezVousService;
         private readonly IPatientService _patientService;
+        private readonly ILiveSearchService<Patient> _searchService;
 
         // --- Collections ---
         private ObservableCollection<RendezVousItemViewModel> _rendezVousList;
@@ -152,16 +153,17 @@ namespace Dental_App.ViewModels
         public DelegateCommand SaveRendezVousCommand { get; }
         public DelegateCommand<RendezVousItemViewModel> EditRendezVousCommand { get; }
 
-        public RendezVousViewModel(IRendezVousService rendezVousService, IPatientService patientService)
+        public RendezVousViewModel(IRendezVousService rendezVousService, IPatientService patientService, ILiveSearchService<Patient> searchService)
         {
             _rendezVousService = rendezVousService ?? throw new ArgumentNullException(nameof(rendezVousService));
             _patientService = patientService ?? throw new ArgumentNullException(nameof(patientService));
+            _searchService = searchService ?? throw new ArgumentNullException(nameof(searchService));
 
             RendezVousList = new ObservableCollection<RendezVousItemViewModel>();
             StatusList = new ObservableCollection<string> { "en attente", "termine", "annule" };
 
             // Initialiser le ViewModel de recherche patient
-            PatientSearchViewModel = new PatientSearchViewModel(_patientService);
+            PatientSearchViewModel = new PatientSearchViewModel(_patientService, _searchService);
 
             OpenModalCommand = new DelegateCommand(OpenModal);
             CloseModalCommand = new DelegateCommand(CloseModal);

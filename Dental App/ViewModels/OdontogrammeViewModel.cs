@@ -8,12 +8,13 @@ using Dental_App.Services;
 using System.Linq;
 using System.Threading.Tasks;
 using System.IO;
+using Dental_App.Models;
 
 namespace Dental_App.ViewModels
 {
     public class OdontogrammeViewModel : BindableBase
     {
-        private string _patientInfo = "Aucun patient sélectionné";
+        private string _patientInfo = "Aucun patient slectionn";
         private DelegateCommand _choisirPatientCommand;
         private DelegateCommand<string> _toothClickedCommand;
         private DelegateCommand _toggleViewModeCommand;
@@ -30,12 +31,14 @@ namespace Dental_App.ViewModels
         private bool _isHistoryMode = false;
         private string _currentInkFilePath;
         private bool _isInkCanvasEnabled = false;
+        private readonly ILiveSearchService<Patient> _liveSearchService;
 
-        public OdontogrammeViewModel(IPatientService patientService, IDentService dentService, IOdontogrammeLibreService odontogrammeLibreService)
+        public OdontogrammeViewModel(IPatientService patientService, IDentService dentService, IOdontogrammeLibreService odontogrammeLibreService, ILiveSearchService<Patient> liveSearchService)
         {
             _patientService = patientService ?? throw new ArgumentNullException(nameof(patientService));
             _dentService = dentService ?? throw new ArgumentNullException(nameof(dentService));
             _odontogrammeLibreService = odontogrammeLibreService ?? throw new ArgumentNullException(nameof(odontogrammeLibreService));
+            _liveSearchService = liveSearchService ?? throw new ArgumentNullException(nameof(liveSearchService));
             _actsHistory = new ObservableCollection<ToothActDisplayItem>();
             
             ChoisirPatientCommand = new DelegateCommand(ExecuteChoisirPatient);
@@ -142,7 +145,7 @@ namespace Dental_App.ViewModels
             {
                 System.Diagnostics.Debug.WriteLine("[OdontogrammeViewModel] Opening patient selection dialog...");
 
-                var dialogViewModel = new PatientSelectionDialogViewModel(_patientService);
+                var dialogViewModel = new PatientSelectionDialogViewModel(_patientService, _liveSearchService);
                 var dialogView = new PatientSelectionDialogView { DataContext = dialogViewModel };
 
                 var window = new Window

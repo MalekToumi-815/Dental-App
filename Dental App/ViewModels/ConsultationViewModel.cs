@@ -18,6 +18,7 @@ namespace Dental_App.ViewModels
         private readonly IConsultationService _consultationService;
         private readonly IDentService _dentService;
         private readonly IActeMedicalService _acteService;
+        private readonly ILiveSearchService<Patient> _liveSearchService;
 
         private ObservableCollection<PatientForConsultation> _allPatients;
         private ObservableCollection<PatientForConsultation> _filteredPatients;
@@ -30,12 +31,13 @@ namespace Dental_App.ViewModels
         private DelegateCommand<ConsultationDisplayRow> _editConsultationCommand;
         private DelegateCommand<ConsultationDisplayRow> _gererActeCommand;
 
-        public ConsultationViewModel(IPatientService patientService, IConsultationService consultationService, IDentService dentService, IActeMedicalService acteService)
+        public ConsultationViewModel(IPatientService patientService, IConsultationService consultationService, IDentService dentService, IActeMedicalService acteService, ILiveSearchService<Patient> liveSearchService)
         {
             _patientService = patientService ?? throw new ArgumentNullException(nameof(patientService));
             _consultationService = consultationService ?? throw new ArgumentNullException(nameof(consultationService));
             _dentService = dentService ?? throw new ArgumentNullException(nameof(dentService));
             _acteService = acteService ?? throw new ArgumentNullException(nameof(acteService));
+            _liveSearchService = liveSearchService ?? throw new ArgumentNullException(nameof(liveSearchService));
 
             AllPatients = new ObservableCollection<PatientForConsultation>();
             FilteredPatients = new ObservableCollection<PatientForConsultation>();
@@ -87,7 +89,7 @@ namespace Dental_App.ViewModels
             {
                 if (SetProperty(ref _searchText, value))
                 {
-                    PerformSearch();
+                    _ = PerformSearchAsync();
                 }
             }
         }
@@ -167,21 +169,48 @@ namespace Dental_App.ViewModels
             }
         }
 
-        private void PerformSearch()
+        private async Task PerformSearchAsync()
         {
             if (string.IsNullOrWhiteSpace(SearchText))
             {
-                FilteredPatients = new ObservableCollection<PatientForConsultation>(AllPatients);
+                await LoadPatientsAsync();
                 return;
             }
 
-            var searchTerm = SearchText.Trim().ToLower();
-            var filtered = AllPatients
-                .Where(p => p.FullName.ToLower().Contains(searchTerm) ||
-                           p.Telephone.ToLower().Contains(searchTerm))
-                .ToList();
+            IsLoading = true;
+            try
+            {
+                var query = SearchText.Trim();
+                var results = await _liveSearchService.SearchAsync(query, async (term) => 
+                    await _patientService.SearchByNameAsync(term, 10));
 
-            FilteredPatients = new ObservableCollection<PatientForConsultation>(filtered);
+                if (results != null)
+                {
+                    var filtered = new ObservableCollection<PatientForConsultation>();
+                    foreach (var p in results)
+                    {
+                        filtered.Add(new PatientForConsultation
+                        {
+                            Id = p.Id,
+                            FullName = $"{p.Prenom} {p.Nom}",
+                            FirstName = p.Prenom,
+                            LastName = p.Nom,
+                            Telephone = p.Telephone ?? string.Empty,
+                            Initials = GetInitials(p.Prenom, p.Nom),
+                            Patient = p
+                        });
+                    }
+                    FilteredPatients = filtered;
+                }
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"Error live search: {ex.Message}");
+            }
+            finally
+            {
+                IsLoading = false;
+            }
         }
 
         private async Task OnPatientSelectedAsync(PatientForConsultation patient)

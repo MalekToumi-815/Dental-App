@@ -9,6 +9,7 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
+using System.Collections.Generic;
 
 namespace Dental_App.ViewModels
 {
@@ -16,6 +17,7 @@ namespace Dental_App.ViewModels
     {
         private readonly IAntecedentService _antecedentService;
         private readonly IPatientService _patientService;
+        private readonly ILiveSearchService<Patient> _liveSearchService;
         private Timer _searchDebounceTimer;
         private const int DEBOUNCE_DELAY_MS = 300;
 
@@ -185,10 +187,11 @@ namespace Dental_App.ViewModels
         public DelegateCommand ClearPatientSearchCommand { get; }
         public DelegateCommand<Patient> SelectPatientCommand { get; }
 
-        public AntecedentViewModel(IAntecedentService antecedentService, IPatientService patientService)
+        public AntecedentViewModel(IAntecedentService antecedentService, IPatientService patientService, ILiveSearchService<Patient> liveSearchService)
         {
             _antecedentService = antecedentService ?? throw new ArgumentNullException(nameof(antecedentService));
             _patientService = patientService ?? throw new ArgumentNullException(nameof(patientService));
+            _liveSearchService = liveSearchService ?? throw new ArgumentNullException(nameof(liveSearchService));
 
             Antecedents = new ObservableCollection<Antecedant>();
             Patients = new ObservableCollection<Patient>();
@@ -237,7 +240,7 @@ namespace Dental_App.ViewModels
         }
 
         /// <summary>
-        /// Recherche les patients par nom et prénom
+        /// Recherche les patients par nom et prnom
         /// </summary>
         private async Task SearchPatientsAsync()
         {
@@ -254,23 +257,20 @@ namespace Dental_App.ViewModels
                     return;
                 }
 
-                var allPatients = await _patientService.GetAllAsync();
-                var searchLower = PatientSearchText.ToLower();
+                var results = await _liveSearchService.SearchAsync(PatientSearchText.Trim(), async (term) => 
+                    await _patientService.SearchByNameAsync(term, 10));
 
-                // Rechercher par nom ou prénom
-                var filtered = allPatients
-                    .Where(p => (p.Nom?.Contains(searchLower, StringComparison.OrdinalIgnoreCase) ?? false) ||
-                                (p.Prenom?.Contains(searchLower, StringComparison.OrdinalIgnoreCase) ?? false))
-                    .ToList();
-
-                Patients.Clear();
-                foreach (var patient in filtered)
+                if (results != null)
                 {
-                    Patients.Add(patient);
-                }
+                    Patients.Clear();
+                    foreach (var patient in results)
+                    {
+                        Patients.Add(patient);
+                    }
 
-                HasPatients = Patients.Count > 0;
-                Debug.WriteLine($"[SearchPatientsAsync] {Patients.Count} résultats trouvés");
+                    HasPatients = Patients.Count > 0;
+                    Debug.WriteLine($"[SearchPatientsAsync] {Patients.Count} rsultats trouvs");
+                }
             }
             catch (Exception ex)
             {

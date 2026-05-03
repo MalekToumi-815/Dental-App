@@ -12,6 +12,7 @@ namespace Dental_App.ViewModels
     public class PatientSelectionDialogViewModel : BindableBase
     {
         private readonly IPatientService _patientService;
+        private readonly ILiveSearchService<Patient> _liveSearchService;
         private string _searchTerm = string.Empty;
         private ObservableCollection<PatientDisplayModel> _filteredPatients;
         private PatientDisplayModel _selectedPatient;
@@ -21,9 +22,10 @@ namespace Dental_App.ViewModels
         private bool _isNoResultsVisible;
         private bool _isLoadingPatients = true;
 
-        public PatientSelectionDialogViewModel(IPatientService patientService)
+        public PatientSelectionDialogViewModel(IPatientService patientService, ILiveSearchService<Patient> liveSearchService)
         {
             _patientService = patientService ?? throw new ArgumentNullException(nameof(patientService));
+            _liveSearchService = liveSearchService ?? throw new ArgumentNullException(nameof(liveSearchService));
             _filteredPatients = new ObservableCollection<PatientDisplayModel>();
             
             SelectCommand = new DelegateCommand(ExecuteSelectCommand, CanExecuteSelectCommand).ObservesProperty(() => IsPatientSelected);
@@ -131,27 +133,37 @@ namespace Dental_App.ViewModels
         {
             try
             {
+                IsLoadingPatients = true;
+
                 if (string.IsNullOrWhiteSpace(searchTerm))
                 {
                     await LoadAllPatientsAsync();
                     return;
                 }
 
-                var results = await _patientService.SearchByNameAsync(searchTerm, maxResults: 50);
-                FilteredPatients.Clear();
+                var results = await _liveSearchService.SearchAsync(searchTerm.Trim(), async (term) => 
+                    await _patientService.SearchByNameAsync(term, 50));
 
-                foreach (var patient in results)
+                if (results != null)
                 {
-                    FilteredPatients.Add(new PatientDisplayModel(patient));
-                }
+                    FilteredPatients.Clear();
+                    foreach (var patient in results)
+                    {
+                        FilteredPatients.Add(new PatientDisplayModel(patient));
+                    }
 
-                UpdateNoResultsVisibility();
-                RaisePropertyChanged(nameof(PatientCount));
-                System.Diagnostics.Debug.WriteLine($"[PatientSelectionDialog] Search '{searchTerm}' returned {FilteredPatients.Count} results");
+                    UpdateNoResultsVisibility();
+                    RaisePropertyChanged(nameof(PatientCount));
+                    System.Diagnostics.Debug.WriteLine($"[PatientSelectionDialog] Search '{searchTerm}' returned {FilteredPatients.Count} results");
+                }
             }
             catch (Exception ex)
             {
                 System.Diagnostics.Debug.WriteLine($"[PatientSelectionDialog] Error searching patients: {ex.Message}");
+            }
+            finally
+            {
+                IsLoadingPatients = false;
             }
         }
 

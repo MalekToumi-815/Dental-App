@@ -18,6 +18,7 @@ namespace Dental_App.ViewModels
         private readonly IPatientService _patientService;
         private readonly IOrdonnanceService _ordonnanceService;
         private readonly IOrdonnanceServiceTemplate _templateService;
+        private readonly ILiveSearchService<Patient> _liveSearchService;
 
         private ObservableCollection<PatientForOrdonnance> _allPatients;
         private ObservableCollection<PatientForOrdonnance> _filteredPatients;
@@ -31,11 +32,12 @@ namespace Dental_App.ViewModels
         private DelegateCommand<OrdonnanceDisplayRow> _printOrdonnanceCommand;
         private DelegateCommand<OrdonnanceDisplayRow> _viewOrdonnanceCommand;
 
-        public OrdonnanceViewModel(IPatientService patientService, IOrdonnanceService ordonnanceService, IOrdonnanceServiceTemplate templateService)
+        public OrdonnanceViewModel(IPatientService patientService, IOrdonnanceService ordonnanceService, IOrdonnanceServiceTemplate templateService, ILiveSearchService<Patient> liveSearchService)
         {
             _patientService = patientService ?? throw new ArgumentNullException(nameof(patientService));
             _ordonnanceService = ordonnanceService ?? throw new ArgumentNullException(nameof(ordonnanceService));
             _templateService = templateService ?? throw new ArgumentNullException(nameof(templateService));
+            _liveSearchService = liveSearchService ?? throw new ArgumentNullException(nameof(liveSearchService));
 
             AllPatients = new ObservableCollection<PatientForOrdonnance>();
             FilteredPatients = new ObservableCollection<PatientForOrdonnance>();
@@ -87,7 +89,7 @@ namespace Dental_App.ViewModels
             {
                 if (SetProperty(ref _searchText, value))
                 {
-                    PerformSearch();
+                    _ = PerformSearchAsync();
                 }
             }
         }
@@ -172,21 +174,48 @@ namespace Dental_App.ViewModels
             }
         }
 
-        private void PerformSearch()
+        private async Task PerformSearchAsync()
         {
             if (string.IsNullOrWhiteSpace(SearchText))
             {
-                FilteredPatients = new ObservableCollection<PatientForOrdonnance>(AllPatients);
+                await LoadPatientsAsync();
                 return;
             }
 
-            var searchTerm = SearchText.Trim().ToLower();
-            var filtered = AllPatients
-                .Where(p => p.FullName.ToLower().Contains(searchTerm) ||
-                           p.Telephone.ToLower().Contains(searchTerm))
-                .ToList();
+            IsLoading = true;
+            try
+            {
+                var query = SearchText.Trim();
+                var results = await _liveSearchService.SearchAsync(query, async (term) => 
+                    await _patientService.SearchByNameAsync(term, 10));
 
-            FilteredPatients = new ObservableCollection<PatientForOrdonnance>(filtered);
+                if (results != null)
+                {
+                    var filtered = new ObservableCollection<PatientForOrdonnance>();
+                    foreach (var p in results)
+                    {
+                        filtered.Add(new PatientForOrdonnance
+                        {
+                            Id = p.Id,
+                            FullName = $"{p.Prenom} {p.Nom}",
+                            FirstName = p.Prenom,
+                            LastName = p.Nom,
+                            Telephone = p.Telephone ?? string.Empty,
+                            Initials = GetInitials(p.Prenom, p.Nom),
+                            Patient = p
+                        });
+                    }
+                    FilteredPatients = filtered;
+                }
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"Error live search: {ex.Message}");
+            }
+            finally
+            {
+                IsLoading = false;
+            }
         }
 
         private async Task OnPatientSelectedAsync(PatientForOrdonnance patient)

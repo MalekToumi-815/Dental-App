@@ -9,21 +9,22 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
+using System.Collections.Generic;
 
 namespace Dental_App.ViewModels
 {
     /// <summary>
-    /// ViewModel dédiée à la recherche prédictive de patients.
-    /// Gère la logique de filtrage et de sélection avec une séparation des responsabilités.
+    /// ViewModel ddie  la recherche prdictive de patients.
+    /// Gre la logique de filtrage et de slection avec une sparation des responsabilits.
     /// </summary>
     public class PatientSearchViewModel : BindableBase
     {
         private readonly IPatientService _patientService;
+        private readonly ILiveSearchService<Patient> _liveSearchService;
         private Timer _searchDebounceTimer;
         private const int DEBOUNCE_DELAY_MS = 300;
 
         // --- Collections ---
-        private ObservableCollection<Patient> _allPatients;
         private ObservableCollection<Patient> _suggestedPatients;
 
         public ObservableCollection<Patient> SuggestedPatients
@@ -84,45 +85,27 @@ namespace Dental_App.ViewModels
         // --- Commands ---
         public DelegateCommand ClearSearchCommand { get; }
 
+        // Backwards compatibility constructor
         public PatientSearchViewModel(IPatientService patientService)
+            : this(patientService, null)
+        {
+        }
+
+        public PatientSearchViewModel(IPatientService patientService, ILiveSearchService<Patient> liveSearchService)
         {
             _patientService = patientService ?? throw new ArgumentNullException(nameof(patientService));
+            _liveSearchService = liveSearchService;
 
-            _allPatients = new ObservableCollection<Patient>();
             SuggestedPatients = new ObservableCollection<Patient>();
 
             ClearSearchCommand = new DelegateCommand(ClearSearch);
-
-            LoadPatients();
         }
 
         /// <summary>
-        /// Charge tous les patients depuis la base de données.
+        /// Effectue une recherche prdictive sur le texte saisi.
+        /// La recherche est insensible  la casse et utilise l'algorithme "Contains" sur le nom et prnom.
         /// </summary>
-        private async void LoadPatients()
-        {
-            try
-            {
-                var patients = await _patientService.GetAllAsync();
-                _allPatients.Clear();
-                foreach (var p in patients)
-                {
-                    _allPatients.Add(p);
-                }
-                Debug.WriteLine($"[PatientSearchViewModel] {_allPatients.Count} patients chargés");
-            }
-            catch (Exception ex)
-            {
-                Debug.WriteLine($"[PatientSearchViewModel] ERREUR lors du chargement: {ex.Message}");
-                MessageBox.Show($"Erreur lors du chargement des patients: {ex.Message}");
-            }
-        }
-
-        /// <summary>
-        /// Effectue une recherche prédictive sur le texte saisi.
-        /// La recherche est insensible à la casse et utilise l'algorithme "Contains" sur le nom et prénom.
-        /// </summary>
-        private void PerformSearch(string searchText)
+        private async Task PerformSearch(string searchText)
         {
             if (string.IsNullOrWhiteSpace(searchText))
             {
@@ -131,26 +114,59 @@ namespace Dental_App.ViewModels
                 return;
             }
 
-            // Recherche insensible à la casse sur le nom et prénom
-            var filtered = _allPatients
-                .Where(p => 
-                    (p.Nom != null && p.Nom.Contains(searchText, StringComparison.OrdinalIgnoreCase)) ||
-                    (p.Prenom != null && p.Prenom.Contains(searchText, StringComparison.OrdinalIgnoreCase)) ||
-                    ($"{p.Nom} {p.Prenom}".Contains(searchText, StringComparison.OrdinalIgnoreCase))
-                )
-                .OrderBy(p => p.Nom)
-                .ThenBy(p => p.Prenom)
-                .ToList();
-
-            SuggestedPatients.Clear();
-            foreach (var p in filtered)
+            if (_liveSearchService != null)
             {
-                SuggestedPatients.Add(p);
-            }
+                try
+                {
+                    var results = await _liveSearchService.SearchAsync(searchText, async (term) => 
+                        await _patientService.SearchByNameAsync(term, 10));
 
-            // Afficher les suggestions uniquement s'il y a des résultats
-            IsSuggestionsVisible = SuggestedPatients.Any();
-            Debug.WriteLine($"[PatientSearchViewModel] {SuggestedPatients.Count} résultats pour '{searchText}'");
+                    if (results != null)
+                    {
+                        var filtered = results.OrderBy(p => p.Nom).ThenBy(p => p.Prenom).ToList();
+                        SuggestedPatients.Clear();
+                        foreach (var p in filtered)
+                        {
+                            SuggestedPatients.Add(p);
+                        }
+                        IsSuggestionsVisible = SuggestedPatients.Any();
+                        Debug.WriteLine($"[PatientSearchViewModel] {SuggestedPatients.Count} rsultats pour '{searchText}'");
+                    }
+                }
+                catch (Exception ex)
+                {
+                    Debug.WriteLine($"[PatientSearchViewModel] ERREUR de recherche live: {ex.Message}");
+                }
+            }
+            else 
+            {
+                // Fallback mechanism if _liveSearchService is not provided
+                try
+                {
+                   var patients = await _patientService.GetAllAsync();
+                   var filtered = patients
+                        .Where(p => 
+                            (p.Nom != null && p.Nom.Contains(searchText, StringComparison.OrdinalIgnoreCase)) ||
+                            (p.Prenom != null && p.Prenom.Contains(searchText, StringComparison.OrdinalIgnoreCase)) ||
+                            ($"{p.Nom} {p.Prenom}".Contains(searchText, StringComparison.OrdinalIgnoreCase))
+                        )
+                        .OrderBy(p => p.Nom)
+                        .ThenBy(p => p.Prenom)
+                        .Take(10)
+                        .ToList();
+
+                    SuggestedPatients.Clear();
+                    foreach (var p in filtered)
+                    {
+                        SuggestedPatients.Add(p);
+                    }
+                    IsSuggestionsVisible = SuggestedPatients.Any();
+                }
+                catch (Exception ex)
+                {
+                    Debug.WriteLine($"[PatientSearchViewModel] ERREUR de recherche: {ex.Message}");
+                }
+            }
         }
 
         /// <summary>

@@ -16,6 +16,7 @@ namespace Dental_App.ViewModels
     {
         private readonly IPatientService _patientService;
         private readonly IRadioImageService _radioImageService;
+        private readonly ILiveSearchService<Patient> _liveSearchService;
 
         private ObservableCollection<PatientDisplayItem> _patients;
         private ObservableCollection<RadioImageDisplayItem> _radioImages;
@@ -25,10 +26,11 @@ namespace Dental_App.ViewModels
         private bool _isLoading;
         private string _searchText = string.Empty;
 
-        public RadioImagesViewModel(IPatientService patientService, IRadioImageService radioImageService)
+        public RadioImagesViewModel(IPatientService patientService, IRadioImageService radioImageService, ILiveSearchService<Patient> liveSearchService)
         {
             _patientService = patientService ?? throw new ArgumentNullException(nameof(patientService));
             _radioImageService = radioImageService ?? throw new ArgumentNullException(nameof(radioImageService));
+            _liveSearchService = liveSearchService ?? throw new ArgumentNullException(nameof(liveSearchService));
 
             SelectPatientCommand = new DelegateCommand<PatientDisplayItem>(SelectPatient);
             ViewImageCommand = new DelegateCommand<RadioImageDisplayItem>(ViewImage);
@@ -84,7 +86,7 @@ namespace Dental_App.ViewModels
             {
                 if (SetProperty(ref _searchText, value))
                 {
-                    FilterPatients();
+                    _ = FilterPatientsAsync();
                 }
             }
         }
@@ -125,24 +127,41 @@ namespace Dental_App.ViewModels
             }
         }
 
-        private void FilterPatients()
+        private async Task FilterPatientsAsync()
         {
             if (string.IsNullOrWhiteSpace(SearchText))
             {
-                _ = LoadPatientsAsync();
+                await LoadPatientsAsync();
             }
             else
             {
-                var searchTerm = SearchText.ToLower();
-                var filtered = Patients.Where(p => 
-                    p.FullName.ToLower().Contains(searchTerm) || 
-                    p.Phone.ToLower().Contains(searchTerm))
-                    .ToList();
-
-                Patients.Clear();
-                foreach (var patient in filtered)
+                IsLoading = true;
+                try
                 {
-                    Patients.Add(patient);
+                    var results = await _liveSearchService.SearchAsync(SearchText.Trim(), async (term) => 
+                        await _patientService.SearchByNameAsync(term, 10));
+
+                    if (results != null)
+                    {
+                        Patients.Clear();
+                        foreach (var patient in results)
+                        {
+                            Patients.Add(new PatientDisplayItem
+                            {
+                                Id = patient.Id,
+                                FullName = $"{patient.Prenom} {patient.Nom}",
+                                Phone = patient.Telephone
+                            });
+                        }
+                    }
+                }
+                catch (Exception ex)
+                {
+                    System.Diagnostics.Debug.WriteLine($"Error live search: {ex.Message}");
+                }
+                finally
+                {
+                    IsLoading = false;
                 }
             }
         }

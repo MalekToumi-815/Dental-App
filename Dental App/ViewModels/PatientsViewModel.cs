@@ -9,12 +9,14 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
+using System.Collections.Generic;
 
 namespace Dental_App.ViewModels
 {
     public class PatientsViewModel : BindableBase
     {
         private readonly IPatientService _patientService;
+        private readonly ILiveSearchService<Patient> _searchService;
 
         private ObservableCollection<PatientDisplayRow> _patients;
         private string _searchText = string.Empty;
@@ -24,9 +26,10 @@ namespace Dental_App.ViewModels
         private DelegateCommand<PatientDisplayRow> _viewPatientCommand;
         private DelegateCommand<PatientDisplayRow> _editPatientCommand;
 
-        public PatientsViewModel(IPatientService patientService)
+        public PatientsViewModel(IPatientService patientService, ILiveSearchService<Patient> searchService)
         {
             _patientService = patientService ?? throw new ArgumentNullException(nameof(patientService));
+            _searchService = searchService ?? throw new ArgumentNullException(nameof(searchService));
 
             Patients = new ObservableCollection<PatientDisplayRow>();
             AddPatientCommand = new DelegateCommand(AddPatient);
@@ -50,7 +53,7 @@ namespace Dental_App.ViewModels
             {
                 if (SetProperty(ref _searchText, value))
                 {
-                    _ = PerformSearchAsync();
+                    _ = PerformLiveSearch(value);
                 }
             }
         }
@@ -240,19 +243,24 @@ namespace Dental_App.ViewModels
             }
         }
 
-        private async Task PerformSearchAsync()
+        private async Task PerformLiveSearch(string query)
         {
             try
             {
-                if (string.IsNullOrWhiteSpace(SearchText))
+                if (string.IsNullOrWhiteSpace(query))
                 {
                     await LoadPatientsAsync();
                     return;
                 }
 
                 IsLoading = true;
-                var searchResults = await _patientService.SearchByNameAsync(SearchText.Trim(), maxResults: 100);
-                await BuildPatientRows(searchResults);
+                var results = await _searchService.SearchAsync(query, 
+                    async (term) => await _patientService.SearchByNameAsync(term, 10));
+
+                if (results != null)
+                {
+                    await BuildPatientRows(results.ToList());
+                }
             }
             catch (Exception ex)
             {
