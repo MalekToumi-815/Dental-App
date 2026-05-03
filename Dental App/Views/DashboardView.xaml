@@ -114,7 +114,7 @@
                                                 <TextBlock Text="{Binding PatientName}" Foreground="{DynamicResource TextPrimary}" FontWeight="SemiBold"/>
                                                 <TextBlock Text="{Binding Time}" Foreground="{DynamicResource TextSecondary}" FontSize="11"/>
                                             </StackPanel>
-                                            <TextBlock Grid.Column="2" Text="👁 Voir" Foreground="{DynamicResource AccentColor}" VerticalAlignment="Center" FontSize="12" Cursor="Hand"/>
+                                            
                                         </Grid>
                                     </Border>
                                 </DataTemplate>

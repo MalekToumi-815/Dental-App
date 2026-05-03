@@ -187,6 +187,14 @@
 			</Setter>
 		</Style>
 
+        <Style x:Key="SearchBoxStyle" TargetType="Border">
+            <Setter Property="Background" Value="{DynamicResource CardBackground}"/>
+            <Setter Property="CornerRadius" Value="8"/>
+            <Setter Property="BorderBrush" Value="{DynamicResource BorderColor}"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="Padding" Value="12"/>
+        </Style>
+
 		<Style x:Key="SimpleInputStyle" TargetType="TextBox">
 			<Setter Property="Background" Value="{DynamicResource SecondaryBackground}"/>
 			<Setter Property="Foreground" Value="{DynamicResource TextPrimary}"/>
@@ -241,24 +249,20 @@
 			</Grid>
 
 			<!-- Barre de recherche -->
-			<StackPanel Grid.Row="2" Orientation="Horizontal" Margin="0,0,0,8">
-				<TextBox Style="{StaticResource InputStyle}"
-                         Tag="Rechercher par nom de prothesiste..."
-                         Text="{Binding SearchText, UpdateSourceTrigger=PropertyChanged}"
-                         Width="250"/>
+			<Border Grid.Row="2" Style="{StaticResource SearchBoxStyle}" Width="600" HorizontalAlignment="Left" Padding="8" Margin="0,0,0,8">
+				<Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="Auto"/>
+                    </Grid.ColumnDefinitions>
+                    
+                    <Path Data="M9.5,2A7.5,7.5 0 0,1 17,9.5A7.5,7.5 0 0,1 9.5,17A7.5,7.5 0 0,1 2,9.5A7.5,7.5 0 0,1 9.5,2M9.5,4A5.5,5.5 0 0,0 4,9.5A5.5,5.5 0 0,0 9.5,15A5.5,5.5 0 0,0 15,9.5A5.5,5.5 0 0,0 9.5,4M14.5,13L21,19.5L19.5,21L13,14.5Z"
+                          Fill="{DynamicResource TextSecondary}" Stretch="Uniform" Width="18" Margin="0,0,10,0" VerticalAlignment="Center"/>
 
-				<Button Style="{StaticResource TealBtn}"
-                        Width="44" Height="44"
-                        Margin="8,0,0,0"
-                        Command="{Binding ClearSearchCommand}"
-                        ToolTip="Effacer la recherche"
-                        IsEnabled="{Binding IsLoading, Converter={StaticResource InverseBoolToVis}}">
-                    <TextBlock Text="✕"
-                               Foreground="{DynamicResource PrimaryBackground}"
-                               FontSize="18"
-                               FontWeight="Bold"/>
-				</Button>
-			</StackPanel>
+                    <TextBox Grid.Column="1" Text="{Binding SearchText, UpdateSourceTrigger=PropertyChanged}" Background="Transparent" BorderThickness="0" Foreground="{DynamicResource TextPrimary}" Padding="8,0" VerticalAlignment="Center"/>
+                </Grid>
+            </Border>
 
 			<!-- Tableau -->
 			<Border Grid.Row="4"

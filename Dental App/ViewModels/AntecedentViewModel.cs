@@ -297,12 +297,15 @@ namespace Dental_App.ViewModels
         {
             if (patient == null) return;
 
-            Debug.WriteLine($"[SelectPatient] Patient sélectionné: {patient.Nom}");
+            Debug.WriteLine($"[SelectPatient] Patient slectionn: {patient.Nom}");
             SelectedPatient = patient;
+            
+            // Hide the patient search popup after selection
+            HasPatients = false;
         }
 
         /// <summary>
-        /// Appelé quand un patient est sélectionné
+        /// Appel quand un patient est slectionn
         /// </summary>
         private async void OnPatientSelectedAsync()
         {

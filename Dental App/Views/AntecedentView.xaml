@@ -70,6 +70,14 @@
             <Setter Property="HorizontalContentAlignment" Value="Left"/>
         </Style>
 
+        <Style x:Key="SearchBoxStyle" TargetType="Border">
+            <Setter Property="Background" Value="{DynamicResource CardBackground}"/>
+            <Setter Property="CornerRadius" Value="8"/>
+            <Setter Property="BorderBrush" Value="{DynamicResource BorderColor}"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="Padding" Value="12"/>
+        </Style>
+
 		<!-- Bouton Teal -->
 		<Style x:Key="TealBtn" TargetType="Button">
 			<Setter Property="Background" Value="{DynamicResource AccentColor}"/>
@@ -151,58 +159,58 @@
 			</Grid>
 
 			<!-- Patient Search -->
-			<Border Grid.Row="2" Background="{DynamicResource SecondaryBackground}" BorderBrush="{DynamicResource BorderColor}" BorderThickness="1" CornerRadius="8">
+			<Border Grid.Row="2" Style="{StaticResource SearchBoxStyle}" Width="600" HorizontalAlignment="Left" Padding="8">
 				<Grid>
 					<Grid.ColumnDefinitions>
-						<ColumnDefinition Width="*"/>
 						<ColumnDefinition Width="Auto"/>
+						<ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="Auto"/>
 					</Grid.ColumnDefinitions>
 
-					<Grid Grid.Column="0">
-						<Grid.RowDefinitions>
-							<RowDefinition Height="Auto"/>
-							<RowDefinition Height="Auto"/>
-						</Grid.RowDefinitions>
+                    <Path Data="M9.5,2A7.5,7.5 0 0,1 17,9.5A7.5,7.5 0 0,1 9.5,17A7.5,7.5 0 0,1 2,9.5A7.5,7.5 0 0,1 9.5,2M9.5,4A5.5,5.5 0 0,0 4,9.5A5.5,5.5 0 0,0 9.5,15A5.5,5.5 0 0,0 15,9.5A5.5,5.5 0 0,0 9.5,4M14.5,13L21,19.5L19.5,21L13,14.5Z"
+                          Fill="{DynamicResource TextSecondary}" Stretch="Uniform" Width="18" Margin="0,0,10,0" VerticalAlignment="Center"/>
 
-						<TextBox Grid.Row="0" Style="{StaticResource InputStyle}" Tag="Search patient by name..." Text="{Binding PatientSearchText, UpdateSourceTrigger=PropertyChanged}" Height="44" Margin="0,0,0,0"/>
+                    <Grid Grid.Column="1">
+                        <TextBox x:Name="PatientSearchBox" Text="{Binding PatientSearchText, UpdateSourceTrigger=PropertyChanged}" Background="Transparent" BorderThickness="0" Foreground="{DynamicResource TextPrimary}" Padding="8,0" VerticalAlignment="Center"/>
 
-						<Border Grid.Row="1" Background="{DynamicResource SecondaryBackground}" BorderBrush="{DynamicResource BorderColor}" BorderThickness="0,1,0,0" Visibility="{Binding HasPatients, Converter={StaticResource BoolToVis}}" MaxHeight="200">
-							<ScrollViewer VerticalScrollBarVisibility="Auto">
-								<ItemsControl ItemsSource="{Binding Patients}" HorizontalContentAlignment="Stretch">
-									<ItemsControl.ItemTemplate>
-										<DataTemplate>
-											<Border BorderBrush="{DynamicResource BorderColor}" BorderThickness="0,0,0,1" Padding="16,12" Background="Transparent">
-												<Border.Style>
-													<Style TargetType="Border">
-														<Setter Property="Background" Value="Transparent"/>
-														<Style.Triggers>
-															<Trigger Property="IsMouseOver" Value="True">
-																<Setter Property="Background" Value="{DynamicResource CardBackground}"/>
-															</Trigger>
-														</Style.Triggers>
-													</Style>
-												</Border.Style>
-												<Grid>
-													<Grid.InputBindings>
-														<MouseBinding MouseAction="LeftClick" Command="{Binding DataContext.SelectPatientCommand, RelativeSource={RelativeSource AncestorType=ItemsControl}}" CommandParameter="{Binding}"/>
-													</Grid.InputBindings>
-													<StackPanel VerticalAlignment="Center">
-														<TextBlock Text="{Binding Nom}" Foreground="{DynamicResource TextPrimary}" FontWeight="SemiBold" FontSize="14"/>
-														<TextBlock Text="{Binding Prenom, StringFormat='Prenom: {0}'}" Foreground="{DynamicResource TextSecondary}" FontSize="12" Margin="0,4,0,0"/>
-													</StackPanel>
-												</Grid>
-											</Border>
-										</DataTemplate>
-									</ItemsControl.ItemTemplate>
-								</ItemsControl>
-							</ScrollViewer>
-						</Border>
-					</Grid>
-
-					<Button Grid.Column="1" Style="{StaticResource TealBtn}" Command="{Binding ClearPatientSearchCommand}" Width="44" Height="44" Margin="8,0,0,0" ToolTip="Clear">
-						<TextBlock Text="X" Foreground="{DynamicResource PrimaryBackground}" FontSize="18" FontWeight="Bold"/>
-					</Button>
-				</Grid>
+                        <Popup IsOpen="{Binding HasPatients}" PlacementTarget="{Binding ElementName=PatientSearchBox}" Placement="Bottom" StaysOpen="False" AllowsTransparency="True">
+                            <Border Background="{DynamicResource CardBackground}" BorderBrush="{DynamicResource BorderColor}" BorderThickness="1" CornerRadius="8" Width="{Binding ActualWidth, ElementName=PatientSearchBox}" Margin="0,4,0,0">
+                                <Border.Effect>
+                                    <DropShadowEffect BlurRadius="10" Opacity="0.1" ShadowDepth="4"/>
+                                </Border.Effect>
+                                <ScrollViewer VerticalScrollBarVisibility="Auto" MaxHeight="240">
+                                    <ItemsControl ItemsSource="{Binding Patients}" HorizontalContentAlignment="Stretch">
+                                        <ItemsControl.ItemTemplate>
+                                            <DataTemplate>
+                                                <Border BorderBrush="{DynamicResource BorderColor}" BorderThickness="0,0,0,1" Padding="16,12" Background="Transparent" Cursor="Hand">
+                                                    <Border.Style>
+                                                        <Style TargetType="Border">
+                                                            <Setter Property="Background" Value="Transparent"/>
+                                                            <Style.Triggers>
+                                                                <Trigger Property="IsMouseOver" Value="True">
+                                                                    <Setter Property="Background" Value="{DynamicResource SecondaryBackground}"/>
+                                                                </Trigger>
+                                                            </Style.Triggers>
+                                                        </Style>
+                                                    </Border.Style>
+                                                    <Grid>
+                                                        <Grid.InputBindings>
+                                                            <MouseBinding MouseAction="LeftClick" Command="{Binding DataContext.SelectPatientCommand, RelativeSource={RelativeSource AncestorType=ItemsControl}}" CommandParameter="{Binding}"/>
+                                                        </Grid.InputBindings>
+                                                        <StackPanel VerticalAlignment="Center">
+                                                            <TextBlock Text="{Binding Nom}" Foreground="{DynamicResource TextPrimary}" FontWeight="SemiBold" FontSize="14"/>
+                                                            <TextBlock Text="{Binding Prenom, StringFormat='Prenom: {0}'}" Foreground="{DynamicResource TextSecondary}" FontSize="12" Margin="0,4,0,0"/>
+                                                        </StackPanel>
+                                                    </Grid>
+                                                </Border>
+                                            </DataTemplate>
+                                        </ItemsControl.ItemTemplate>
+                                    </ItemsControl>
+                                </ScrollViewer>
+                            </Border>
+                        </Popup>
+                    </Grid>
+                </Grid>
 			</Border>
 
 			<!-- Selected Patient Info -->
@@ -222,14 +230,7 @@
 				</Grid>
 			</Border>
 
-			<!-- Antecedents Search -->
-			<StackPanel Grid.Row="6" Orientation="Horizontal" Margin="0,0,0,8" Visibility="{Binding HasSelectedPatient, Converter={StaticResource BoolToVis}}">
-				<TextBox Style="{StaticResource InputStyle}" Tag="Search antecedent..." Text="{Binding SearchText, UpdateSourceTrigger=PropertyChanged}" Width="250"/>
-
-				<Button Style="{StaticResource TealBtn}" Command="{Binding ClearSearchCommand}" Width="44" Height="44" Margin="8,0,0,0" ToolTip="Clear">
-					<TextBlock Text="X" Foreground="{DynamicResource PrimaryBackground}" FontSize="18" FontWeight="Bold"/>
-				</Button>
-			</StackPanel>
+			
 
 			<!-- Antecedents Table -->
 			<Border Grid.Row="6" Background="{DynamicResource CardBackground}" BorderBrush="{DynamicResource BorderColor}" BorderThickness="1" CornerRadius="12" ClipToBounds="True" Margin="0,50,0,0">

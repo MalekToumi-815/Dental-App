@@ -114,6 +114,15 @@
 				</Setter.Value>
 			</Setter>
 		</Style>
+
+		<!-- Style pour la barre de recherche type carte -->
+		<Style x:Key="SearchBoxStyle" TargetType="Border">
+            <Setter Property="Background" Value="{DynamicResource CardBackground}"/>
+            <Setter Property="CornerRadius" Value="8"/>
+            <Setter Property="BorderBrush" Value="{DynamicResource BorderColor}"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="Padding" Value="12"/>
+        </Style>
 	</UserControl.Resources>
 
 	<Grid>
@@ -157,22 +166,27 @@
 
 			<!-- Barre de recherche -->
 			<StackPanel Grid.Row="2" Orientation="Horizontal" Margin="0,0,0,8">
-				<TextBox Style="{StaticResource InputStyle}"
-                         Tag="Rechercher par Nom ou Téléphone "
-                         Text="{Binding SearchText, UpdateSourceTrigger=PropertyChanged}"
-                         Width="250"/>
-
-				<Button Style="{StaticResource TealBtn}"
-                        Command="{Binding ClearSearchCommand}"
-                        Width="44" Height="44"
-                        Margin="8,0,0,0"
-                        ToolTip="Effacer la recherche">
-					<TextBlock Text="✕"
-                               Foreground="{DynamicResource PrimaryBackground}"
-                               FontSize="18"
-                               FontWeight="Bold"/>
-				</Button>
-			</StackPanel>
+                <StackPanel>
+                    <TextBlock Text="Prothésiste (Nom ou Tel)" Foreground="{DynamicResource TextSecondary}" FontSize="12" Margin="4,0,0,4"/>
+                    <Border Style="{StaticResource SearchBoxStyle}" Width="350">
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto"/>
+                                <ColumnDefinition Width="*"/>
+                            </Grid.ColumnDefinitions>
+                            <Path Data="M9.5,2A7.5,7.5 0 0,1 17,9.5A7.5,7.5 0 0,1 9.5,17A7.5,7.5 0 0,1 2,9.5A7.5,7.5 0 0,1 9.5,2M9.5,4A5.5,5.5 0 0,0 4,9.5A5.5,5.5 0 0,0 9.5,15A5.5,5.5 0 0,0 15,9.5A5.5,5.5 0 0,0 9.5,4M14.5,13L21,19.5L19.5,21L13,14.5Z"
+								  Fill="{DynamicResource TextSecondary}" Stretch="Uniform" Width="18" Margin="0,0,10,0"/>
+                            <TextBox Grid.Column="1"
+									 Background="Transparent"
+									 BorderThickness="0"
+									 Foreground="{DynamicResource TextPrimary}"
+									 Padding="8,0"
+									 VerticalAlignment="Center"
+									 Text="{Binding SearchText, UpdateSourceTrigger=PropertyChanged}"/>
+                        </Grid>
+                    </Border>
+                </StackPanel>
+            </StackPanel>
 
 			<!-- Tableau -->
 			<Border Grid.Row="4"
