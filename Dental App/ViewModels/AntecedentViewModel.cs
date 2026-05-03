@@ -258,7 +258,7 @@ namespace Dental_App.ViewModels
                 }
 
                 var results = await _liveSearchService.SearchAsync(PatientSearchText.Trim(), async (term) => 
-                    await _patientService.SearchByNameAsync(term, 10));
+                    await _patientService.SearchByNameAsync(term));
 
                 if (results != null)
                 {

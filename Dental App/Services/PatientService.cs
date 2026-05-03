@@ -14,7 +14,7 @@ namespace Dental_App.Services
         Task<Patient?> GetByIdWithConsultationsAsync(int id);
         Task<List<Patient>> GetAllAsync();
         Task<List<Patient>> GetByNameAsync(string nom, string prenom);
-        Task<List<Patient>> SearchByNameAsync(string term, int maxResults = 20);
+        Task<List<Patient>> SearchByNameAsync(string term);
         Task<Patient> UpdateAsync(Patient patient);
         Task<bool> DeleteAsync(int id);
         Task<int> DeleteByNameAsync(string nom, string prenom);
@@ -91,7 +91,7 @@ namespace Dental_App.Services
         /// Retourne les patients dont le nom ou prénom commence par la chaîne fournie
         /// ou la contient. Résultats triés : starts-with d'abord, puis contains.
         /// </summary>
-        public async Task<List<Patient>> SearchByNameAsync(string term, int maxResults = 20)
+        public async Task<List<Patient>> SearchByNameAsync(string term)
         {
             if (string.IsNullOrWhiteSpace(term)) return new List<Patient>();
             term = term.Trim();
@@ -100,20 +100,9 @@ namespace Dental_App.Services
             var startsWith = await _context.Patients
                 .Where(p => EF.Functions.Like(p.Nom, term + "%") || EF.Functions.Like(p.Prenom, term + "%"))
                 .OrderBy(p => p.Nom).ThenBy(p => p.Prenom)
-                .Take(maxResults)
                 .ToListAsync();
 
-            if (startsWith.Count >= maxResults) return startsWith;
-
-            // Compléter avec contains si nécessaire
-            var contains = await _context.Patients
-                .Where(p => (EF.Functions.Like(p.Nom, "%" + term + "%") || EF.Functions.Like(p.Prenom, "%" + term + "%"))
-                             && !(EF.Functions.Like(p.Nom, term + "%") || EF.Functions.Like(p.Prenom, term + "%")))
-                .OrderBy(p => p.Nom).ThenBy(p => p.Prenom)
-                .Take(maxResults - startsWith.Count)
-                .ToListAsync();
-
-            return startsWith.Concat(contains).ToList();
+            return startsWith;
         }
 
         public async Task<Patient> UpdateAsync(Patient patient)
