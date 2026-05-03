@@ -110,7 +110,8 @@ namespace Dental_App.ViewModels
                     {
                         Id = patient.Id,
                         FullName = $"{patient.Prenom} {patient.Nom}",
-                        Phone = patient.Telephone
+                        Phone = patient.Telephone,
+                        Initials = GetInitials(patient.Prenom, patient.Nom)
                     });
                 }
 
@@ -150,7 +151,8 @@ namespace Dental_App.ViewModels
                             {
                                 Id = patient.Id,
                                 FullName = $"{patient.Prenom} {patient.Nom}",
-                                Phone = patient.Telephone
+                                Phone = patient.Telephone,
+                                Initials = GetInitials(patient.Prenom, patient.Nom)
                             });
                         }
                     }
@@ -356,106 +358,121 @@ namespace Dental_App.ViewModels
                 MessageBox.Show($"Erreur: {ex.Message}", "Erreur", MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }
-    }
 
-    // ViewModel for the Image Viewer Dialog
-    public class ImageViewerDialogViewModel : BindableBase
-    {
-        private readonly RadioImagesViewModel _parentViewModel;
-        public Action CloseDialog { get; set; }
-
-        public ImageViewerDialogViewModel(RadioImagesViewModel parentViewModel)
+        // Helper to compute initials from first and last name
+        private string GetInitials(string firstName, string lastName)
         {
-            _parentViewModel = parentViewModel;
-            CloseImageViewerCommand = new DelegateCommand(CloseImageViewer);
+            var first = string.IsNullOrWhiteSpace(firstName) ? "?" : firstName[0].ToString().ToUpper();
+            var last = string.IsNullOrWhiteSpace(lastName) ? "?" : lastName[0].ToString().ToUpper();
+            return $"{first}{last}";
+        }
+    
+        // ViewModel for the Image Viewer Dialog
+        public class ImageViewerDialogViewModel : BindableBase
+        {
+            private readonly RadioImagesViewModel _parentViewModel;
+            public Action CloseDialog { get; set; }
+
+            public ImageViewerDialogViewModel(RadioImagesViewModel parentViewModel)
+            {
+                _parentViewModel = parentViewModel;
+                CloseImageViewerCommand = new DelegateCommand(CloseImageViewer);
+            }
+
+            public RadioImageDisplayItem SelectedImage => _parentViewModel.SelectedImage;
+
+            public DelegateCommand CloseImageViewerCommand { get; }
+
+            private void CloseImageViewer()
+            {
+                _parentViewModel.CloseImageViewerCommand.Execute();
+                CloseDialog?.Invoke();
+            }
         }
 
-        public RadioImageDisplayItem SelectedImage => _parentViewModel.SelectedImage;
-
-        public DelegateCommand CloseImageViewerCommand { get; }
-
-        private void CloseImageViewer()
+        public class PatientDisplayItem : BindableBase
         {
-            _parentViewModel.CloseImageViewerCommand.Execute();
-            CloseDialog?.Invoke();
-        }
-    }
+            private int _id;
+            private string _fullName;
+            private string _phone;
+            private bool _isSelected;
+            private string _initials;
 
-    public class PatientDisplayItem : BindableBase
-    {
-        private int _id;
-        private string _fullName;
-        private string _phone;
-        private bool _isSelected;
+            public int Id
+            {
+                get => _id;
+                set => SetProperty(ref _id, value);
+            }
 
-        public int Id
-        {
-            get => _id;
-            set => SetProperty(ref _id, value);
-        }
+            public string FullName
+            {
+                get => _fullName;
+                set => SetProperty(ref _fullName, value);
+            }
 
-        public string FullName
-        {
-            get => _fullName;
-            set => SetProperty(ref _fullName, value);
-        }
+            public string Phone
+            {
+                get => _phone;
+                set => SetProperty(ref _phone, value);
+            }
 
-        public string Phone
-        {
-            get => _phone;
-            set => SetProperty(ref _phone, value);
-        }
+            public bool IsSelected
+            {
+                get => _isSelected;
+                set => SetProperty(ref _isSelected, value);
+            }
 
-        public bool IsSelected
-        {
-            get => _isSelected;
-            set => SetProperty(ref _isSelected, value);
-        }
-    }
-
-    public class RadioImageDisplayItem : BindableBase
-    {
-        private int _id;
-        private int _patientId;
-        private string _fileName;
-        private string _imagePath;
-        private string _imageType;
-        private DateTime _dateTaken;
-
-        public int Id
-        {
-            get => _id;
-            set => SetProperty(ref _id, value);
+            public string Initials
+            {
+                get => _initials;
+                set => SetProperty(ref _initials, value);
+            }
         }
 
-        public int PatientId
+        public class RadioImageDisplayItem : BindableBase
         {
-            get => _patientId;
-            set => SetProperty(ref _patientId, value);
-        }
+            private int _id;
+            private int _patientId;
+            private string _fileName;
+            private string _imagePath;
+            private string _imageType;
+            private DateTime _dateTaken;
 
-        public string FileName
-        {
-            get => _fileName;
-            set => SetProperty(ref _fileName, value);
-        }
+            public int Id
+            {
+                get => _id;
+                set => SetProperty(ref _id, value);
+            }
 
-        public string ImagePath
-        {
-            get => _imagePath;
-            set => SetProperty(ref _imagePath, value);
-        }
+            public int PatientId
+            {
+                get => _patientId;
+                set => SetProperty(ref _patientId, value);
+            }
 
-        public string ImageType
-        {
-            get => _imageType;
-            set => SetProperty(ref _imageType, value);
-        }
+            public string FileName
+            {
+                get => _fileName;
+                set => SetProperty(ref _fileName, value);
+            }
 
-        public DateTime DateTaken
-        {
-            get => _dateTaken;
-            set => SetProperty(ref _dateTaken, value);
+            public string ImagePath
+            {
+                get => _imagePath;
+                set => SetProperty(ref _imagePath, value);
+            }
+
+            public string ImageType
+            {
+                get => _imageType;
+                set => SetProperty(ref _imageType, value);
+            }
+
+            public DateTime DateTaken
+            {
+                get => _dateTaken;
+                set => SetProperty(ref _dateTaken, value);
+            }
         }
     }
 }
