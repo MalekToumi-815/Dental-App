@@ -360,29 +360,34 @@
                                        FontSize="14" FontWeight="SemiBold"/>
 						</StackPanel>
 						<TextBox Style="{StaticResource InputStyle}"
-                                 Tag="Nom du laboratoire"
                                  Text="{Binding NewNom, UpdateSourceTrigger=PropertyChanged}"/>
 					</StackPanel>
 
 					<!-- Adresse -->
 					<StackPanel Margin="0,0,0,16">
-						<TextBlock Text="Adresse"
-                                   Foreground="{DynamicResource TextPrimary}"
-                                   FontSize="14" FontWeight="SemiBold"
-                                   Margin="0,0,0,8"/>
+						<StackPanel Orientation="Horizontal" Margin="0,0,0,8">
+							<TextBlock Text="Adresse"
+                                       Foreground="{DynamicResource TextPrimary}"
+                                       FontSize="14" FontWeight="SemiBold"/>
+							<TextBlock Text=" *"
+                                       Foreground="#EF4444"
+                                       FontSize="14" FontWeight="SemiBold"/>
+						</StackPanel>
 						<TextBox Style="{StaticResource InputStyle}"
-                                 Tag="Adresse"
                                  Text="{Binding NewAdresse, UpdateSourceTrigger=PropertyChanged}"/>
 					</StackPanel>
 
 					<!-- Téléphone -->
 					<StackPanel Margin="0,0,0,24">
-						<TextBlock Text="Téléphone"
-                                   Foreground="{DynamicResource TextPrimary}"
-                                   FontSize="14" FontWeight="SemiBold"
-                                   Margin="0,0,0,8"/>
+						<StackPanel Orientation="Horizontal" Margin="0,0,0,8">
+							<TextBlock Text="Téléphone"
+                                       Foreground="{DynamicResource TextPrimary}"
+                                       FontSize="14" FontWeight="SemiBold"/>
+							<TextBlock Text=" *"
+                                       Foreground="#EF4444"
+                                       FontSize="14" FontWeight="SemiBold"/>
+						</StackPanel>
 						<TextBox Style="{StaticResource InputStyle}"
-                                 Tag="XX XXX XXX"
                                  Text="{Binding NewTelephone, UpdateSourceTrigger=PropertyChanged}"/>
 					</StackPanel>
 

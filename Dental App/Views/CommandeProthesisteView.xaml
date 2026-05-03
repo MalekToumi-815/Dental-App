@@ -39,7 +39,8 @@
                                            IsHitTestVisible="False"
                                            Visibility="Collapsed"/>
 								<ScrollViewer x:Name="PART_ContentHost"
-                                              VerticalAlignment="Center"/>
+                                              VerticalAlignment="{TemplateBinding VerticalContentAlignment}"
+                                              HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"/>
 							</Grid>
 						</Border>
 						<ControlTemplate.Triggers>
@@ -181,6 +182,19 @@
 					</ControlTemplate>
 				</Setter.Value>
 			</Setter>
+		</Style>
+
+		<Style x:Key="SimpleInputStyle" TargetType="TextBox">
+			<Setter Property="Background" Value="{DynamicResource SecondaryBackground}"/>
+			<Setter Property="Foreground" Value="{DynamicResource TextPrimary}"/>
+			<Setter Property="BorderBrush" Value="{DynamicResource BorderColor}"/>
+			<Setter Property="BorderThickness" Value="1"/>
+			<Setter Property="FontSize" Value="14"/>
+			<Setter Property="Height" Value="44"/>
+			<Setter Property="CaretBrush" Value="{DynamicResource AccentColor}"/>
+			<Setter Property="Padding" Value="12,0"/>
+			<Setter Property="VerticalContentAlignment" Value="Center"/>
+			<Setter Property="HorizontalContentAlignment" Value="Left"/>
 		</Style>
 	</UserControl.Resources>
 
@@ -420,7 +434,7 @@
 					<!-- Prothesiste - Recherche Predictive avec Icone Loupe -->
 					<StackPanel Margin="0,0,0,16">
 						<StackPanel Orientation="Horizontal" Margin="0,0,0,8">
-							<TextBlock Text="Prothesiste"
+							<TextBlock Text="Prothesiste (Nom ou Tel)"
                                        Foreground="{DynamicResource TextPrimary}"
                                        FontSize="14" FontWeight="SemiBold"/>
 							<TextBlock Text=" *"
@@ -436,8 +450,7 @@
 							</Grid.RowDefinitions>
 
 							<TextBox Grid.Row="0"
-                                     Style="{StaticResource InputStyle}"
-                                     Tag="Rechercher un prothesiste par nom ou tel..."
+                                     Style="{StaticResource SimpleInputStyle}"
                                      Text="{Binding ProthesisteSearchViewModel.SearchText, UpdateSourceTrigger=PropertyChanged}"/>
 
 							<!-- ListBox des suggestions -->
@@ -493,31 +506,41 @@
 
 					<!-- Details Achats -->
 					<StackPanel Margin="0,0,0,16">
+                        <StackPanel Orientation="Horizontal" Margin="0,0,0,8">
 						<TextBlock Text="Details Achats"
                                    Foreground="{DynamicResource TextPrimary}"
                                    FontSize="14" FontWeight="SemiBold"
                                    Margin="0,0,0,8"/>
-						<TextBox Style="{StaticResource InputStyle}"
-                                 Tag="Description des achats..."
+                        <TextBlock Text=" *"
+							Foreground="#EF4444"
+							FontSize="14" FontWeight="SemiBold"/>
+                        </StackPanel>
+                        <TextBox Style="{StaticResource InputStyle}"
+                                 Text="{Binding NewAchats, UpdateSourceTrigger=PropertyChanged}"
                                  Height="80"
                                  TextWrapping="Wrap"
                                  AcceptsReturn="True"
                                  VerticalScrollBarVisibility="Auto"
-                                 Text="{Binding NewAchats, UpdateSourceTrigger=PropertyChanged}"/>
+                                 VerticalContentAlignment="Top"
+                                 HorizontalContentAlignment="Left"/>
 					</StackPanel>
 
 					<!-- Somme Payee -->
 					<StackPanel Margin="0,0,0,24">
-						<TextBlock Text="Somme Payee (DT)"
-                                   Foreground="{DynamicResource TextPrimary}"
-                                   FontSize="14" FontWeight="SemiBold"
-                                   Margin="0,0,0,8"/>
-						<TextBox Style="{StaticResource InputStyle}"
-                                 Tag="0.00"
-								  TextWrapping="Wrap"
+						<StackPanel Orientation="Horizontal" Margin="0,0,0,8">
+							<TextBlock Text="Somme Payee (DT)"
+                                       Foreground="{DynamicResource TextPrimary}"
+                                       FontSize="14" FontWeight="SemiBold"
+                                       Margin="0,0,0,8"/>
+							<TextBlock Text=" *"
+                                       Foreground="#EF4444"
+                                       FontSize="14" FontWeight="SemiBold"/>
+						</StackPanel>
+						<TextBox Style="{StaticResource SimpleInputStyle}"
+                                 Text="{Binding NewSommePayee, UpdateSourceTrigger=PropertyChanged}"
+                                 TextWrapping="Wrap"
                                  AcceptsReturn="True"
-                                 VerticalScrollBarVisibility="Auto"
-                                 Text="{Binding NewSommePayee, UpdateSourceTrigger=PropertyChanged}"/>
+                                 VerticalScrollBarVisibility="Auto"/>
 					</StackPanel>
 
 					<!-- Bouton Enregistrer -->

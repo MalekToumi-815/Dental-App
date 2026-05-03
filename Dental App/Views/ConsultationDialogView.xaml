@@ -302,7 +302,10 @@
 
                     <!-- Date -->
                     <StackPanel Grid.Row="0" Margin="0,0,0,16">
-                        <TextBlock Text="DATE" Style="{StaticResource FormFieldLabelStyle}"/>
+                        <StackPanel Orientation="Horizontal" Margin="0,0,0,8">
+                            <TextBlock Text="DATE" Style="{StaticResource FormFieldLabelStyle}"/>
+                            <TextBlock Text=" *" Foreground="#EF4444" FontSize="14" FontWeight="SemiBold"/>
+                        </StackPanel>
                         <Border Background="{DynamicResource SecondaryBackground}" 
                                 BorderBrush="{DynamicResource BorderColor}" 
                                 BorderThickness="1" 
@@ -313,7 +316,10 @@
 
                     <!-- Tooth (FDI) -->
                     <StackPanel Grid.Row="1" Margin="0,0,0,16">
-                        <TextBlock Text="DENT (FDI)" Style="{StaticResource FormFieldLabelStyle}"/>
+                        <StackPanel Orientation="Horizontal" Margin="0,0,0,8">
+                            <TextBlock Text="DENT (FDI)" Style="{StaticResource FormFieldLabelStyle}"/>
+                            <TextBlock Text=" *" Foreground="#EF4444" FontSize="14" FontWeight="SemiBold"/>
+                        </StackPanel>
                         <ComboBox ItemsSource="{Binding ToothOptions}" 
                                   SelectedItem="{Binding SelectedTooth, UpdateSourceTrigger=PropertyChanged}" 
                                   Style="{StaticResource FormComboBoxStyle}"/>
@@ -321,7 +327,10 @@
 
                     <!-- Amount -->
                     <StackPanel Grid.Row="2" Margin="0,0,0,16">
-                        <TextBlock Text="MONTANT TOTAL (DT)" Style="{StaticResource FormFieldLabelStyle}"/>
+                        <StackPanel Orientation="Horizontal" Margin="0,0,0,8">
+                            <TextBlock Text="MONTANT TOTAL (DT)" Style="{StaticResource FormFieldLabelStyle}"/>
+                            <TextBlock Text=" *" Foreground="#EF4444" FontSize="14" FontWeight="SemiBold"/>
+                        </StackPanel>
                         <TextBox Text="{Binding Amount, UpdateSourceTrigger=PropertyChanged}" Style="{StaticResource FormInputStyle}"/>
                     </StackPanel>
 

@@ -280,10 +280,22 @@
         </Style>
     </UserControl.Resources>
 
-    <Grid HorizontalAlignment="Center" VerticalAlignment="Center">
+    <Grid HorizontalAlignment="Center" VerticalAlignment="Center" Width="400">
         <Border Style="{StaticResource DialogContainerStyle}">
             <StackPanel>
-                <TextBlock Text="{Binding Title}" Style="{StaticResource DialogTitleStyle}"/>
+                <Grid Margin="0,0,0,20">
+                    <TextBlock Text="{Binding Title}" Style="{StaticResource DialogTitleStyle}"/>
+                    <Button Content="X"
+                            HorizontalAlignment="Right"
+                            VerticalAlignment="Top"
+                            Background="Transparent"
+                            Foreground="{DynamicResource TextSecondary}"
+                            BorderThickness="0"
+                            FontSize="16"
+                            FontWeight="Bold"
+                            Cursor="Hand"
+                            Command="{Binding CancelCommand}"/>
+                </Grid>
 
                 <Grid>
                     <Grid.ColumnDefinitions>
@@ -300,17 +312,26 @@
                     </Grid.RowDefinitions>
 
                     <StackPanel Grid.Row="0" Grid.Column="0" Margin="0,0,0,16">
-                        <TextBlock Text="Prenom" Style="{StaticResource FormFieldLabelStyle}"/>
+                        <StackPanel Orientation="Horizontal" Margin="0,0,0,8">
+                            <TextBlock Text="Prenom" Style="{StaticResource FormFieldLabelStyle}"/>
+                            <TextBlock Text=" *" Foreground="#EF4444" FontSize="14" FontWeight="SemiBold"/>
+                        </StackPanel>
                         <TextBox Text="{Binding Prenom, UpdateSourceTrigger=PropertyChanged}" Style="{StaticResource FormInputStyle}"/>
                     </StackPanel>
 
                     <StackPanel Grid.Row="0" Grid.Column="2" Margin="0,0,0,16">
-                        <TextBlock Text="Nom" Style="{StaticResource FormFieldLabelStyle}"/>
+                        <StackPanel Orientation="Horizontal" Margin="0,0,0,8">
+                            <TextBlock Text="Nom" Style="{StaticResource FormFieldLabelStyle}"/>
+                            <TextBlock Text=" *" Foreground="#EF4444" FontSize="14" FontWeight="SemiBold"/>
+                        </StackPanel>
                         <TextBox Text="{Binding Nom, UpdateSourceTrigger=PropertyChanged}" Style="{StaticResource FormInputStyle}"/>
                     </StackPanel>
 
                     <StackPanel Grid.Row="1" Grid.Column="0" Margin="0,0,0,16">
-                        <TextBlock Text="Date de naissance" Style="{StaticResource FormFieldLabelStyle}"/>
+                        <StackPanel Orientation="Horizontal" Margin="0,0,0,8">
+                            <TextBlock Text="Date de naissance" Style="{StaticResource FormFieldLabelStyle}"/>
+                            <TextBlock Text=" *" Foreground="#EF4444" FontSize="14" FontWeight="SemiBold"/>
+                        </StackPanel>
                         <Border Background="{DynamicResource SecondaryBackground}" 
                                 BorderBrush="{DynamicResource BorderColor}" 
                                 BorderThickness="1" 
@@ -320,14 +341,20 @@
                     </StackPanel>
 
                     <StackPanel Grid.Row="1" Grid.Column="2" Margin="0,0,0,16">
-                        <TextBlock Text="Sexe" Style="{StaticResource FormFieldLabelStyle}"/>
+                        <StackPanel Orientation="Horizontal" Margin="0,0,0,8">
+                            <TextBlock Text="Sexe" Style="{StaticResource FormFieldLabelStyle}"/>
+                            <TextBlock Text=" *" Foreground="#EF4444" FontSize="14" FontWeight="SemiBold"/>
+                        </StackPanel>
                         <ComboBox ItemsSource="{Binding SexeOptions}" 
                                   SelectedItem="{Binding Sexe, UpdateSourceTrigger=PropertyChanged}" 
                                   Style="{StaticResource FormComboBoxStyle}"/>
                     </StackPanel>
 
                     <StackPanel Grid.Row="2" Grid.Column="0" Margin="0,0,0,16">
-                        <TextBlock Text="Telephone" Style="{StaticResource FormFieldLabelStyle}"/>
+                        <StackPanel Orientation="Horizontal" Margin="0,0,0,8">
+                            <TextBlock Text="Telephone" Style="{StaticResource FormFieldLabelStyle}"/>
+                            <TextBlock Text=" *" Foreground="#EF4444" FontSize="14" FontWeight="SemiBold"/>
+                        </StackPanel>
                         <TextBox Text="{Binding Telephone, UpdateSourceTrigger=PropertyChanged}" Style="{StaticResource FormInputStyle}"/>
                     </StackPanel>
 
@@ -337,7 +364,10 @@
                     </StackPanel>
 
                     <StackPanel Grid.Row="3" Grid.Column="0" Grid.ColumnSpan="3" Margin="0,0,0,24">
-                        <TextBlock Text="Adresse" Style="{StaticResource FormFieldLabelStyle}"/>
+                        <StackPanel Orientation="Horizontal" Margin="0,0,0,8">
+                            <TextBlock Text="Adresse" Style="{StaticResource FormFieldLabelStyle}"/>
+                            <TextBlock Text=" *" Foreground="#EF4444" FontSize="14" FontWeight="SemiBold"/>
+                        </StackPanel>
                         <TextBox Text="{Binding Adresse, UpdateSourceTrigger=PropertyChanged}" Style="{StaticResource FormInputStyle}"/>
                     </StackPanel>
 

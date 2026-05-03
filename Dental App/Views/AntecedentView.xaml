@@ -9,51 +9,66 @@
              mc:Ignorable="d"
              Background="{DynamicResource PrimaryBackground}">
 
-	<UserControl.Resources>
-		<BooleanToVisibilityConverter x:Key="BoolToVis"/>
-		<local:InverseBooleanConverter x:Key="InverseBoolToVis"/>
+    <UserControl.Resources>
+        <BooleanToVisibilityConverter x:Key="BoolToVis"/>
+        <local:InverseBooleanConverter x:Key="InverseBoolToVis"/>
 
-		<!-- Style TextBox -->
-		<Style x:Key="InputStyle" TargetType="TextBox">
-			<Setter Property="Background" Value="{DynamicResource SecondaryBackground}"/>
-			<Setter Property="Foreground" Value="{DynamicResource TextPrimary}"/>
-			<Setter Property="BorderBrush" Value="{DynamicResource BorderColor}"/>
-			<Setter Property="BorderThickness" Value="1"/>
-			<Setter Property="FontSize" Value="14"/>
-			<Setter Property="Height" Value="44"/>
-			<Setter Property="CaretBrush" Value="{DynamicResource AccentColor}"/>
-			<Setter Property="Padding" Value="12,0"/>
-			<Setter Property="Template">
-				<Setter.Value>
-					<ControlTemplate TargetType="TextBox">
-						<Border Background="{TemplateBinding Background}"
+        <!-- Style TextBox -->
+        <Style x:Key="InputStyle" TargetType="TextBox">
+            <Setter Property="Background" Value="{DynamicResource SecondaryBackground}"/>
+            <Setter Property="Foreground" Value="{DynamicResource TextPrimary}"/>
+            <Setter Property="BorderBrush" Value="{DynamicResource BorderColor}"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="FontSize" Value="14"/>
+            <Setter Property="Height" Value="44"/>
+            <Setter Property="CaretBrush" Value="{DynamicResource AccentColor}"/>
+            <Setter Property="Padding" Value="12,0"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="TextBox">
+                        <Border Background="{TemplateBinding Background}"
                                 BorderBrush="{TemplateBinding BorderBrush}"
                                 BorderThickness="{TemplateBinding BorderThickness}"
                                 CornerRadius="8">
-							<Grid Margin="12,0">
-								<TextBlock x:Name="Placeholder"
+                            <Grid Margin="12,0">
+                                <TextBlock x:Name="Placeholder"
                                            Text="{TemplateBinding Tag}"
                                            Foreground="{DynamicResource TextSecondary}"
                                            FontSize="{TemplateBinding FontSize}"
                                            VerticalAlignment="Center"
                                            IsHitTestVisible="False"
                                            Visibility="Collapsed"/>
-								<ScrollViewer x:Name="PART_ContentHost" VerticalAlignment="Center"/>
-							</Grid>
-						</Border>
-						<ControlTemplate.Triggers>
-							<MultiTrigger>
-								<MultiTrigger.Conditions>
-									<Condition Property="Text" Value=""/>
-									<Condition Property="IsKeyboardFocused" Value="False"/>
-								</MultiTrigger.Conditions>
-								<Setter TargetName="Placeholder" Property="Visibility" Value="Visible"/>
-							</MultiTrigger>
-						</ControlTemplate.Triggers>
-					</ControlTemplate>
-				</Setter.Value>
-			</Setter>
-		</Style>
+                                <ScrollViewer x:Name="PART_ContentHost"
+                                    VerticalAlignment="{TemplateBinding VerticalContentAlignment}"
+                                    HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"/>
+                            </Grid>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <MultiTrigger>
+                                <MultiTrigger.Conditions>
+                                    <Condition Property="Text" Value=""/>
+                                    <Condition Property="IsKeyboardFocused" Value="False"/>
+                                </MultiTrigger.Conditions>
+                                <Setter TargetName="Placeholder" Property="Visibility" Value="Visible"/>
+                            </MultiTrigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <Style x:Key="SimpleInputStyle" TargetType="TextBox">
+            <Setter Property="Background" Value="{DynamicResource SecondaryBackground}"/>
+            <Setter Property="Foreground" Value="{DynamicResource TextPrimary}"/>
+            <Setter Property="BorderBrush" Value="{DynamicResource BorderColor}"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="FontSize" Value="14"/>
+            <Setter Property="Height" Value="44"/>
+            <Setter Property="CaretBrush" Value="{DynamicResource AccentColor}"/>
+            <Setter Property="Padding" Value="12,0"/>
+            <Setter Property="VerticalContentAlignment" Value="Center"/>
+            <Setter Property="HorizontalContentAlignment" Value="Left"/>
+        </Style>
 
 		<!-- Bouton Teal -->
 		<Style x:Key="TealBtn" TargetType="Button">
@@ -307,12 +322,15 @@
 							<TextBlock Text="Name" Foreground="{DynamicResource TextPrimary}" FontSize="14" FontWeight="SemiBold"/>
 							<TextBlock Text=" *" Foreground="#EF4444" FontSize="14" FontWeight="SemiBold"/>
 						</StackPanel>
-						<TextBox Style="{StaticResource InputStyle}" Tag="Ex: Diabetes, Allergies..." Text="{Binding NewNom, UpdateSourceTrigger=PropertyChanged}"/>
+						<TextBox Style="{StaticResource SimpleInputStyle}"  Text="{Binding NewNom, UpdateSourceTrigger=PropertyChanged}"/>
 					</StackPanel>
 
 					<StackPanel Margin="0,0,0,24">
-						<TextBlock Text="Description" Foreground="{DynamicResource TextPrimary}" FontSize="14" FontWeight="SemiBold" Margin="0,0,0,8"/>
-						<TextBox Style="{StaticResource InputStyle}" Tag="Antecedent description..." Height="100" TextWrapping="Wrap" AcceptsReturn="True" VerticalScrollBarVisibility="Auto" Text="{Binding NewDescription, UpdateSourceTrigger=PropertyChanged}"/>
+						<StackPanel Orientation="Horizontal" Margin="0,0,0,8">
+							<TextBlock Text="Description" Foreground="{DynamicResource TextPrimary}" FontSize="14" FontWeight="SemiBold"/>
+							<TextBlock Text=" *" Foreground="#EF4444" FontSize="14" FontWeight="SemiBold"/>
+						</StackPanel>
+						<TextBox Style="{StaticResource InputStyle}"  Height="100" TextWrapping="Wrap" AcceptsReturn="True" VerticalScrollBarVisibility="Auto" Text="{Binding NewDescription, UpdateSourceTrigger=PropertyChanged}" VerticalContentAlignment="Top" HorizontalContentAlignment="Left"/>
 					</StackPanel>
 
 					<Button Content="Save" Style="{StaticResource TealBtn}" Height="46" FontSize="15" FontWeight="SemiBold" Command="{Binding SaveCommand}"/>

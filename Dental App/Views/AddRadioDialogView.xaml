@@ -178,7 +178,10 @@
                 </Button>
             </Grid>
 
-            <TextBlock Text="DATE" FontSize="12" FontWeight="SemiBold" Foreground="{DynamicResource TextPrimary}" Margin="0,0,0,8"/>
+            <StackPanel Orientation="Horizontal" Margin="0,0,0,8">
+                <TextBlock Text="DATE" FontSize="12" FontWeight="SemiBold" Foreground="{DynamicResource TextPrimary}"/>
+                <TextBlock Text=" *" Foreground="#EF4444" FontSize="14" FontWeight="SemiBold" Margin="2,0,0,0"/>
+            </StackPanel>
             <Border Background="{DynamicResource CardBackground}" 
                     BorderBrush="{DynamicResource AccentColor}" 
                     BorderThickness="2" 
@@ -188,13 +191,19 @@
                             Style="{StaticResource DialogDatePickerStyle}"/>
             </Border>
 
-            <TextBlock Text="TYPE" FontSize="12" FontWeight="SemiBold" Foreground="{DynamicResource TextPrimary}" Margin="0,0,0,8"/>
+            <StackPanel Orientation="Horizontal" Margin="0,0,0,8">
+                <TextBlock Text="TYPE" FontSize="12" FontWeight="SemiBold" Foreground="{DynamicResource TextPrimary}"/>
+                <TextBlock Text=" *" Foreground="#EF4444" FontSize="14" FontWeight="SemiBold" Margin="2,0,0,0"/>
+            </StackPanel>
             <TextBox Text="{Binding SelectedType, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                      Style="{StaticResource DialogInputStyle}"
                      Margin="0,0,0,12"
                      Height="45"/>
 
-            <TextBlock Text="FICHIER" FontSize="12" FontWeight="SemiBold" Foreground="{DynamicResource TextPrimary}" Margin="0,0,0,8"/>
+            <StackPanel Orientation="Horizontal" Margin="0,0,0,8">
+                <TextBlock Text="FICHIER" FontSize="12" FontWeight="SemiBold" Foreground="{DynamicResource TextPrimary}"/>
+                <TextBlock Text=" *" Foreground="#EF4444" FontSize="14" FontWeight="SemiBold" Margin="2,0,0,0"/>
+            </StackPanel>
             <Grid Margin="0,0,0,12">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="*"/>

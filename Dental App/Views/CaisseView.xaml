@@ -630,7 +630,7 @@
                                        FontSize="14" FontWeight="SemiBold"/>
                         </StackPanel>
                         <TextBox Style="{StaticResource InputStyle}"
-                                 Tag="0.00"
+                                 
                                  Text="{Binding NewMontant, Mode=TwoWay, StringFormat='0.00'}"/>
                     </StackPanel>
 
