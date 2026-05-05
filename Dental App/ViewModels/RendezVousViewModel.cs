@@ -4,7 +4,7 @@ using Dental_App.Services;
 using Dental_App.Models;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
-using System.Windows;
+using System.Windows; // Remove this if not used elsewhere, but kept here just in case.
 
 namespace Dental_App.ViewModels
 {
@@ -13,6 +13,7 @@ namespace Dental_App.ViewModels
         private readonly IRendezVousService _rendezVousService;
         private readonly IPatientService _patientService;
         private readonly ILiveSearchService<Patient> _searchService;
+        private readonly IAppNotificationService _notificationService;
 
         // --- Collections ---
         private ObservableCollection<RendezVousItemViewModel> _rendezVousList;
@@ -153,11 +154,12 @@ namespace Dental_App.ViewModels
         public DelegateCommand SaveRendezVousCommand { get; }
         public DelegateCommand<RendezVousItemViewModel> EditRendezVousCommand { get; }
 
-        public RendezVousViewModel(IRendezVousService rendezVousService, IPatientService patientService, ILiveSearchService<Patient> searchService)
+        public RendezVousViewModel(IRendezVousService rendezVousService, IPatientService patientService, ILiveSearchService<Patient> searchService, IAppNotificationService notificationService)
         {
             _rendezVousService = rendezVousService ?? throw new ArgumentNullException(nameof(rendezVousService));
             _patientService = patientService ?? throw new ArgumentNullException(nameof(patientService));
             _searchService = searchService ?? throw new ArgumentNullException(nameof(searchService));
+            _notificationService = notificationService ?? throw new ArgumentNullException(nameof(notificationService));
 
             RendezVousList = new ObservableCollection<RendezVousItemViewModel>();
             StatusList = new ObservableCollection<string> { "en attente", "termine", "annule" };
@@ -222,7 +224,7 @@ namespace Dental_App.ViewModels
             catch (Exception ex)
             {
                 Debug.WriteLine($"[LoadRendezVousByDateAsync] ERREUR: {ex.Message}");
-                MessageBox.Show($"Erreur lors du chargement: {ex.Message}", "Erreur", MessageBoxButton.OK, MessageBoxImage.Error);
+                _notificationService.ShowError($"Erreur lors du chargement: {ex.Message}");
             }
             finally
             {
@@ -334,7 +336,7 @@ namespace Dental_App.ViewModels
             catch (Exception ex)
             {
                 Debug.WriteLine($"[EditRendezVous] ERREUR: {ex.Message}");
-                MessageBox.Show($"Erreur: {ex.Message}", "Erreur", MessageBoxButton.OK, MessageBoxImage.Error);
+                _notificationService.ShowError($"Erreur: {ex.Message}");
             }
         }
 
@@ -342,7 +344,7 @@ namespace Dental_App.ViewModels
         {
             if (SelectedPatient == null || !NewRendezVousDate.HasValue || string.IsNullOrWhiteSpace(SelectedTimeSlot))
             {
-                MessageBox.Show("Veuillez remplir les champs obligatoires (Patient, Date, Heure).", "Validation", MessageBoxButton.OK, MessageBoxImage.Warning);
+                _notificationService.ShowWarning("Veuillez remplir les champs obligatoires (Patient, Date, Heure).", "Validation");
                 return;
             }
 
@@ -351,13 +353,13 @@ namespace Dental_App.ViewModels
                 // Parser l'heure
                 if (!TimeSpan.TryParse(SelectedTimeSlot, out var timeSpan))
                 {
-                    MessageBox.Show("Format d'heure invalide.", "Validation", MessageBoxButton.OK, MessageBoxImage.Warning);
+                    _notificationService.ShowWarning("Format d'heure invalide.", "Validation");
                     return;
                 }
 
                 var dateDebut = NewRendezVousDate.Value.Date.Add(timeSpan);
 
-                // Vérifier les conflits
+                // Vrifier les conflits
                 var hasConflict = await _rendezVousService.HasConflictAsync(
                     SelectedPatient.Id,
                     dateDebut,
@@ -366,31 +368,31 @@ namespace Dental_App.ViewModels
 
                 if (hasConflict)
                 {
-                    MessageBox.Show("Ce créneau est déjà occupé pour ce patient.", "Conflit", MessageBoxButton.OK, MessageBoxImage.Warning);
+                    _notificationService.ShowWarning("Ce creneau est deja occupe pour un autre RendezVous.", "Conflit");
                     return;
                 }
 
                 if (_selectedRendezVous == null)
                 {
-                    // Créer un nouveau rendez-vous
-                    Debug.WriteLine("[SaveRendezVous] Création d'un nouveau rendez-vous");
+                    // Crer un nouveau rendez-vous
+                    Debug.WriteLine("[SaveRendezVous] Cration d'un nouveau rendez-vous");
                     await _rendezVousService.CreateAsync(new RendezVou
                     {
                         PatientId = SelectedPatient.Id,
                         DateDebut = dateDebut,
                         Statut = SelectedStatus
                     });
-                    MessageBox.Show("Rendez-vous créé avec succès.", "Succès", MessageBoxButton.OK, MessageBoxImage.Information);
+                    _notificationService.ShowSuccess("Rendez-vous cree avec succes.");
                 }
                 else
                 {
                     // Modifier le rendez-vous existant
-                    Debug.WriteLine($"[SaveRendezVous] Mise à jour du rendez-vous {_selectedRendezVous.Id}");
+                    Debug.WriteLine($"[SaveRendezVous] Mise  jour du rendez-vous {_selectedRendezVous.Id}");
                     _selectedRendezVous.PatientId = SelectedPatient.Id;
                     _selectedRendezVous.DateDebut = dateDebut;
                     _selectedRendezVous.Statut = SelectedStatus;
                     await _rendezVousService.UpdateAsync(_selectedRendezVous);
-                    MessageBox.Show("Rendez-vous mis à jour avec succès.", "Succès", MessageBoxButton.OK, MessageBoxImage.Information);
+                    _notificationService.ShowSuccess("Rendez-vous mis a jour avec succes.");
                 }
 
                 CloseModal();
@@ -400,7 +402,7 @@ namespace Dental_App.ViewModels
             catch (Exception ex)
             {
                 Debug.WriteLine($"[SaveRendezVous] ERREUR: {ex.Message}");
-                MessageBox.Show($"Erreur lors de l'enregistrement: {ex.Message}", "Erreur", MessageBoxButton.OK, MessageBoxImage.Error);
+                _notificationService.ShowError($"Erreur lors de l'enregistrement: {ex.Message}");
             }
         }
     }

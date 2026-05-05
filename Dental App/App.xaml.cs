@@ -55,6 +55,7 @@ namespace Dental_App
             containerRegistry.RegisterSingleton<IOrdonnanceServiceTemplate, OrdonnanceServiceTemplate>();
             containerRegistry.RegisterSingleton<IRadioImageService, RadioImageService>();
             containerRegistry.RegisterSingleton<IOdontogrammeLibreService, OdontogrammeLibreService>();
+            containerRegistry.RegisterSingleton<IAppNotificationService, AppNotificationService>();
 
             // Register Views for Navigation
             containerRegistry.RegisterForNavigation<SidebarView, SidebarViewModel>("SidebarView");
@@ -73,6 +74,8 @@ namespace Dental_App
             containerRegistry.RegisterForNavigation<OrdonnanceView, OrdonnanceViewModel>("OrdonnanceView");
             containerRegistry.RegisterForNavigation<OrdonnanceTemplateDialogView, OrdonnanceTemplateDialogViewModel>("OrdonnanceTemplateDialogView");
             containerRegistry.RegisterForNavigation<MainView>();
+            
+            containerRegistry.RegisterDialog<NotificationDialogView, NotificationDialogViewModel>();
         }
 
         protected override void OnInitialized()
