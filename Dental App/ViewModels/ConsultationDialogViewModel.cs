@@ -12,6 +12,7 @@ namespace Dental_App.ViewModels
     {
         private readonly IConsultationService _consultationService;
         private readonly IDentService _dentService;
+        private readonly IAppNotificationService _notificationService;
         private readonly int _patientId;
         private string _title = "Nouvelle Consultation";
         private string _buttonText = "Confirmer la Consultation";
@@ -24,10 +25,11 @@ namespace Dental_App.ViewModels
         private Consultation _consultationBeingEdited;
         private ObservableCollection<string> _toothOptions;
 
-        public ConsultationDialogViewModel(IConsultationService consultationService, IDentService dentService, int patientId, Consultation consultationToEdit = null)
+        public ConsultationDialogViewModel(IConsultationService consultationService, IDentService dentService, IAppNotificationService notificationService, int patientId, Consultation consultationToEdit = null)
         {
             _consultationService = consultationService ?? throw new ArgumentNullException(nameof(consultationService));
             _dentService = dentService ?? throw new ArgumentNullException(nameof(dentService));
+            _notificationService = notificationService ?? throw new ArgumentNullException(nameof(notificationService));
             _patientId = patientId;
 
             // Initialize tooth options (FDI numbering)
@@ -175,13 +177,14 @@ namespace Dental_App.ViewModels
                         else
                         {
                             System.Diagnostics.Debug.WriteLine($"Warning: Could not find dent for patient {_patientId} with FDI code {fdiCode}");
-                            MessageBox.Show($"Erreur: La dent avec le code FDI {fdiCode} n'existe pas pour ce patient.", "Erreur", MessageBoxButton.OK, MessageBoxImage.Error);
+                            _notificationService.ShowError($"Erreur: La dent {fdiCode} n'existe pas pour ce patient.");
                             return;
                         }
                     }
 
                     await _consultationService.UpdateAsync(_consultationBeingEdited);
                     System.Diagnostics.Debug.WriteLine($"Consultation {_consultationBeingEdited.Id} updated successfully");
+                    _notificationService.ShowSuccess("La consultation a ete modifiee avec succes.", "Modification reussie");
                 }
                 else
                 {
@@ -206,20 +209,21 @@ namespace Dental_App.ViewModels
                         else
                         {
                             System.Diagnostics.Debug.WriteLine($"Warning: Could not find dent for patient {_patientId} with FDI code {fdiCode}");
-                            MessageBox.Show($"Erreur: La dent avec le code FDI {fdiCode} n'existe pas pour ce patient.", "Erreur", MessageBoxButton.OK, MessageBoxImage.Error);
+                            _notificationService.ShowError($"Erreur: La dent {fdiCode} n'existe pas pour ce patient.");
                             return;
                         }
                     }
 
                     await _consultationService.CreateAsync(newConsultation);
                     System.Diagnostics.Debug.WriteLine("Consultation created successfully");
+                    _notificationService.ShowSuccess("La consultation a ete creee avec succes.", "Ajout reussi");
                 }
 
                 CloseDialog?.Invoke(true);
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"Erreur: {ex.Message}", "Erreur", MessageBoxButton.OK, MessageBoxImage.Error);
+                _notificationService.ShowError($"Erreur: {ex.Message}");
             }
         }
 

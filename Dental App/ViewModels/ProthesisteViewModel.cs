@@ -15,6 +15,7 @@ namespace Dental_App.ViewModels
     {
         private readonly IProthesisteService _prothesisteService;
         private readonly ILiveSearchService<Prothesiste> _liveSearchService;
+        private readonly IAppNotificationService _notificationService; // Add notification service
 
         // Liste des prothésistes
         private ObservableCollection<ProthesisteDisplayItem> _prosthesists;
@@ -77,10 +78,11 @@ namespace Dental_App.ViewModels
         public DelegateCommand<ProthesisteDisplayItem> EditCommand { get; }
         public DelegateCommand ClearSearchCommand { get; }
 
-        public ProthesisteViewModel(IProthesisteService prothesisteService, ILiveSearchService<Prothesiste> liveSearchService)
+        public ProthesisteViewModel(IProthesisteService prothesisteService, ILiveSearchService<Prothesiste> liveSearchService, IAppNotificationService notificationService)
         {
             _prothesisteService = prothesisteService ?? throw new ArgumentNullException(nameof(prothesisteService));
             _liveSearchService = liveSearchService ?? throw new ArgumentNullException(nameof(liveSearchService));
+            _notificationService = notificationService ?? throw new ArgumentNullException(nameof(notificationService)); // Initialize notification service
 
             Prosthesists = new ObservableCollection<ProthesisteDisplayItem>();
 
@@ -214,7 +216,7 @@ namespace Dental_App.ViewModels
         {
             if (string.IsNullOrWhiteSpace(NewNom))
             {
-                MessageBox.Show("Le nom du prothésiste est requis.", "Validation", MessageBoxButton.OK, MessageBoxImage.Warning);
+                _notificationService.ShowError("Le nom du prothésiste est requis.", "Validation"); // Notify validation error
                 return;
             }
 
@@ -231,7 +233,7 @@ namespace Dental_App.ViewModels
                     };
 
                     await _prothesisteService.CreateAsync(newProthesiste);
-                    MessageBox.Show("Prothésiste créé avec succès.", "Succès", MessageBoxButton.OK, MessageBoxImage.Information);
+                    _notificationService.ShowSuccess("Prothésiste créé avec succès.", "Succès"); // Notify success
                 }
                 else
                 {
@@ -241,7 +243,7 @@ namespace Dental_App.ViewModels
                     _selectedProthesiste.Tel = string.IsNullOrWhiteSpace(NewTelephone) ? null : NewTelephone.Trim();
 
                     await _prothesisteService.UpdateAsync(_selectedProthesiste);
-                    MessageBox.Show("Prothésiste mis à jour avec succès.", "Succès", MessageBoxButton.OK, MessageBoxImage.Information);
+                    _notificationService.ShowSuccess("Prothésiste mis à jour avec succès.", "Succès"); // Notify success
                 }
 
                 CloseModal();
@@ -249,7 +251,7 @@ namespace Dental_App.ViewModels
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"Erreur lors de l'enregistrement: {ex.Message}", "Erreur", MessageBoxButton.OK, MessageBoxImage.Error);
+                _notificationService.ShowError($"Erreur lors de l'enregistrement: {ex.Message}", "Erreur"); // Notify error
             }
         }
 

@@ -17,6 +17,7 @@ namespace Dental_App.ViewModels
         private readonly IPatientService _patientService;
         private readonly IRadioImageService _radioImageService;
         private readonly ILiveSearchService<Patient> _liveSearchService;
+        private readonly IAppNotificationService _notificationService; // Add notification service
 
         private ObservableCollection<PatientDisplayItem> _patients;
         private ObservableCollection<RadioImageDisplayItem> _radioImages;
@@ -26,11 +27,12 @@ namespace Dental_App.ViewModels
         private bool _isLoading;
         private string _searchText = string.Empty;
 
-        public RadioImagesViewModel(IPatientService patientService, IRadioImageService radioImageService, ILiveSearchService<Patient> liveSearchService)
+        public RadioImagesViewModel(IPatientService patientService, IRadioImageService radioImageService, ILiveSearchService<Patient> liveSearchService, IAppNotificationService notificationService)
         {
             _patientService = patientService ?? throw new ArgumentNullException(nameof(patientService));
             _radioImageService = radioImageService ?? throw new ArgumentNullException(nameof(radioImageService));
             _liveSearchService = liveSearchService ?? throw new ArgumentNullException(nameof(liveSearchService));
+            _notificationService = notificationService ?? throw new ArgumentNullException(nameof(notificationService)); // Initialize notification service
 
             SelectPatientCommand = new DelegateCommand<PatientDisplayItem>(SelectPatient);
             ViewImageCommand = new DelegateCommand<RadioImageDisplayItem>(ViewImage);
@@ -292,7 +294,7 @@ namespace Dental_App.ViewModels
             {
                 System.Diagnostics.Debug.WriteLine("AddRadio called");
 
-                var dialogViewModel = new AddRadioDialogViewModel();
+                var dialogViewModel = new AddRadioDialogViewModel(_notificationService); // Pass notification service
                 var dialogView = new AddRadioDialogView { DataContext = dialogViewModel };
 
                 // Create a dialog window
@@ -335,12 +337,12 @@ namespace Dental_App.ViewModels
                                 DateTaken = newRadio.DatePrise ?? DateTime.Now
                             });
 
-                            System.Diagnostics.Debug.WriteLine($"Radio image added successfully: {newRadio.FileName}");
+                            
                         }
                         catch (Exception ex)
                         {
                             System.Diagnostics.Debug.WriteLine($"Error importing radio image: {ex.Message}");
-                            MessageBox.Show($"Erreur lors de l'ajout de la radio: {ex.Message}", "Erreur", MessageBoxButton.OK, MessageBoxImage.Error);
+                            _notificationService.ShowError($"Erreur lors de l'ajout de la radio: {ex.Message}", "Erreur"); // Notify error
                         }
                         finally
                         {
@@ -355,7 +357,7 @@ namespace Dental_App.ViewModels
             catch (Exception ex)
             {
                 System.Diagnostics.Debug.WriteLine($"Error in AddRadio: {ex.Message}");
-                MessageBox.Show($"Erreur: {ex.Message}", "Erreur", MessageBoxButton.OK, MessageBoxImage.Error);
+                _notificationService.ShowError($"Erreur: {ex.Message}", "Erreur"); // Notify error
             }
         }
 

@@ -17,6 +17,7 @@ namespace Dental_App.ViewModels
     {
         private readonly IActeMedicalService _acteService;
         private readonly ILiveSearchService<ActeMedical> _liveSearchService;
+        private readonly IAppNotificationService _notificationService; // Add notification service
 
         // Removed duplicates. Initialized once.
         private ObservableCollection<ActeMedical> _actes = new();
@@ -26,24 +27,15 @@ namespace Dental_App.ViewModels
         private DelegateCommand? _addActeCommand;
         private DelegateCommand<ActeMedical>? _editActeCommand;
 
-        public ActesMedicauxViewModel(IActeMedicalService acteService, ILiveSearchService<ActeMedical> liveSearchService)
+        public ActesMedicauxViewModel(IActeMedicalService acteService, ILiveSearchService<ActeMedical> liveSearchService, IAppNotificationService notificationService)
         {
             try
             {
                 System.Diagnostics.Debug.WriteLine("ActesMedicauxViewModel constructor called");
                 
-                if (acteService == null)
-                {
-                    throw new ArgumentNullException(nameof(acteService), "IActeMedicalService is not registered in the container");
-                }
-                
-                if (liveSearchService == null)
-                {
-                    throw new ArgumentNullException(nameof(liveSearchService), "ILiveSearchService is not registered in the container");
-                }
-
-                _acteService = acteService;
-                _liveSearchService = liveSearchService;
+                _acteService = acteService ?? throw new ArgumentNullException(nameof(acteService));
+                _liveSearchService = liveSearchService ?? throw new ArgumentNullException(nameof(liveSearchService));
+                _notificationService = notificationService ?? throw new ArgumentNullException(nameof(notificationService)); // Initialize notification service
 
                 // Initialize Commands
                 _addActeCommand = new DelegateCommand(ExecuteAddActe);
@@ -198,12 +190,11 @@ namespace Dental_App.ViewModels
                             var newActe = await _acteService.CreateAsync(result);
                             Actes.Add(newActe);
                             FilterActes();
-                            System.Diagnostics.Debug.WriteLine($"New acte created: {newActe.Libelle}");
+                            _notificationService.ShowSuccess("Acte ajouté avec succès.", "Succès"); // Notify success
                         }
                         catch (Exception ex)
                         {
-                            System.Diagnostics.Debug.WriteLine($"Error creating acte: {ex.Message}");
-                            MessageBox.Show($"Erreur lors de l'ajout: {ex.Message}", "Erreur", MessageBoxButton.OK, MessageBoxImage.Error);
+                            _notificationService.ShowError($"Erreur lors de l'ajout: {ex.Message}", "Erreur"); // Notify error
                         }
                     }
                     window.Close();
@@ -213,8 +204,7 @@ namespace Dental_App.ViewModels
             }
             catch (Exception ex)
             {
-                System.Diagnostics.Debug.WriteLine($"Error in ExecuteAddActe: {ex.Message}");
-                MessageBox.Show($"Erreur: {ex.Message}", "Erreur", MessageBoxButton.OK, MessageBoxImage.Error);
+                _notificationService.ShowError($"Erreur: {ex.Message}", "Erreur"); // Notify error
             }
         }
 
@@ -256,12 +246,11 @@ namespace Dental_App.ViewModels
                             }
                             
                             FilterActes();
-                            System.Diagnostics.Debug.WriteLine($"Acte updated: {updatedActe.Libelle}");
+                            _notificationService.ShowSuccess("Acte modifié avec succès.", "Succès"); // Notify success
                         }
                         catch (Exception ex)
                         {
-                            System.Diagnostics.Debug.WriteLine($"Error updating acte: {ex.Message}");
-                            MessageBox.Show($"Erreur lors de la modification: {ex.Message}", "Erreur", MessageBoxButton.OK, MessageBoxImage.Error);
+                            _notificationService.ShowError($"Erreur lors de la modification: {ex.Message}", "Erreur"); // Notify error
                         }
                     }
                     window.Close();
@@ -271,8 +260,7 @@ namespace Dental_App.ViewModels
             }
             catch (Exception ex)
             {
-                System.Diagnostics.Debug.WriteLine($"Error in ExecuteEditActe: {ex.Message}");
-                MessageBox.Show($"Erreur: {ex.Message}", "Erreur", MessageBoxButton.OK, MessageBoxImage.Error);
+                _notificationService.ShowError($"Erreur: {ex.Message}", "Erreur"); // Notify error
             }
         }
     }

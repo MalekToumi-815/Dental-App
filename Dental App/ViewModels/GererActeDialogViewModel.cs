@@ -4,7 +4,6 @@ using System;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Threading.Tasks;
-using System.Windows;
 using Dental_App.Models;
 using Dental_App.Services;
 
@@ -14,6 +13,7 @@ namespace Dental_App.ViewModels
     {
         private readonly IActeMedicalService _acteService;
         private readonly IConsultationService _consultationService;
+        private readonly IAppNotificationService _notificationService;
         private readonly int _consultationId;
         private string _title = "Gerer les Actes";
         private string _searchText = string.Empty;
@@ -21,10 +21,11 @@ namespace Dental_App.ViewModels
         private ObservableCollection<ActeSelectionItem> _filteredActes;
         private bool _isLoading;
 
-        public GererActeDialogViewModel(IActeMedicalService acteService, IConsultationService consultationService, int consultationId)
+        public GererActeDialogViewModel(IActeMedicalService acteService, IConsultationService consultationService, IAppNotificationService notificationService, int consultationId)
         {
             _acteService = acteService ?? throw new ArgumentNullException(nameof(acteService));
             _consultationService = consultationService ?? throw new ArgumentNullException(nameof(consultationService));
+            _notificationService = notificationService ?? throw new ArgumentNullException(nameof(notificationService));
             _consultationId = consultationId;
 
             AllActes = new ObservableCollection<ActeSelectionItem>();
@@ -112,7 +113,7 @@ namespace Dental_App.ViewModels
             catch (Exception ex)
             {
                 System.Diagnostics.Debug.WriteLine($"Error loading actes: {ex.Message}");
-                MessageBox.Show($"Erreur lors du chargement des actes: {ex.Message}", "Erreur", MessageBoxButton.OK, MessageBoxImage.Error);
+                _notificationService?.ShowError($"Erreur lors du chargement des actes: {ex.Message}", "Erreur");
             }
             finally
             {
@@ -161,12 +162,13 @@ namespace Dental_App.ViewModels
                     }
                 }
 
+                _notificationService?.ShowSuccess("Actes gérés avec succès.", "Succès");
                 CloseDialog?.Invoke(true);
             }
             catch (Exception ex)
             {
                 System.Diagnostics.Debug.WriteLine($"Error in ExecuteSave: {ex.Message}");
-                MessageBox.Show($"Erreur: {ex.Message}", "Erreur", MessageBoxButton.OK, MessageBoxImage.Error);
+                _notificationService?.ShowError($"Erreur: {ex.Message}", "Erreur");
             }
         }
 

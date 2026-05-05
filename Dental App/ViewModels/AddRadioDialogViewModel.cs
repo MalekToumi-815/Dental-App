@@ -4,19 +4,24 @@ using System;
 using System.Collections.ObjectModel;
 using System.Windows;
 using Microsoft.Win32;
+using Dental_App.Services;
 
 namespace Dental_App.ViewModels
 {
     public class AddRadioDialogViewModel : BindableBase
     {
+        private readonly IAppNotificationService _notificationService;
+
         private DateTime? _selectedDate;
         private string _selectedType;
         private string _selectedFilePath;
         private string _selectedFileName;
         private bool _isFormValid;
 
-        public AddRadioDialogViewModel()
+        public AddRadioDialogViewModel(IAppNotificationService notificationService)
         {
+            _notificationService = notificationService ?? throw new ArgumentNullException(nameof(notificationService));
+
             SelectedDate = DateTime.Now;
 
             BrowseFileCommand = new DelegateCommand(BrowseFile);
@@ -120,12 +125,12 @@ namespace Dental_App.ViewModels
                     FilePath = SelectedFilePath
                 };
 
+                _notificationService.ShowSuccess("Radio ajoutée avec succès.", "Succès");
                 CloseDialog?.Invoke(result);
             }
             catch (Exception ex)
             {
-                System.Diagnostics.Debug.WriteLine($"Error saving: {ex.Message}");
-                MessageBox.Show($"Erreur lors de l'ajout de la radio: {ex.Message}", "Erreur", MessageBoxButton.OK, MessageBoxImage.Error);
+                _notificationService.ShowError($"Erreur lors de l'ajout de la radio: {ex.Message}", "Erreur");
             }
         }
 

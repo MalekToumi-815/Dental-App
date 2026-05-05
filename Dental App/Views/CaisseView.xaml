@@ -711,7 +711,7 @@
                     <!-- Montant -->
                     <StackPanel Margin="0,0,0,24">
                         <StackPanel Orientation="Horizontal" Margin="0,0,0,8">
-                            <TextBlock Text="Montant (DT)"
+                            <TextBlock Text="Montant à Ajouter (DT)"
                                        Foreground="{DynamicResource TextPrimary}"
                                        FontSize="14" FontWeight="SemiBold"/>
                             <TextBlock Text=" *"

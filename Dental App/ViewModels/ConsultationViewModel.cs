@@ -7,7 +7,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Threading.Tasks;
-using System.Windows;
+using System.Windows; // Keep if required for logic mappings
 using Dental_App.Views;
 
 namespace Dental_App.ViewModels
@@ -19,6 +19,7 @@ namespace Dental_App.ViewModels
         private readonly IDentService _dentService;
         private readonly IActeMedicalService _acteService;
         private readonly ILiveSearchService<Patient> _liveSearchService;
+        private readonly IAppNotificationService _notificationService;
 
         private ObservableCollection<PatientForConsultation> _allPatients;
         private ObservableCollection<PatientForConsultation> _filteredPatients;
@@ -31,13 +32,14 @@ namespace Dental_App.ViewModels
         private DelegateCommand<ConsultationDisplayRow> _editConsultationCommand;
         private DelegateCommand<ConsultationDisplayRow> _gererActeCommand;
 
-        public ConsultationViewModel(IPatientService patientService, IConsultationService consultationService, IDentService dentService, IActeMedicalService acteService, ILiveSearchService<Patient> liveSearchService)
+        public ConsultationViewModel(IPatientService patientService, IConsultationService consultationService, IDentService dentService, IActeMedicalService acteService, ILiveSearchService<Patient> liveSearchService, IAppNotificationService notificationService)
         {
             _patientService = patientService ?? throw new ArgumentNullException(nameof(patientService));
             _consultationService = consultationService ?? throw new ArgumentNullException(nameof(consultationService));
             _dentService = dentService ?? throw new ArgumentNullException(nameof(dentService));
             _acteService = acteService ?? throw new ArgumentNullException(nameof(acteService));
             _liveSearchService = liveSearchService ?? throw new ArgumentNullException(nameof(liveSearchService));
+            _notificationService = notificationService ?? throw new ArgumentNullException(nameof(notificationService));
 
             AllPatients = new ObservableCollection<PatientForConsultation>();
             FilteredPatients = new ObservableCollection<PatientForConsultation>();
@@ -161,7 +163,7 @@ namespace Dental_App.ViewModels
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"Erreur chargement: {ex.Message}");
+                _notificationService.ShowError($"Erreur chargement: {ex.Message}");
             }
             finally
             {
@@ -273,7 +275,7 @@ namespace Dental_App.ViewModels
 
             try
             {
-                var dialogViewModel = new ConsultationDialogViewModel(_consultationService, _dentService, SelectedPatient.Id);
+                var dialogViewModel = new ConsultationDialogViewModel(_consultationService, _dentService, _notificationService, SelectedPatient.Id);
                 var dialogView = new ConsultationDialogView { DataContext = dialogViewModel };
 
                 var window = new Window
@@ -303,7 +305,7 @@ namespace Dental_App.ViewModels
             catch (Exception ex)
             {
                 System.Diagnostics.Debug.WriteLine($"Error in AddConsultation: {ex.Message}");
-                MessageBox.Show($"Erreur: {ex.Message}", "Erreur", MessageBoxButton.OK, MessageBoxImage.Error);
+                _notificationService.ShowError($"Erreur: {ex.Message}");
             }
         }
 
@@ -321,11 +323,11 @@ namespace Dental_App.ViewModels
                 
                 if (consultationToEdit == null)
                 {
-                    MessageBox.Show($"Erreur: Consultation non trouvée.", "Erreur", MessageBoxButton.OK, MessageBoxImage.Error);
+                    _notificationService.ShowError("Erreur: Consultation non trouvee.");
                     return;
                 }
 
-                var dialogViewModel = new ConsultationDialogViewModel(_consultationService, _dentService, SelectedPatient.Id, consultationToEdit);
+                var dialogViewModel = new ConsultationDialogViewModel(_consultationService, _dentService, _notificationService, SelectedPatient.Id, consultationToEdit);
                 var dialogView = new ConsultationDialogView { DataContext = dialogViewModel };
 
                 var window = new Window
@@ -355,7 +357,7 @@ namespace Dental_App.ViewModels
             catch (Exception ex)
             {
                 System.Diagnostics.Debug.WriteLine($"Error in EditConsultation: {ex.Message}");
-                MessageBox.Show($"Erreur: {ex.Message}", "Erreur", MessageBoxButton.OK, MessageBoxImage.Error);
+                _notificationService.ShowError($"Erreur: {ex.Message}");
             }
         }
 
@@ -368,7 +370,7 @@ namespace Dental_App.ViewModels
 
             try
             {
-                var dialogViewModel = new GererActeDialogViewModel(_acteService, _consultationService, consultation.Id);
+                var dialogViewModel = new GererActeDialogViewModel(_acteService, _consultationService, _notificationService, consultation.Id);
                 var dialogView = new GererActeDialogView { DataContext = dialogViewModel };
 
                 var window = new Window
@@ -398,7 +400,7 @@ namespace Dental_App.ViewModels
             catch (Exception ex)
             {
                 System.Diagnostics.Debug.WriteLine($"Error in GererActe: {ex.Message}");
-                MessageBox.Show($"Erreur: {ex.Message}", "Erreur", MessageBoxButton.OK, MessageBoxImage.Error);
+                _notificationService.ShowError($"Erreur: {ex.Message}");
             }
         }
     }

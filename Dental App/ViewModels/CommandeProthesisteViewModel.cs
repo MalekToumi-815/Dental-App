@@ -18,6 +18,7 @@ namespace Dental_App.ViewModels
         private readonly ICommandeProthesisteService _commandeService;
         private readonly IProthesisteService _prothesisteService;
         private readonly ILiveSearchService<CommandeProthesiste> _liveSearchService;
+        private readonly IAppNotificationService _notificationService;
 
         // --- Collections ---
         private ObservableCollection<CommandeProthesisteDisplayItem> _commandes;
@@ -113,11 +114,12 @@ namespace Dental_App.ViewModels
         public DelegateCommand PrepareCommandeCommand { get; }
         public DelegateCommand ClearSearchCommand { get; }
 
-        public CommandeProthesisteViewModel(ICommandeProthesisteService commandeService, IProthesisteService prothesisteService, ILiveSearchService<CommandeProthesiste> liveSearchService)
+        public CommandeProthesisteViewModel(ICommandeProthesisteService commandeService, IProthesisteService prothesisteService, ILiveSearchService<CommandeProthesiste> liveSearchService, IAppNotificationService notificationService)
         {
             _commandeService = commandeService ?? throw new ArgumentNullException(nameof(commandeService));
             _prothesisteService = prothesisteService ?? throw new ArgumentNullException(nameof(prothesisteService));
             _liveSearchService = liveSearchService ?? throw new ArgumentNullException(nameof(liveSearchService));
+            _notificationService = notificationService ?? throw new ArgumentNullException(nameof(notificationService));
 
             // Initialiser le ViewModel de recherche
             ProthesisteSearchViewModel = new ProthesisteSearchViewModel(_prothesisteService);
@@ -334,7 +336,7 @@ namespace Dental_App.ViewModels
         {
             if (SelectedProthesiste == null || !NewDate.HasValue || string.IsNullOrWhiteSpace(NewAchats))
             {
-                MessageBox.Show("Veuillez remplir les champs obligatoires.", "Validation", MessageBoxButton.OK, MessageBoxImage.Warning);
+                _notificationService.ShowError("Veuillez remplir les champs obligatoires.", "Validation");
                 return;
             }
 
@@ -352,6 +354,7 @@ namespace Dental_App.ViewModels
                         Achats = NewAchats,
                         SommePayees = (double)somme
                     });
+                    _notificationService.ShowSuccess("Commande créée avec succès.", "Succès");
                 }
                 else
                 {
@@ -361,14 +364,15 @@ namespace Dental_App.ViewModels
                     _selectedCommande.Achats = NewAchats;
                     _selectedCommande.SommePayees = (double)somme;
                     await _commandeService.UpdateAsync(_selectedCommande);
+                    _notificationService.ShowSuccess("Commande mise à jour avec succès.", "Succès");
                 }
+
                 CloseModal();
                 await LoadCommandes();
             }
-            catch (Exception ex) 
-            { 
-                Debug.WriteLine($"[SaveCommande] ERREUR: {ex.Message}");
-                MessageBox.Show(ex.Message); 
+            catch (Exception ex)
+            {
+                _notificationService.ShowError($"Erreur lors de l'enregistrement: {ex.Message}", "Erreur");
             }
         }
 

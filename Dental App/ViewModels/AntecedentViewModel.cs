@@ -186,12 +186,14 @@ namespace Dental_App.ViewModels
         public DelegateCommand ClearSearchCommand { get; }
         public DelegateCommand ClearPatientSearchCommand { get; }
         public DelegateCommand<Patient> SelectPatientCommand { get; }
+        private readonly IAppNotificationService _notificationService;
 
-        public AntecedentViewModel(IAntecedentService antecedentService, IPatientService patientService, ILiveSearchService<Patient> liveSearchService)
+        public AntecedentViewModel(IAntecedentService antecedentService, IPatientService patientService, ILiveSearchService<Patient> liveSearchService, IAppNotificationService notificationService = null)
         {
             _antecedentService = antecedentService ?? throw new ArgumentNullException(nameof(antecedentService));
             _patientService = patientService ?? throw new ArgumentNullException(nameof(patientService));
             _liveSearchService = liveSearchService ?? throw new ArgumentNullException(nameof(liveSearchService));
+            _notificationService = notificationService;
 
             Antecedents = new ObservableCollection<Antecedant>();
             Patients = new ObservableCollection<Patient>();
@@ -492,6 +494,7 @@ namespace Dental_App.ViewModels
                         Description = NewDescription,
                         PatientId = _selectedPatient.Id
                     });
+                    _notificationService?.ShowSuccess("Antécédent cree avec succès.", "Succès");
                 }
                 else
                 {
@@ -499,16 +502,17 @@ namespace Dental_App.ViewModels
                     _selectedAntecedent.Nom = NewNom;
                     _selectedAntecedent.Description = NewDescription;
                     await _antecedentService.UpdateAsync(_selectedAntecedent);
+                    _notificationService?.ShowSuccess("Antécédent mis a jour avec succès.", "Succès");
                 }
 
                 CloseModal();
                 await LoadAntecedentsAsync();
-                MessageBox.Show("Opération réussie.", "Succès", MessageBoxButton.OK, MessageBoxImage.Information);
+                
             }
             catch (Exception ex)
             {
                 Debug.WriteLine($"[SaveAntecedent] ERREUR: {ex.Message}");
-                MessageBox.Show($"Erreur: {ex.Message}", "Erreur", MessageBoxButton.OK, MessageBoxImage.Error);
+                _notificationService?.ShowError($"Erreur: {ex.Message}", "Erreur");
             }
         }
 
@@ -516,25 +520,19 @@ namespace Dental_App.ViewModels
         {
             if (antecedent == null) return;
 
-            var result = MessageBox.Show(
-                $"Êtes-vous sûr de vouloir supprimer l'antécédent \"{antecedent.Nom}\"?",
-                "Confirmation",
-                MessageBoxButton.YesNo,
-                MessageBoxImage.Question);
-
-            if (result != MessageBoxResult.Yes) return;
+            
 
             try
             {
                 Debug.WriteLine($"[DeleteAntecedent] Suppression de l'antécédent {antecedent.Id}");
                 await _antecedentService.DeleteAsync(antecedent.Id);
                 await LoadAntecedentsAsync();
-                MessageBox.Show("Antécédent supprimé.", "Succès", MessageBoxButton.OK, MessageBoxImage.Information);
+                _notificationService?.ShowSuccess("Antécédent supprimé avec succès.", "Succès");
             }
             catch (Exception ex)
             {
                 Debug.WriteLine($"[DeleteAntecedent] ERREUR: {ex.Message}");
-                MessageBox.Show($"Erreur: {ex.Message}", "Erreur", MessageBoxButton.OK, MessageBoxImage.Error);
+                _notificationService?.ShowError($"Erreur: {ex.Message}", "Erreur");
             }
         }
 

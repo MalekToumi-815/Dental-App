@@ -10,6 +10,7 @@ namespace Dental_App.ViewModels
     public class PatientDetailsDialogViewModel : BindableBase
     {
         private readonly IPatientService _patientService;
+        private readonly IAppNotificationService _notificationService;
         private string _title = "Dossier Patient";
         private string _buttonText = "Ajouter Paiement";
         private Patient _patient;
@@ -21,9 +22,10 @@ namespace Dental_App.ViewModels
         private bool _isPaymentInputVisible;
         private string _paymentAmountInput = string.Empty;
 
-        public PatientDetailsDialogViewModel(IPatientService patientService = null, Patient patient = null)
+        public PatientDetailsDialogViewModel(IPatientService patientService = null, IAppNotificationService notificationService = null, Patient patient = null)
         {
             _patientService = patientService;
+            _notificationService = notificationService;
             SaveCommand = new DelegateCommand(ExecuteSave);
             CancelCommand = new DelegateCommand(ExecuteCancel);
 
@@ -120,19 +122,19 @@ namespace Dental_App.ViewModels
                 {
                     if (string.IsNullOrWhiteSpace(PaymentAmountInput))
                     {
-                        MessageBox.Show("Veuillez entrer un montant", "Validation", MessageBoxButton.OK, MessageBoxImage.Warning);
+                        _notificationService.ShowWarning("Veuillez entrer un montant");
                         return;
                     }
 
                     if (!decimal.TryParse(PaymentAmountInput, out decimal paymentAmount) || paymentAmount <= 0)
                     {
-                        MessageBox.Show("Veuillez entrer un montant valide", "Validation", MessageBoxButton.OK, MessageBoxImage.Warning);
+                        _notificationService.ShowWarning("Veuillez entrer un montant valide");
                         return;
                     }
 
                     if (_patientService == null || Patient == null)
                     {
-                        MessageBox.Show("Erreur: Service ou patient non disponible", "Erreur", MessageBoxButton.OK, MessageBoxImage.Error);
+                        _notificationService.ShowError("Erreur: Service ou patient non disponible");
                         return;
                     }
 
@@ -152,7 +154,8 @@ namespace Dental_App.ViewModels
                     ButtonText = "Ajouter Paiement";
 
                     System.Diagnostics.Debug.WriteLine($"Payment of {paymentAmount} DT added for patient {Patient?.Id}. New paid amount: {PaidAmount}");
-                    }
+                    _notificationService.ShowSuccess("Le paiement a ete ajoute avec succes.");
+                }
                 else
                 {
                     // Show the payment input field
@@ -164,7 +167,7 @@ namespace Dental_App.ViewModels
             catch (Exception ex)
             {
                 System.Diagnostics.Debug.WriteLine($"Error in ExecuteSave: {ex.Message}");
-                MessageBox.Show($"Erreur: {ex.Message}", "Erreur", MessageBoxButton.OK, MessageBoxImage.Error);
+                _notificationService.ShowError($"Erreur: {ex.Message}");
             }
         }
 

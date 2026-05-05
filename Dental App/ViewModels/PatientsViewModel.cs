@@ -8,7 +8,7 @@ using System;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Threading.Tasks;
-using System.Windows;
+using System.Windows; // Remove if unused
 using System.Collections.Generic;
 
 namespace Dental_App.ViewModels
@@ -17,6 +17,7 @@ namespace Dental_App.ViewModels
     {
         private readonly IPatientService _patientService;
         private readonly ILiveSearchService<Patient> _searchService;
+        private readonly IAppNotificationService _notificationService;
 
         private ObservableCollection<PatientDisplayRow> _patients;
         private string _searchText = string.Empty;
@@ -26,10 +27,11 @@ namespace Dental_App.ViewModels
         private DelegateCommand<PatientDisplayRow> _viewPatientCommand;
         private DelegateCommand<PatientDisplayRow> _editPatientCommand;
 
-        public PatientsViewModel(IPatientService patientService, ILiveSearchService<Patient> searchService)
+        public PatientsViewModel(IPatientService patientService, ILiveSearchService<Patient> searchService, IAppNotificationService notificationService)
         {
             _patientService = patientService ?? throw new ArgumentNullException(nameof(patientService));
             _searchService = searchService ?? throw new ArgumentNullException(nameof(searchService));
+            _notificationService = notificationService ?? throw new ArgumentNullException(nameof(notificationService));
 
             Patients = new ObservableCollection<PatientDisplayRow>();
             AddPatientCommand = new DelegateCommand(AddPatient);
@@ -94,7 +96,7 @@ namespace Dental_App.ViewModels
             
             try
             {
-                var dialogViewModel = new AddPatientDialogViewModel(_patientService);
+                var dialogViewModel = new AddPatientDialogViewModel(_patientService, _notificationService);
                 var dialogView = new AddPatientDialogView { DataContext = dialogViewModel };
 
                 var window = new Window
@@ -124,7 +126,7 @@ namespace Dental_App.ViewModels
             catch (Exception ex)
             {
                 System.Diagnostics.Debug.WriteLine($"Error in AddPatient: {ex.Message}");
-                MessageBox.Show($"Erreur: {ex.Message}", "Erreur", MessageBoxButton.OK, MessageBoxImage.Error);
+                _notificationService.ShowError($"Erreur: {ex.Message}");
             }
         }
 
@@ -137,7 +139,7 @@ namespace Dental_App.ViewModels
             
             try
             {
-                var dialogViewModel = new PatientDetailsDialogViewModel(_patientService, patient.Patient);
+                var dialogViewModel = new PatientDetailsDialogViewModel(_patientService, _notificationService, patient.Patient);
                 // Set the financial data
                 dialogViewModel.TotalAmount = patient.RemainingAmountValue + (patient.Patient.SommePaye ?? 0);
                 dialogViewModel.PaidAmount = patient.Patient.SommePaye ?? 0;
@@ -173,7 +175,7 @@ namespace Dental_App.ViewModels
             catch (Exception ex)
             {
                 System.Diagnostics.Debug.WriteLine($"Error in ViewPatient: {ex.Message}");
-                MessageBox.Show($"Erreur: {ex.Message}", "Erreur", MessageBoxButton.OK, MessageBoxImage.Error);
+                _notificationService.ShowError($"Erreur: {ex.Message}");
             }
         }
 
@@ -186,7 +188,7 @@ namespace Dental_App.ViewModels
             
             try
             {
-                var dialogViewModel = new AddPatientDialogViewModel(_patientService, patient.Patient);
+                var dialogViewModel = new AddPatientDialogViewModel(_patientService, _notificationService, patient.Patient);
                 var dialogView = new AddPatientDialogView { DataContext = dialogViewModel };
 
                 var window = new Window
@@ -216,7 +218,7 @@ namespace Dental_App.ViewModels
             catch (Exception ex)
             {
                 System.Diagnostics.Debug.WriteLine($"Error in EditPatient: {ex.Message}");
-                MessageBox.Show($"Erreur: {ex.Message}", "Erreur", MessageBoxButton.OK, MessageBoxImage.Error);
+                _notificationService.ShowError($"Erreur: {ex.Message}");
             }
         }
 
@@ -235,7 +237,7 @@ namespace Dental_App.ViewModels
             {
                 System.Diagnostics.Debug.WriteLine($"PatientsViewModel: Error loading patients: {ex.Message}");
                 System.Diagnostics.Debug.WriteLine($"PatientsViewModel: Stack trace: {ex.StackTrace}");
-                MessageBox.Show($"Erreur lors du chargement des patients: {ex.Message}", "Erreur", MessageBoxButton.OK, MessageBoxImage.Error);
+                _notificationService.ShowError($"Erreur lors du chargement des patients: {ex.Message}");
             }
             finally
             {
@@ -265,7 +267,7 @@ namespace Dental_App.ViewModels
             catch (Exception ex)
             {
                 System.Diagnostics.Debug.WriteLine($"Error searching patients: {ex.Message}");
-                MessageBox.Show($"Erreur lors de la recherche: {ex.Message}", "Erreur", MessageBoxButton.OK, MessageBoxImage.Error);
+                _notificationService.ShowError($"Erreur lors de la recherche: {ex.Message}");
             }
             finally
             {

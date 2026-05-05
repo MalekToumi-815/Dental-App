@@ -37,6 +37,7 @@ namespace Dental_App.ViewModels
     public class CaisseViewModel : BindableBase
     {
         private readonly ICaisseService _caisseService;
+        private readonly IAppNotificationService _notificationService;
 
         // --- Collections ---
         private ObservableCollection<TransactionDisplayItem> _transactions = new();
@@ -157,9 +158,10 @@ namespace Dental_App.ViewModels
         public DelegateCommand<TransactionDisplayItem> EditTransactionCommand { get; }
         public DelegateCommand ClearSearchCommand { get; }
 
-        public CaisseViewModel(ICaisseService caisseService)
+        public CaisseViewModel(ICaisseService caisseService, IAppNotificationService notificationService)
         {
             _caisseService = caisseService ?? throw new ArgumentNullException(nameof(caisseService));
+            _notificationService = notificationService ?? throw new ArgumentNullException(nameof(notificationService));
 
             IsModalVisible = false;
 
@@ -388,7 +390,7 @@ namespace Dental_App.ViewModels
                     string message = _selectedTransaction == null
                         ? "Transaction enregistrée avec succès."
                         : "Transaction mise à jour avec succès.";
-                    MessageBox.Show(message, "Succès", MessageBoxButton.OK, MessageBoxImage.Information);
+                    _notificationService.ShowSuccess("Transaction sauvegarder avec succès.", "Succès");
                 }
                 else
                 {
@@ -413,19 +415,19 @@ namespace Dental_App.ViewModels
         {
             if (!NewDate.HasValue)
             {
-                MessageBox.Show("La date est obligatoire.", "Validation", MessageBoxButton.OK, MessageBoxImage.Warning);
+                _notificationService.ShowError("La date est obligatoire.", "Validation");
                 return false;
             }
 
             if (string.IsNullOrWhiteSpace(NewType))
             {
-                MessageBox.Show("Le type de transaction est obligatoire.", "Validation", MessageBoxButton.OK, MessageBoxImage.Warning);
+                _notificationService.ShowError("Le type de transaction est obligatoire.", "Validation");
                 return false;
             }
 
             if (NewMontant <= 0)
             {
-                MessageBox.Show("Le montant doit être supérieur à 0.", "Validation", MessageBoxButton.OK, MessageBoxImage.Warning);
+                _notificationService.ShowError("Le montant doit être supérieur à 0.", "Validation");
                 return false;
             }
 

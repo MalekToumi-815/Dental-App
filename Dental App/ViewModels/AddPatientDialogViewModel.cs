@@ -1,16 +1,17 @@
+using Dental_App.Models;
+using Dental_App.Services;
 using Prism.Mvvm;
 using Prism.Commands;
 using System;
 using System.Collections.ObjectModel;
 using System.Windows;
-using Dental_App.Models;
-using Dental_App.Services;
 
 namespace Dental_App.ViewModels
 {
     public class AddPatientDialogViewModel : BindableBase
     {
         private readonly IPatientService _patientService;
+        private readonly IAppNotificationService _notificationService;
         private string _title = "Nouveau Patient";
         private string _buttonText = "Ajouter";
         private string _nom;
@@ -24,11 +25,12 @@ namespace Dental_App.ViewModels
         private bool _isFormValid;
         private Patient _patientBeingEdited;
 
-        public AddPatientDialogViewModel(IPatientService patientService, Patient patientToEdit = null)
+        public AddPatientDialogViewModel(IPatientService patientService, IAppNotificationService notificationService, Patient patientToEdit = null)
         {
             _patientService = patientService ?? throw new ArgumentNullException(nameof(patientService));
+            _notificationService = notificationService ?? throw new ArgumentNullException(nameof(notificationService));
 
-            SexeOptions = new ObservableCollection<string> { "Masculin", "Féminin" };
+            SexeOptions = new ObservableCollection<string> { "Masculin", "Feminin" };
 
             SaveCommand = new DelegateCommand(ExecuteSave, CanSave).ObservesProperty(() => IsFormValid);
             CancelCommand = new DelegateCommand(ExecuteCancel);
@@ -166,6 +168,7 @@ namespace Dental_App.ViewModels
 
                     await _patientService.UpdateAsync(_patientBeingEdited);
                     System.Diagnostics.Debug.WriteLine($"Patient {_patientBeingEdited.Id} updated successfully");
+                    _notificationService.ShowSuccess("Le patient a ete modifie avec succes.", "Modification reussie");
                 }
                 else
                 {
@@ -185,13 +188,14 @@ namespace Dental_App.ViewModels
 
                     await _patientService.CreateAsync(newPatient);
                     System.Diagnostics.Debug.WriteLine("Patient created successfully");
+                    _notificationService.ShowSuccess("Le nouveau patient a ete ajoute avec succes.", "Ajout reussi");
                 }
 
                 CloseDialog?.Invoke(true);
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"Erreur: {ex.Message}", "Erreur", MessageBoxButton.OK, MessageBoxImage.Error);
+                _notificationService.ShowError($"Erreur: {ex.Message}");
             }
         }
 

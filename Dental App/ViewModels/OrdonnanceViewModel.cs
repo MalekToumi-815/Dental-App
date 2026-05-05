@@ -19,6 +19,7 @@ namespace Dental_App.ViewModels
         private readonly IOrdonnanceService _ordonnanceService;
         private readonly IOrdonnanceServiceTemplate _templateService;
         private readonly ILiveSearchService<Patient> _liveSearchService;
+        private readonly IAppNotificationService _notificationService; // Add notification service
 
         private ObservableCollection<PatientForOrdonnance> _allPatients;
         private ObservableCollection<PatientForOrdonnance> _filteredPatients;
@@ -32,12 +33,13 @@ namespace Dental_App.ViewModels
         private DelegateCommand<OrdonnanceDisplayRow> _printOrdonnanceCommand;
         private DelegateCommand<OrdonnanceDisplayRow> _viewOrdonnanceCommand;
 
-        public OrdonnanceViewModel(IPatientService patientService, IOrdonnanceService ordonnanceService, IOrdonnanceServiceTemplate templateService, ILiveSearchService<Patient> liveSearchService)
+        public OrdonnanceViewModel(IPatientService patientService, IOrdonnanceService ordonnanceService, IOrdonnanceServiceTemplate templateService, ILiveSearchService<Patient> liveSearchService, IAppNotificationService notificationService)
         {
             _patientService = patientService ?? throw new ArgumentNullException(nameof(patientService));
             _ordonnanceService = ordonnanceService ?? throw new ArgumentNullException(nameof(ordonnanceService));
             _templateService = templateService ?? throw new ArgumentNullException(nameof(templateService));
             _liveSearchService = liveSearchService ?? throw new ArgumentNullException(nameof(liveSearchService));
+            _notificationService = notificationService ?? throw new ArgumentNullException(nameof(notificationService)); // Initialize notification service
 
             AllPatients = new ObservableCollection<PatientForOrdonnance>();
             FilteredPatients = new ObservableCollection<PatientForOrdonnance>();
@@ -293,6 +295,7 @@ namespace Dental_App.ViewModels
                     if (result == true)
                     {
                         _ = OnPatientSelectedAsync(SelectedPatient);
+                        _notificationService.ShowSuccess("Ordonnance ajoutée avec succès.", "Succès"); // Notify success
                     }
                     window.Close();
                 };
@@ -301,7 +304,7 @@ namespace Dental_App.ViewModels
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"Erreur: {ex.Message}", "Erreur", MessageBoxButton.OK, MessageBoxImage.Error);
+                _notificationService.ShowError($"Erreur: {ex.Message}", "Erreur"); // Notify error
             }
         }
 
@@ -319,18 +322,21 @@ namespace Dental_App.ViewModels
                     WindowStyle = WindowStyle.None,
                     AllowsTransparency = true,
                     Background = System.Windows.Media.Brushes.Transparent,
-                    WindowStartupLocation = WindowStartupLocation.CenterScreen, // Re-center it
-                    Left = SystemParameters.WorkArea.Left + (SystemParameters.WorkArea.Width / 2) - 400, // manual override just in case
-                    Top = SystemParameters.WorkArea.Top + 10,   // Make it appear at the very top of the monitor rather than center-screen since it isn't draggable and images might be tall
+                    WindowStartupLocation = WindowStartupLocation.CenterScreen,
+                    Left = SystemParameters.WorkArea.Left + (SystemParameters.WorkArea.Width / 2) - 400,
+                    Top = SystemParameters.WorkArea.Top + 10,
                     Owner = Application.Current.MainWindow,
                     Padding = new Thickness(10)
                 };
-                
-                // Allow user to drag by dragging anywhere on the underlying window transparent background
+
                 window.MouseLeftButtonDown += (s, e) => window.DragMove();
 
                 dialogViewModel.CloseDialog = (result) =>
                 {
+                    if (result == true)
+                    {
+                        _notificationService.ShowSuccess("Modèle d'ordonnance ajouté avec succès.", "Succès"); // Notify success
+                    }
                     window.Close();
                 };
 
@@ -338,7 +344,7 @@ namespace Dental_App.ViewModels
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"Erreur: {ex.Message}", "Erreur", MessageBoxButton.OK, MessageBoxImage.Error);
+                _notificationService.ShowError($"Erreur: {ex.Message}", "Erreur"); // Notify error
             }
         }
 
