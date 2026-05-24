@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.EntityFrameworkCore;
 
 namespace Dental_App.Services
 {
@@ -19,6 +20,10 @@ namespace Dental_App.Services
         
         // Today's operations
         Task<(decimal totalRevenu, decimal totalDepense)> GetTodaySummaryAsync();
+
+        // Pagination support
+        Task<List<Caisse>> GetCaisseAsync(int pageIndex, int pageSize = 10);
+        Task<int> GetCaisseCountAsync();
     }
 
     public class CaisseService : ICaisseService
@@ -81,11 +86,9 @@ namespace Dental_App.Services
         /// </summary>
         public async Task<List<Caisse>> GetAllCaisseAsync()
         {
-            return await Task.FromResult(
-                _context.Caisses
+            return await _context.Caisses
                     .OrderByDescending(c => c.DateDuJour)
-                    .ToList()
-            );
+                    .ToListAsync();
         }
 
         /// <summary>
@@ -93,12 +96,34 @@ namespace Dental_App.Services
         /// </summary>
         public async Task<List<Caisse>> GetCaisseByDateRangeAsync(DateOnly startDate, DateOnly endDate)
         {
-            return await Task.FromResult(
-                _context.Caisses
+            return await _context.Caisses
                     .Where(c => c.DateDuJour >= startDate && c.DateDuJour <= endDate)
                     .OrderBy(c => c.DateDuJour)
-                    .ToList()
-            );
+                    .ToListAsync();
+        }
+
+        /// <summary>
+        /// Get paginated caisse entries ordered by date (descending)
+        /// pageIndex is 1-based. If pageIndex &lt;= 0 it will be treated as 1.
+        /// </summary>
+        public async Task<List<Caisse>> GetCaisseAsync(int pageIndex, int pageSize = 10)
+        {
+            if (pageSize <= 0) pageSize = 10;
+            if (pageIndex <= 0) pageIndex = 1;
+
+            return await _context.Caisses
+                .OrderByDescending(c => c.DateDuJour)
+                .Skip((pageIndex - 1) * pageSize)
+                .Take(pageSize)
+                .ToListAsync();
+        }
+
+        /// <summary>
+        /// Returns total number of caisse records in DB
+        /// </summary>
+        public async Task<int> GetCaisseCountAsync()
+        {
+            return await _context.Caisses.CountAsync();
         }
 
         /// <summary>
@@ -108,11 +133,9 @@ namespace Dental_App.Services
         /// </summary>
         public async Task<(decimal totalRevenu, decimal totalDepense)> GetDailySummaryAsync(DateOnly date)
         {
-            var dailyCaisses = await Task.FromResult(
-                _context.Caisses
+            var dailyCaisses = await _context.Caisses
                     .Where(c => c.DateDuJour == date)
-                    .ToList()
-            );
+                    .ToListAsync();
 
             var totalRevenu = dailyCaisses
                 .Where(c => c.IsRevenu)

@@ -63,16 +63,10 @@ namespace Dental_App.ViewModels
             {
                 if (SetProperty(ref _searchDate, value))
                 {
+                    // When a date is selected we bypass pagination and show only that day's entries
                     FilterTransactionsByDate();
                 }
             }
-        }
-
-        private ObservableCollection<TransactionDisplayItem> _allTransactions = new();
-        public ObservableCollection<TransactionDisplayItem> AllTransactions
-        {
-            get { return _allTransactions; }
-            set { SetProperty(ref _allTransactions, value); }
         }
 
         // --- Statistics ---
@@ -140,6 +134,43 @@ namespace Dental_App.ViewModels
             set { SetProperty(ref _newMontant, value); }
         }
 
+        // --- Pagination state ---
+        private int _currentPage = 1;
+        public int CurrentPage
+        {
+            get => _currentPage;
+            set
+            {
+                if (SetProperty(ref _currentPage, value))
+                {
+                    // update pagination command states
+                    NextPageCommand?.RaiseCanExecuteChanged();
+                    PreviousPageCommand?.RaiseCanExecuteChanged();
+                }
+            }
+        }
+
+        private int _pageSize = 5; // default 5 rows per page as requested
+        public int PageSize
+        {
+            get => _pageSize;
+            set { SetProperty(ref _pageSize, value); }
+        }
+
+        private int _totalItems;
+        public int TotalItems
+        {
+            get => _totalItems;
+            set { SetProperty(ref _totalItems, value); }
+        }
+
+        private int _totalPages = 1;
+        public int TotalPages
+        {
+            get => _totalPages;
+            set { SetProperty(ref _totalPages, value); }
+        }
+
         // --- State ---
         private bool _isLoading;
         public bool IsLoading
@@ -158,6 +189,10 @@ namespace Dental_App.ViewModels
         public DelegateCommand<TransactionDisplayItem> EditTransactionCommand { get; }
         public DelegateCommand ClearSearchCommand { get; }
 
+        // Pagination commands
+        public DelegateCommand NextPageCommand { get; }
+        public DelegateCommand PreviousPageCommand { get; }
+
         public CaisseViewModel(ICaisseService caisseService, IAppNotificationService notificationService)
         {
             _caisseService = caisseService ?? throw new ArgumentNullException(nameof(caisseService));
@@ -171,12 +206,24 @@ namespace Dental_App.ViewModels
             EditTransactionCommand = new DelegateCommand<TransactionDisplayItem>(EditTransaction);
             ClearSearchCommand = new DelegateCommand(ClearSearch);
 
+            NextPageCommand = new DelegateCommand(async () =>
+            {
+                CurrentPage++;
+                await LoadPageAsync();
+            }, () => CurrentPage < TotalPages);
+
+            PreviousPageCommand = new DelegateCommand(async () =>
+            {
+                if (CurrentPage > 1) CurrentPage--;
+                await LoadPageAsync();
+            }, () => CurrentPage > 1);
+
             Debug.WriteLine("[CaisseViewModel] Initialisé");
             _ = LoadDataAsync();
         }
 
         /// <summary>
-        /// Loads all transactions and calculates statistics
+        /// Loads paginated data (or delegated to date filter if SearchDate is set)
         /// </summary>
         private async Task LoadDataAsync()
         {
@@ -185,25 +232,16 @@ namespace Dental_App.ViewModels
                 IsLoading = true;
                 Debug.WriteLine("[CaisseViewModel] Chargement des transactions");
 
-                // Get all transactions
-                var caisses = await _caisseService.GetAllCaisseAsync();
-                Transactions.Clear();
-                AllTransactions.Clear();
-
-                foreach (var caisse in caisses)
+                if (SearchDate.HasValue)
                 {
-                    var transaction = new TransactionDisplayItem
-                    {
-                        Date = caisse.DateDuJour,
-                        Description = caisse.IsRevenu ? "Revenu" : "Depense",
-                        Type = caisse.IsRevenu ? "Revenu" : "Depense",
-                        Montant = caisse.Montant ?? 0
-                    };
-                    AllTransactions.Add(transaction);
-                    Transactions.Add(transaction);
+                    // If a date filter is active, show just that day's transactions
+                    await FilterTransactionsByDateAsync();
                 }
-
-                Debug.WriteLine($"[CaisseViewModel] AllTransactions: {AllTransactions.Count}, Transactions affichées: {Transactions.Count}");
+                else
+                {
+                    // Load current page
+                    await LoadPageAsync();
+                }
 
                 // Calculate totals
                 await UpdateStatisticsAsync();
@@ -211,12 +249,53 @@ namespace Dental_App.ViewModels
                 // Build chart data for last 7 days
                 await BuildChartDataAsync();
 
-                Debug.WriteLine($"[CaisseViewModel] {Transactions.Count} transactions chargées");
+                Debug.WriteLine($"[CaisseViewModel] Transactions chargées: {Transactions.Count}");
             }
             catch (Exception ex)
             {
                 Debug.WriteLine($"[LoadDataAsync] ERREUR: {ex.Message}");
                 MessageBox.Show($"Erreur lors du chargement: {ex.Message}", "Erreur", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+            finally
+            {
+                IsLoading = false;
+            }
+        }
+
+        private async Task LoadPageAsync()
+        {
+            try
+            {
+                IsLoading = true;
+
+                // Get page data
+                var caisses = await _caisseService.GetCaisseAsync(CurrentPage, PageSize);
+
+                // Update total items and total pages
+                TotalItems = await _caisseService.GetCaisseCountAsync();
+                TotalPages = Math.Max(1, (int)Math.Ceiling((double)TotalItems / PageSize));
+
+                // Update UI collection
+                Transactions.Clear();
+                foreach (var caisse in caisses)
+                {
+                    Transactions.Add(new TransactionDisplayItem
+                    {
+                        Date = caisse.DateDuJour,
+                        Description = caisse.IsRevenu ? "Revenu" : "Depense",
+                        Type = caisse.IsRevenu ? "Revenu" : "Depense",
+                        Montant = caisse.Montant ?? 0
+                    });
+                }
+
+                // Raise can execute for pagination commands
+                NextPageCommand.RaiseCanExecuteChanged();
+                PreviousPageCommand.RaiseCanExecuteChanged();
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine($"[LoadPageAsync] ERREUR: {ex.Message}");
+                MessageBox.Show($"Erreur lors du chargement de la page: {ex.Message}", "Erreur", MessageBoxButton.OK, MessageBoxImage.Error);
             }
             finally
             {
@@ -259,7 +338,7 @@ namespace Dental_App.ViewModels
 
                 // Find max values for scaling
                 var maxValue = caisses.GroupBy(c => c.DateDuJour)
-                    .SelectMany(g => new[] { 
+                    .SelectMany(g => new[] {
                         g.Where(c => c.IsRevenu).Sum(c => c.Montant ?? 0),
                         g.Where(c => !c.IsRevenu).Sum(c => c.Montant ?? 0)
                     })
@@ -368,29 +447,18 @@ namespace Dental_App.ViewModels
                 bool isRevenu = NewType == "Revenu";
                 bool success;
                 if (isRevenu) {
-                    success = await _caisseService.AddOrUpdateCaisseAsync(
-                        NewMontant,
-                        true,
-                        NewDate
-                    );
+                    success = await _caisse_service_AddOrUpdateWrapper(NewMontant, true, NewDate);
                 }
                 else
                 {
-                    success = await _caisseService.AddOrUpdateCaisseAsync(
-                    NewMontant,
-                    false,
-                    NewDate
-                );
+                    success = await _caisse_service_AddOrUpdateWrapper(NewMontant, false, NewDate);
                 }
 
                 if (success)
                 {
                     CloseModal();
                     await LoadDataAsync();
-                    string message = _selectedTransaction == null
-                        ? "Transaction enregistrée avec succès."
-                        : "Transaction mise à jour avec succès.";
-                    _notificationService.ShowSuccess("Transaction sauvegarder avec succès.", "Succès");
+                    _notification_service_ShowSuccessWrapper();
                 }
                 else
                 {
@@ -406,6 +474,20 @@ namespace Dental_App.ViewModels
             {
                 IsLoading = false;
             }
+        }
+
+        // small wrappers to avoid duplication and keep readable diff when editing
+        private async Task<bool> _caisse_service_AddOrUpdateWrapper(decimal montant, bool isRevenu, DateOnly? date)
+        {
+            return await _caisseService.AddOrUpdateCaisseAsync(montant, isRevenu, date);
+        }
+
+        private void _notification_service_ShowSuccessWrapper()
+        {
+            string message = _selectedTransaction == null
+                ? "Transaction enregistrée avec succès."
+                : "Transaction mise à jour avec succès.";
+            _notificationService.ShowSuccess("Transaction sauvegardée avec succès.", "Succès");
         }
 
         /// <summary>
@@ -439,48 +521,46 @@ namespace Dental_App.ViewModels
         /// </summary>
         private void FilterTransactionsByDate()
         {
+            // call async variant fire-and-forget (UI updates will happen when completed)
+            _ = FilterTransactionsByDateAsync();
+        }
+
+        private async Task FilterTransactionsByDateAsync()
+        {
             try
             {
-                Debug.WriteLine($"[FilterTransactionsByDate] SearchDate: {SearchDate}, AllTransactions count: {AllTransactions.Count}");
+                Debug.WriteLine($"[FilterTransactionsByDate] SearchDate: {SearchDate}");
+
+                Transactions.Clear();
 
                 if (!SearchDate.HasValue)
                 {
-                    Debug.WriteLine("[FilterTransactionsByDate] SearchDate is null - showing all transactions");
-                    Transactions.Clear();
-                    foreach (var transaction in AllTransactions)
-                    {
-                        Transactions.Add(transaction);
-                    }
-                    Debug.WriteLine($"[FilterTransactionsByDate] Affichage de {Transactions.Count} transactions");
+                    // fallback to paginated list
+                    await LoadPageAsync();
                     return;
                 }
 
                 var selectedDate = SearchDate.Value;
-                Debug.WriteLine($"[FilterTransactionsByDate] Recherche pour la date: {selectedDate:yyyy-MM-dd}");
-                
-                var filteredTransactions = AllTransactions
-                    .Where(t => t.Date.Year == selectedDate.Year && 
-                                t.Date.Month == selectedDate.Month && 
-                                t.Date.Day == selectedDate.Day)
-                    .ToList();
 
-                Debug.WriteLine($"[FilterTransactionsByDate] {filteredTransactions.Count} transactions trouvées");
+                var filtered = await _caisseService.GetCaisseByDateRangeAsync(selectedDate, selectedDate);
 
-                Transactions.Clear();
-                
-                if (filteredTransactions.Count == 0)
+                foreach (var caisse in filtered)
                 {
-                    Debug.WriteLine($"[FilterTransactionsByDate] Aucune transaction pour le {selectedDate:yyyy-MM-dd}");
-                    // Affiche rien si aucune transaction n'existe pour cette date
-                }
-                else
-                {
-                    foreach (var transaction in filteredTransactions)
+                    Transactions.Add(new TransactionDisplayItem
                     {
-                        Transactions.Add(transaction);
-                    }
-                    Debug.WriteLine($"[FilterTransactionsByDate] {filteredTransactions.Count} transactions affichées");
+                        Date = caisse.DateDuJour,
+                        Description = caisse.IsRevenu ? "Revenu" : "Depense",
+                        Type = caisse.IsRevenu ? "Revenu" : "Depense",
+                        Montant = caisse.Montant ?? 0
+                    });
                 }
+
+                // When filtered by date, pagination is effectively disabled
+                CurrentPage = 1;
+                TotalItems = Transactions.Count;
+                TotalPages = 1;
+                NextPageCommand.RaiseCanExecuteChanged();
+                PreviousPageCommand.RaiseCanExecuteChanged();
             }
             catch (Exception ex)
             {
@@ -489,13 +569,14 @@ namespace Dental_App.ViewModels
         }
 
         /// <summary>
-        /// Clears the search date and shows all transactions
+        /// Clears the search date and shows all transactions (paginated)
         /// </summary>
         private void ClearSearch()
         {
             Debug.WriteLine("[ClearSearch] Réinitialisation de la recherche");
             SearchDate = null;
-            Debug.WriteLine("[ClearSearch] Recherche réinitialisée");
+            CurrentPage = 1;
+            _ = LoadPageAsync();
         }
     }
 }

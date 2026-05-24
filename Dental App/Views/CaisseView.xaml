@@ -457,6 +457,7 @@
                             <RowDefinition Height="Auto"/>
                             <RowDefinition Height="Auto"/>
                             <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/><!-- added for pagination footer -->
                         </Grid.RowDefinitions>
 
                         <!-- Search Bar by Date -->
@@ -631,6 +632,23 @@
                                        HorizontalAlignment="Center"
                                        VerticalAlignment="Center"/>
                         </Border>
+
+                        <!-- Pagination footer -->
+                        <StackPanel Grid.Row="3" Orientation="Horizontal" HorizontalAlignment="Center" Margin="20,12,20,12" VerticalAlignment="Center">
+                            <Button Content="Précédent" Command="{Binding PreviousPageCommand}" Width="110" Height="36" Style="{StaticResource TealBtn}" Margin="0,0,8,0"/>
+
+                            <TextBlock VerticalAlignment="Center" Foreground="{DynamicResource TextPrimary}" FontSize="13" Margin="6,0">
+                                <Run Text="Page "/>
+                                <Run Text="{Binding CurrentPage}"/>
+                                <Run Text=" de "/>
+                                <Run Text="{Binding TotalPages}"/>
+                            </TextBlock>
+
+                            <Button Content="Suivant" Command="{Binding NextPageCommand}" Width="110" Height="36" Style="{StaticResource TealBtn}" Margin="8,0,0,0"/>
+
+                         
+                        </StackPanel>
+
                     </Grid>
                 </Border>
 
