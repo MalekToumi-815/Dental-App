@@ -103,8 +103,19 @@ namespace Dental_App.ViewModels
             try
             {
                 IsLoading = true;
-                var patients = await _patientService.GetAllAsync();
-                
+                // Limit initial load to first 10 patients to improve performance in the patient selector
+                List<Patient> patients = null;
+                try
+                {
+                    // Use paged fetch exposed on IPatientService (used elsewhere in the app)
+                    patients = await _patientService.GetPatientsAsync(1, 10);
+                }
+                catch
+                {
+                    // Fall back to GetAllAsync if paged method isn't available for some reason
+                    patients = await _patientService.GetAllAsync();
+                }
+
                 Patients.Clear();
                 foreach (var patient in patients)
                 {

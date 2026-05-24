@@ -152,7 +152,8 @@
 
             <!-- Patient List (ListBox styled exactly like ConsultationView) -->
             <Border Grid.Row="1" Background="{DynamicResource CardBackground}" CornerRadius="12" BorderThickness="1" BorderBrush="{DynamicResource BorderColor}">
-                <ListBox ItemsSource="{Binding Patients}" SelectedItem="{Binding SelectedPatient}" Background="Transparent" BorderThickness="0">
+                <ListBox ItemsSource="{Binding Patients}" SelectedItem="{Binding SelectedPatient}" Background="Transparent" BorderThickness="0"
+                         ScrollViewer.VerticalScrollBarVisibility="Hidden" MaxHeight="520">
                     <!-- ADD EVENT TRIGGER FOR SELECTION CHANGED INSTEAD OF BUTTON CLICK -->
                     <i:Interaction.Triggers>
                         <i:EventTrigger EventName="SelectionChanged">

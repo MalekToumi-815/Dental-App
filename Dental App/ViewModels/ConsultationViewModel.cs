@@ -214,38 +214,49 @@ namespace Dental_App.ViewModels
             try
             {
                 IsLoading = true;
-                var patients = await _patientService.GetAllAsync();
-
-                var patientList = new ObservableCollection<PatientForConsultation>();
-                if (patients != null)
+                // Limit initial load to first 10 patients to improve performance in the patient selector
+                List<Patient> patients = null;
+                try
                 {
-                    foreach (var patient in patients)
-                    {
-                        patientList.Add(new PatientForConsultation
-                        {
-                            Id = patient.Id,
-                            FullName = $"{patient.Prenom} {patient.Nom}",
-                            FirstName = patient.Prenom,
-                            LastName = patient.Nom,
-                            Telephone = patient.Telephone ?? string.Empty,
-                            Initials = GetInitials(patient.Prenom, patient.Nom),
-                            Patient = patient
-                        });
-                    }
+                    // Use paged fetch exposed on IPatientService (used elsewhere in the app)
+                    patients = await _patientService.GetPatientsAsync(1, 10);
+                }
+                catch
+                {
+                    // Fall back to GetAllAsync if paged method isn't available for some reason
+                    patients = await _patientService.GetAllAsync();
                 }
 
-                AllPatients = patientList;
-                FilteredPatients = new ObservableCollection<PatientForConsultation>(AllPatients);
-            }
-            catch (Exception ex)
-            {
-                _notificationService.ShowError($"Erreur chargement: {ex.Message}");
-            }
-            finally
-            {
-                IsLoading = false;
-            }
-        }
+                 var patientList = new ObservableCollection<PatientForConsultation>();
+                 if (patients != null)
+                 {
+                     foreach (var patient in patients)
+                     {
+                         patientList.Add(new PatientForConsultation
+                         {
+                             Id = patient.Id,
+                             FullName = $"{patient.Prenom} {patient.Nom}",
+                             FirstName = patient.Prenom,
+                             LastName = patient.Nom,
+                             Telephone = patient.Telephone ?? string.Empty,
+                             Initials = GetInitials(patient.Prenom, patient.Nom),
+                             Patient = patient
+                         });
+                     }
+                 }
+
+                 AllPatients = patientList;
+                 FilteredPatients = new ObservableCollection<PatientForConsultation>(AllPatients);
+             }
+             catch (Exception ex)
+             {
+                 _notificationService.ShowError($"Erreur chargement: {ex.Message}");
+             }
+             finally
+             {
+                 IsLoading = false;
+             }
+         }
 
         private async Task PerformSearchAsync()
         {

@@ -242,7 +242,8 @@
             </Border>
 
             <Border Grid.Row="1" Background="{DynamicResource CardBackground}" CornerRadius="12" BorderThickness="1" BorderBrush="{DynamicResource BorderColor}">
-                <ListBox ItemsSource="{Binding FilteredPatients}" SelectedItem="{Binding SelectedPatient}" Background="Transparent" BorderThickness="0">
+                <ListBox ItemsSource="{Binding FilteredPatients}" SelectedItem="{Binding SelectedPatient}" Background="Transparent" BorderThickness="0"
+                         ScrollViewer.VerticalScrollBarVisibility="Hidden" MaxHeight="520">
                     <ListBox.ItemContainerStyle>
                         <Style TargetType="ListBoxItem">
                             <Setter Property="Template">
