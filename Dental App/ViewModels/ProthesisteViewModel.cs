@@ -126,6 +126,15 @@ namespace Dental_App.ViewModels
         }
 
         /// <summary>
+        /// Public refresh method to reload prothésistes when view becomes visible or navigated to.
+        /// </summary>
+        public void Refresh()
+        {
+            // Keep simple: reload the list
+            LoadProthesistes();
+        }
+
+        /// <summary>
         /// Filtrer les prothésistes en fonction du texte de recherche.
         /// Détecte automatiquement si la recherche est par nom ou par téléphone.
         /// </summary>

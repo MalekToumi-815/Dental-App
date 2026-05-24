@@ -20,6 +20,28 @@ namespace Dental_App.Views
         public RendezVousView()
         {
             InitializeComponent();
+
+            // Refresh ViewModel when the view becomes visible (e.g., navigated back to)
+            this.IsVisibleChanged += RendezVousView_IsVisibleChanged;
+            this.Loaded += RendezVousView_Loaded;
+        }
+
+        private void RendezVousView_Loaded(object sender, RoutedEventArgs e)
+        {
+            if (this.DataContext is RendezVousViewModel vm)
+            {
+                // Ensure initial data is fresh when view is first loaded
+                vm.Refresh();
+            }
+        }
+
+        private void RendezVousView_IsVisibleChanged(object sender, DependencyPropertyChangedEventArgs e)
+        {
+            if (this.IsVisible && this.DataContext is RendezVousViewModel vm)
+            {
+                // Refresh when the view becomes visible again
+                vm.Refresh();
+            }
         }
 
         /// <summary>

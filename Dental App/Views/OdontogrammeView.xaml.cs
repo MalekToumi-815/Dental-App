@@ -30,6 +30,9 @@ namespace Dental_App.Views
                 {
                     viewModel.LoadInkRequested += ViewModel_LoadInkRequested;
                     viewModel.SaveInkRequested += ViewModel_SaveInkRequested;
+
+                    // Trigger a refresh when the view is first loaded
+                    viewModel.Refresh();
                 }
                 
                 // Enable InkCanvas for drawing if active
@@ -42,6 +45,15 @@ namespace Dental_App.Views
                 if (Application.Current != null && Application.Current.MainWindow != null)
                 {
                     Application.Current.MainWindow.Closing += MainWindow_Closing;
+                }
+            };
+
+            // Refresh when visibility changes (tab switched / navigation)
+            this.IsVisibleChanged += (s, e) =>
+            {
+                if (this.IsVisible && this.DataContext is OdontogrammeViewModel vm)
+                {
+                    vm.Refresh();
                 }
             };
 

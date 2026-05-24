@@ -227,36 +227,50 @@ namespace Dental_App.ViewModels
                     patients = await _patientService.GetAllAsync();
                 }
 
-                 var patientList = new ObservableCollection<PatientForConsultation>();
-                 if (patients != null)
-                 {
-                     foreach (var patient in patients)
-                     {
-                         patientList.Add(new PatientForConsultation
-                         {
-                             Id = patient.Id,
-                             FullName = $"{patient.Prenom} {patient.Nom}",
-                             FirstName = patient.Prenom,
-                             LastName = patient.Nom,
-                             Telephone = patient.Telephone ?? string.Empty,
-                             Initials = GetInitials(patient.Prenom, patient.Nom),
-                             Patient = patient
-                         });
-                     }
-                 }
+                var patientList = new ObservableCollection<PatientForConsultation>();
+                if (patients != null)
+                {
+                    foreach (var patient in patients)
+                    {
+                        patientList.Add(new PatientForConsultation
+                        {
+                            Id = patient.Id,
+                            FullName = $"{patient.Prenom} {patient.Nom}",
+                            FirstName = patient.Prenom,
+                            LastName = patient.Nom,
+                            Telephone = patient.Telephone ?? string.Empty,
+                            Initials = GetInitials(patient.Prenom, patient.Nom),
+                            Patient = patient
+                        });
+                    }
+                }
 
-                 AllPatients = patientList;
-                 FilteredPatients = new ObservableCollection<PatientForConsultation>(AllPatients);
-             }
-             catch (Exception ex)
-             {
-                 _notificationService.ShowError($"Erreur chargement: {ex.Message}");
-             }
-             finally
-             {
-                 IsLoading = false;
-             }
-         }
+                AllPatients = patientList;
+                FilteredPatients = new ObservableCollection<PatientForConsultation>(AllPatients);
+            }
+            catch (Exception ex)
+            {
+                _notificationService.ShowError($"Erreur chargement: {ex.Message}");
+            }
+            finally
+            {
+                IsLoading = false;
+            }
+        }
+
+        /// <summary>
+        /// Publicly callable refresh method so the view can trigger reloading when it becomes visible.
+        /// Reloads patient selector and current consultations page (if a patient is selected).
+        /// </summary>
+        public void Refresh()
+        {
+            // Fire-and-forget the async load operations; Refresh is called from the view events.
+            _ = LoadPatientsAsync();
+            if (SelectedPatient != null)
+            {
+                _ = LoadCurrentPageAsync();
+            }
+        }
 
         private async Task PerformSearchAsync()
         {

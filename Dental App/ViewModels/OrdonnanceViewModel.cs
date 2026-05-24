@@ -238,7 +238,7 @@ namespace Dental_App.ViewModels
                 if (patient == null)
                 {
                     Ordonnances.Clear();
-                    HeaderSubtitle = "Sélectionnez un patient pour commencer";
+                    HeaderSubtitle = "S\u00e9lectionnez un patient pour commencer";
                 }
                 else
                 {
@@ -269,6 +269,19 @@ namespace Dental_App.ViewModels
             finally
             {
                 IsLoading = false;
+            }
+        }
+
+        /// <summary>
+        /// Public refresh entry point so the view can request a data reload when it becomes visible.
+        /// Reloads patients list and the ordonnances for the selected patient (if any).
+        /// </summary>
+        public void Refresh()
+        {
+            _ = LoadPatientsAsync();
+            if (SelectedPatient != null)
+            {
+                _ = OnPatientSelectedAsync(SelectedPatient);
             }
         }
 

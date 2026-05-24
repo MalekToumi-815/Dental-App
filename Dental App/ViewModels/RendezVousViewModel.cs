@@ -188,6 +188,19 @@ namespace Dental_App.ViewModels
         }
 
         /// <summary>
+        /// Public refresh entry point so the view can request a data reload when it becomes visible.
+        /// This avoids adding Prism navigation interfaces and keeps reload logic in the ViewModel.
+        /// </summary>
+        public void Refresh()
+        {
+            Debug.WriteLine("[Refresh] Refresh requested from view");
+            // Run the async loads without awaiting to keep the caller simple.
+            _ = LoadRendezVousByDateAsync();
+            _ = LoadStatisticsAsync();
+            UpdateDateLabel();
+        }
+
+        /// <summary>
         /// Charge les rendez-vous pour la date sélectionnée
         /// </summary>
         private async Task LoadRendezVousByDateAsync()

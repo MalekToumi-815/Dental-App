@@ -225,7 +225,7 @@
 					</Grid.ColumnDefinitions>
 
 					<StackPanel Grid.Column="0" VerticalAlignment="Center">
-						<TextBlock Text="Selected patient:" Foreground="{DynamicResource TextSecondary}" FontSize="12"/>
+						<TextBlock Text="Patient:" Foreground="{DynamicResource TextSecondary}" FontSize="12"/>
 						<TextBlock Text="{Binding SelectedPatientName}" Foreground="{DynamicResource TextPrimary}" FontSize="14" FontWeight="Bold" Margin="0,4,0,0"/>
 					</StackPanel>
 

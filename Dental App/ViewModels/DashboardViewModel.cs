@@ -8,7 +8,7 @@ using System.Linq;
 
 namespace Dental_App.ViewModels
 {
-    public class DashboardViewModel : BindableBase
+    public class DashboardViewModel : BindableBase, INavigationAware
     {
         private readonly IPatientService _patientService;
         private readonly IRendezVousService _rvService;
@@ -88,6 +88,24 @@ namespace Dental_App.ViewModels
                     Initials = $"{(patient?.Prenom?.FirstOrDefault())}{(patient?.Nom?.FirstOrDefault())}".ToUpper()
                 });
             }
+        }
+
+        // INavigationAware
+        public void OnNavigatedTo(NavigationContext navigationContext)
+        {
+            // Refresh data each time the dashboard is navigated to
+            LoadDashboardData();
+        }
+
+        public bool IsNavigationTarget(NavigationContext navigationContext)
+        {
+            // Keep using the existing instance so OnNavigatedTo is called when returning
+            return true;
+        }
+
+        public void OnNavigatedFrom(NavigationContext navigationContext)
+        {
+            // No-op
         }
     }
 

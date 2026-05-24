@@ -243,6 +243,20 @@ namespace Dental_App.ViewModels
             }
         }
 
+        /// <summary>
+        /// Public refresh entry point so the view can request a reload when it becomes visible.
+        /// Reloads the patient selector and currently selected patient's radio images.
+        /// </summary>
+        public void Refresh()
+        {
+            System.Diagnostics.Debug.WriteLine("RadioImagesViewModel: Refresh requested");
+            _ = LoadPatientsAsync();
+            if (SelectedPatient != null)
+            {
+                _ = LoadRadioImagesAsync(SelectedPatient.Id);
+            }
+        }
+
         private void ViewImage(RadioImageDisplayItem radioImage)
         {
             if (radioImage == null)

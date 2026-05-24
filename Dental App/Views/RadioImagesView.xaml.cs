@@ -4,6 +4,7 @@ using System.Windows.Data;
 using System;
 using System.Globalization;
 using System.Windows;
+using Dental_App.ViewModels;
 
 namespace Dental_App.Views
 {
@@ -12,6 +13,25 @@ namespace Dental_App.Views
         public RadioImagesView()
         {
             InitializeComponent();
+
+            this.Loaded += RadioImagesView_Loaded;
+            this.IsVisibleChanged += RadioImagesView_IsVisibleChanged;
+        }
+
+        private void RadioImagesView_Loaded(object sender, RoutedEventArgs e)
+        {
+            if (this.DataContext is RadioImagesViewModel vm)
+            {
+                vm.Refresh();
+            }
+        }
+
+        private void RadioImagesView_IsVisibleChanged(object sender, DependencyPropertyChangedEventArgs e)
+        {
+            if (this.IsVisible && this.DataContext is RadioImagesViewModel vm)
+            {
+                vm.Refresh();
+            }
         }
     }
 

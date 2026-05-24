@@ -215,6 +215,37 @@ namespace Dental_App.ViewModels
         }
 
         /// <summary>
+        /// Public refresh entry point so the view can request a data reload when it becomes visible.
+        /// </summary>
+        public void Refresh()
+        {
+            Debug.WriteLine("[AntecedentViewModel] Refresh requested");
+            // Optionally, preload a small set of patients for quicker suggestions
+            _ = LoadInitialPatientsAsync();
+            if (SelectedPatient != null)
+            {
+                _ = LoadAntecedentsAsync();
+            }
+        }
+
+        private async Task LoadInitialPatientsAsync()
+        {
+            try
+            {
+                // load a small page of patients to seed the search UI (non-intrusive)
+                var patients = await _patientService.GetPatientsAsync(1, 10);
+                Patients.Clear();
+                foreach (var p in patients)
+                    Patients.Add(p);
+                HasPatients = Patients.Count > 0;
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine($"[LoadInitialPatientsAsync] Erreur: {ex.Message}");
+            }
+        }
+
+        /// <summary>
         /// Charge tous les patients par défaut depuis la base de données
         /// </summary>
         private async void LoadAllPatientsAsync()

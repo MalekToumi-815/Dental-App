@@ -14,7 +14,7 @@ namespace Dental_App.ViewModels
 {
     public class OdontogrammeViewModel : BindableBase
     {
-        private string _patientInfo = "Aucun patient slectionn";
+        private string _patientInfo = "Aucun patient sélectionné";
         private DelegateCommand _choisirPatientCommand;
         private DelegateCommand<string> _toothClickedCommand;
         private DelegateCommand _toggleViewModeCommand;
@@ -32,6 +32,7 @@ namespace Dental_App.ViewModels
         private string _currentInkFilePath;
         private bool _isInkCanvasEnabled = false;
         private readonly ILiveSearchService<Patient> _liveSearchService;
+        private int? _selectedToothFdi; // track last selected tooth FDI
 
         public OdontogrammeViewModel(IPatientService patientService, IDentService dentService, IOdontogrammeLibreService odontogrammeLibreService, ILiveSearchService<Patient> liveSearchService)
         {
@@ -45,6 +46,24 @@ namespace Dental_App.ViewModels
             ToothClickedCommand = new DelegateCommand<string>(ExecuteToothClicked);
             ToggleViewModeCommand = new DelegateCommand(ExecuteToggleViewMode);
             SaveInkCommand = new DelegateCommand(ExecuteSaveInk, CanExecuteSaveInk).ObservesProperty(() => IsInkCanvasEnabled);
+        }
+
+        /// <summary>
+        /// Simple refresh called by the view when it becomes visible or navigated to.
+        /// Re-initializes ink canvas for the currently selected patient (if any) and reloads the selected tooth history.
+        /// </summary>
+        public void Refresh()
+        {
+            if (SelectedPatientId.HasValue && SelectedPatientId.Value > 0)
+            {
+                _ = InitializeInkCanvasForPatient(SelectedPatientId.Value);
+            }
+
+            // If a tooth was previously selected, reload its acts to ensure history is up-to-date
+            if (SelectedToothFdi.HasValue)
+            {
+                _ = LoadActsForToothAsync(SelectedToothFdi.Value);
+            }
         }
 
         public string PatientInfo
@@ -129,6 +148,12 @@ namespace Dental_App.ViewModels
         {
             get => _isInkCanvasEnabled;
             private set => SetProperty(ref _isInkCanvasEnabled, value);
+        }
+
+        public int? SelectedToothFdi
+        {
+            get => _selectedToothFdi;
+            private set => SetProperty(ref _selectedToothFdi, value);
         }
 
         public DelegateCommand SaveInkCommand { get; }
@@ -252,6 +277,17 @@ namespace Dental_App.ViewModels
                 return;
             }
 
+            // store last selected
+            SelectedToothFdi = parsedFdiCode;
+
+            await LoadActsForToothAsync(parsedFdiCode);
+        }
+
+        /// <summary>
+        /// Loads acts for a specific tooth (FDI code) and updates the UI properties.
+        /// </summary>
+        private async Task LoadActsForToothAsync(int parsedFdiCode)
+        {
             try
             {
                 System.Diagnostics.Debug.WriteLine($"[OdontogrammeViewModel] Tooth clicked: FDI={parsedFdiCode}, PatientId={SelectedPatientId}");
@@ -314,6 +350,7 @@ namespace Dental_App.ViewModels
             IsNoActsMessage = true;
             IsNoActsFound = false;
             NoToothSelectedMessage = "Cliquez sur une dent pour voir l'historique des actes";
+            SelectedToothFdi = null;
         }
     }
 

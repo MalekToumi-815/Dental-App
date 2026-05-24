@@ -453,6 +453,16 @@ namespace Dental_App.ViewModels
             IsModalOpen = false;
             ProthesisteSearchViewModel.Reset();
         }
+
+        /// <summary>
+        /// Public refresh method to reload commandes when view becomes visible or navigated to.
+        /// </summary>
+        public void Refresh()
+        {
+            // Reset to first page and reload
+            CurrentPage = 1;
+            _ = LoadCommandes();
+        }
     }
 
     public class CommandeProthesisteDisplayItem

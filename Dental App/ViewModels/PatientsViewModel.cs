@@ -311,6 +311,15 @@ namespace Dental_App.ViewModels
             }
         }
 
+        /// <summary>
+        /// Public refresh entry point so the view can request a data reload when it becomes visible.
+        /// </summary>
+        public void Refresh()
+        {
+            System.Diagnostics.Debug.WriteLine("PatientsViewModel: Refresh requested");
+            _ = LoadPatientsAsync();
+        }
+
         private async Task PerformLiveSearch(string query)
         {
             try
