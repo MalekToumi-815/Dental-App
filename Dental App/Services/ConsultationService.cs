@@ -24,6 +24,9 @@ namespace Dental_App.Services
         Task<bool> AddActesAsync(int consultationId, List<ActeMedical> actes);
         Task<bool> ClearActesAsync(int consultationId);
         Task<List<ActeMedical>> GetActesByConsultationIdAsync(int consultationId);
+
+        // New pagination method: returns items for the page and total count for the patient
+        Task<(IEnumerable<Consultation> Items, int TotalCount)> GetByPatientIdPagedAsync(int patientId, int pageIndex, int pageSize);
     }
 
     /// <summary>
@@ -113,6 +116,33 @@ namespace Dental_App.Services
                 .Include(c => c.IdActes)
                 .OrderByDescending(c => c.DateConsultation)
                 .ToListAsync();
+        }
+
+        /// <summary>
+        /// Get paginated consultations for a specific patient along with total count
+        /// </summary>
+        public async Task<(IEnumerable<Consultation> Items, int TotalCount)> GetByPatientIdPagedAsync(int patientId, int pageIndex, int pageSize)
+        {
+            if (patientId <= 0)
+                throw new ArgumentException("Le PatientId doit être supérieur à 0.", nameof(patientId));
+
+            if (pageSize <= 0) pageSize = 10;
+            if (pageIndex <= 0) pageIndex = 1;
+
+            var query = _context.Consultations
+                .Where(c => c.PatientId == patientId)
+                .Include(c => c.IdDentNavigation)
+                .Include(c => c.IdActes)
+                .OrderByDescending(c => c.DateConsultation);
+
+            var total = await query.CountAsync();
+
+            var items = await query
+                .Skip((pageIndex - 1) * pageSize)
+                .Take(pageSize)
+                .ToListAsync();
+
+            return (items, total);
         }
 
         /// <summary>

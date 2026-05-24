@@ -32,6 +32,14 @@ namespace Dental_App.ViewModels
         private DelegateCommand<ConsultationDisplayRow> _editConsultationCommand;
         private DelegateCommand<ConsultationDisplayRow> _gererActeCommand;
 
+        // Pagination fields
+        private int _currentPage = 1;
+        private int _totalPages = 1;
+        private int _pageSize = 10;
+        private int _totalConsultationsCount = 0;
+        private DelegateCommand _nextPageCommand;
+        private DelegateCommand _previousPageCommand;
+
         public ConsultationViewModel(IPatientService patientService, IConsultationService consultationService, IDentService dentService, IActeMedicalService acteService, ILiveSearchService<Patient> liveSearchService, IAppNotificationService notificationService)
         {
             _patientService = patientService ?? throw new ArgumentNullException(nameof(patientService));
@@ -48,6 +56,10 @@ namespace Dental_App.ViewModels
             AddConsultationCommand = new DelegateCommand(AddConsultation);
             EditConsultationCommand = new DelegateCommand<ConsultationDisplayRow>(EditConsultation);
             GererActeCommand = new DelegateCommand<ConsultationDisplayRow>(GererActe);
+
+            // Pagination commands
+            NextPageCommand = new DelegateCommand(async () => await NextPageAsync(), () => CurrentPage < TotalPages);
+            PreviousPageCommand = new DelegateCommand(async () => await PreviousPageAsync(), () => CurrentPage > 1);
 
             _ = LoadPatientsAsync();
         }
@@ -79,6 +91,11 @@ namespace Dental_App.ViewModels
                 {
                     // Trigger UI updates for visibility logic
                     RaisePropertyChanged(nameof(IsPatientSelected));
+
+                    // Reset paging when patient changes
+                    CurrentPage = 1;
+
+                    // Load first page for the selected patient
                     _ = OnPatientSelectedAsync(value);
                 }
             }
@@ -108,9 +125,10 @@ namespace Dental_App.ViewModels
             set => SetProperty(ref _headerSubtitle, value);
         }
 
-        public string ConsultationCountDisplay => Consultations == null || Consultations.Count == 0
+        // Use total count returned by the paged service instead of current page count
+        public string ConsultationCountDisplay => _totalConsultationsCount == 0
             ? "0 consultation(s)"
-            : $"{Consultations.Count} consultation(s)";
+            : $"{_totalConsultationsCount} consultation(s)";
 
         public DelegateCommand AddConsultationCommand
         {
@@ -128,6 +146,64 @@ namespace Dental_App.ViewModels
         {
             get => _gererActeCommand;
             set => SetProperty(ref _gererActeCommand, value);
+        }
+
+        // Pagination public properties
+        public int CurrentPage
+        {
+            get => _currentPage;
+            set
+            {
+                if (SetProperty(ref _currentPage, value))
+                {
+                    // Ensure bounds
+                    if (_currentPage < 1) _currentPage = 1;
+                    if (TotalPages > 0 && _currentPage > TotalPages) _currentPage = TotalPages;
+
+                    // Notify commands to re-evaluate
+                    NextPageCommand?.RaiseCanExecuteChanged();
+                    PreviousPageCommand?.RaiseCanExecuteChanged();
+                }
+            }
+        }
+
+        public int TotalPages
+        {
+            get => _totalPages;
+            set
+            {
+                if (SetProperty(ref _totalPages, value))
+                {
+                    NextPageCommand?.RaiseCanExecuteChanged();
+                    PreviousPageCommand?.RaiseCanExecuteChanged();
+                }
+            }
+        }
+
+        public int PageSize
+        {
+            get => _pageSize;
+            set
+            {
+                if (SetProperty(ref _pageSize, value))
+                {
+                    // When page size changes, reset to first page and reload
+                    CurrentPage = 1;
+                    _ = LoadCurrentPageAsync();
+                }
+            }
+        }
+
+        public DelegateCommand NextPageCommand
+        {
+            get => _nextPageCommand;
+            set => SetProperty(ref _nextPageCommand, value);
+        }
+
+        public DelegateCommand PreviousPageCommand
+        {
+            get => _previousPageCommand;
+            set => SetProperty(ref _previousPageCommand, value); // small fallback name correction
         }
 
         // Logic property for XAML Visibility
@@ -215,6 +291,7 @@ namespace Dental_App.ViewModels
             }
         }
 
+        // This method is called when a patient is selected. It now triggers loading of the current page (paged fetch)
         private async Task OnPatientSelectedAsync(PatientForConsultation patient)
         {
             try
@@ -223,31 +300,16 @@ namespace Dental_App.ViewModels
                 {
                     Consultations.Clear();
                     HeaderSubtitle = "Sélectionnez un patient pour commencer";
+                    _totalConsultationsCount = 0;
+                    TotalPages = 1;
+                    CurrentPage = 1;
                 }
                 else
                 {
                     IsLoading = true;
-                    var consultations = await _consultationService.GetByPatientIdAsync(patient.Id);
-                    var consultationRows = new ObservableCollection<ConsultationDisplayRow>();
-
-                    if (consultations != null)
-                    {
-                        foreach (var c in consultations)
-                        {
-                            consultationRows.Add(new ConsultationDisplayRow
-                            {
-                                Id = c.Id,
-                                Date = c.DateConsultation ?? DateTime.Now,
-                                Tooth = c.IdDentNavigation?.CodeFdi.ToString() ?? "-",
-                                ActeName = c.IdActes?.Count > 0 ? string.Join(", ", c.IdActes.Select(a => a.Libelle)) : "-",
-                                Amount = c.MontantTotal ?? 0,
-                                Notes = c.Note ?? string.Empty
-                            });
-                        }
-                    }
-
-                    Consultations = consultationRows;
                     HeaderSubtitle = $"Patient: {patient.FullName}";
+
+                    await LoadCurrentPageAsync();
                 }
 
                 // Force refresh of all dependent strings
@@ -256,6 +318,87 @@ namespace Dental_App.ViewModels
             finally
             {
                 IsLoading = false;
+            }
+        }
+
+        // Loads consultations for the CurrentPage without changing CurrentPage
+        private async Task LoadCurrentPageAsync()
+        {
+            if (SelectedPatient == null)
+            {
+                Consultations = new ObservableCollection<ConsultationDisplayRow>();
+                _totalConsultationsCount = 0;
+                TotalPages = 1;
+                RaisePropertyChanged(nameof(ConsultationCountDisplay));
+                return;
+            }
+
+            try
+            {
+                IsLoading = true;
+
+                var (items, total) = await _consultationService.GetByPatientIdPagedAsync(SelectedPatient.Id, CurrentPage, PageSize);
+
+                _totalConsultationsCount = total;
+                TotalPages = Math.Max(1, (int)Math.Ceiling(total / (double)PageSize));
+
+                // Ensure CurrentPage is within bounds
+                if (CurrentPage > TotalPages)
+                {
+                    CurrentPage = TotalPages;
+                    // reload for the adjusted page
+                    var (newItems, _) = await _consultationService.GetByPatientIdPagedAsync(SelectedPatient.Id, CurrentPage, PageSize);
+                    items = newItems;
+                }
+
+                var consultationRows = new ObservableCollection<ConsultationDisplayRow>();
+
+                if (items != null)
+                {
+                    foreach (var c in items)
+                    {
+                        consultationRows.Add(new ConsultationDisplayRow
+                        {
+                            Id = c.Id,
+                            Date = c.DateConsultation ?? DateTime.Now,
+                            Tooth = c.IdDentNavigation?.CodeFdi.ToString() ?? "-",
+                            ActeName = c.IdActes?.Count > 0 ? string.Join(", ", c.IdActes.Select(a => a.Libelle)) : "-",
+                            Amount = c.MontantTotal ?? 0,
+                            Notes = c.Note ?? string.Empty
+                        });
+                    }
+                }
+
+                Consultations = consultationRows;
+                RaisePropertyChanged(nameof(ConsultationCountDisplay));
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"Error loading page: {ex.Message}");
+            }
+            finally
+            {
+                IsLoading = false;
+                NextPageCommand?.RaiseCanExecuteChanged();
+                PreviousPageCommand?.RaiseCanExecuteChanged();
+            }
+        }
+
+        private async Task NextPageAsync()
+        {
+            if (CurrentPage < TotalPages)
+            {
+                CurrentPage++;
+                await LoadCurrentPageAsync();
+            }
+        }
+
+        private async Task PreviousPageAsync()
+        {
+            if (CurrentPage > 1)
+            {
+                CurrentPage--;
+                await LoadCurrentPageAsync();
             }
         }
 
@@ -295,7 +438,7 @@ namespace Dental_App.ViewModels
                     if (result != null && result == true)
                     {
                         System.Diagnostics.Debug.WriteLine("ConsultationViewModel: AddConsultationDialog closed with OK");
-                        _ = OnPatientSelectedAsync(SelectedPatient);
+                        _ = LoadCurrentPageAsync();
                     }
                     window.Close();
                 };
@@ -347,7 +490,7 @@ namespace Dental_App.ViewModels
                     if (result != null && result == true)
                     {
                         System.Diagnostics.Debug.WriteLine($"ConsultationViewModel: EditConsultationDialog closed with OK for consultation {consultation.Id}");
-                        _ = OnPatientSelectedAsync(SelectedPatient);
+                        _ = LoadCurrentPageAsync();
                     }
                     window.Close();
                 };
@@ -390,7 +533,7 @@ namespace Dental_App.ViewModels
                     if (result != null && result == true)
                     {
                         System.Diagnostics.Debug.WriteLine($"ConsultationViewModel: GererActeDialog closed with OK for consultation {consultation.Id}");
-                        _ = OnPatientSelectedAsync(SelectedPatient);
+                        _ = LoadCurrentPageAsync();
                     }
                     window.Close();
                 };

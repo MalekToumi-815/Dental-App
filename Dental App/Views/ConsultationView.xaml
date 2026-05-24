@@ -25,23 +25,14 @@
             <Setter Property="Padding" Value="12"/>
         </Style>
 
-        <Style x:Key="ConsultationDataGridStyle" TargetType="DataGrid">
-            <Setter Property="Background" Value="Transparent"/>
-            <Setter Property="BorderThickness" Value="0"/>
-            <Setter Property="GridLinesVisibility" Value="Horizontal"/>
-            <Setter Property="HorizontalGridLinesBrush" Value="{DynamicResource BorderColor}"/>
-            <Setter Property="HeadersVisibility" Value="Column"/>
-            <Setter Property="AutoGenerateColumns" Value="False"/>
-            <Setter Property="CanUserAddRows" Value="False"/>
-        </Style>
-
-        <Style x:Key="ConsultationAddButtonStyle" TargetType="Button">
+        <!-- Match PatientsView: New Patient / Add Consultation Button Style -->
+        <Style x:Key="NewPatientButtonStyle" TargetType="Button">
             <Setter Property="Background" Value="{DynamicResource AccentColor}"/>
             <Setter Property="Foreground" Value="White"/>
             <Setter Property="BorderThickness" Value="0"/>
-            <Setter Property="Padding" Value="16,10"/>
+            <Setter Property="Padding" Value="20,12"/>
             <Setter Property="FontSize" Value="14"/>
-            <Setter Property="FontWeight" Value="SemiBold"/>
+            <Setter Property="FontWeight" Value="Medium"/>
             <Setter Property="Cursor" Value="Hand"/>
             <Setter Property="Template">
                 <Setter.Value>
@@ -51,7 +42,7 @@
                         </Border>
                         <ControlTemplate.Triggers>
                             <Trigger Property="IsMouseOver" Value="True">
-                                <Setter TargetName="border" Property="Background" Value="{DynamicResource AccentColor}"/>
+                                <Setter TargetName="border" Property="Background" Value="{DynamicResource AccentColor}" />
                                 <Setter TargetName="border" Property="Opacity" Value="0.85"/>
                             </Trigger>
                             <Trigger Property="IsPressed" Value="True">
@@ -61,6 +52,84 @@
                     </ControlTemplate>
                 </Setter.Value>
             </Setter>
+        </Style>
+
+        <!-- Match PatientsView: Action Button Style -->
+        <Style x:Key="ActionButtonStyle" TargetType="Button">
+            <Setter Property="Background" Value="Transparent"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="Padding" Value="8"/>
+            <Setter Property="MinHeight" Value="32"/>
+            <Setter Property="MinWidth" Value="32"/>
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border Background="{TemplateBinding Background}" 
+                                Padding="{TemplateBinding Padding}"
+                                CornerRadius="4">
+                            <ContentPresenter VerticalAlignment="Center" 
+                                            HorizontalAlignment="Center"/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter Property="Background" Value="{DynamicResource SecondaryBackground}"/>
+                            </Trigger>
+                            <Trigger Property="IsPressed" Value="True">
+                                <Setter Property="Opacity" Value="0.7"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <!-- Match PatientsView: Pagination Button Style -->
+        <Style x:Key="PaginationButtonStyle" TargetType="Button">
+            <Setter Property="Background" Value="{DynamicResource SecondaryBackground}"/>
+            <Setter Property="Foreground" Value="{DynamicResource TextPrimary}"/>
+            <Setter Property="BorderBrush" Value="{DynamicResource BorderColor}"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="Padding" Value="12,6"/>
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="FontSize" Value="14"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border x:Name="border"
+                                Background="{TemplateBinding Background}"
+                                BorderBrush="{TemplateBinding BorderBrush}"
+                                BorderThickness="{TemplateBinding BorderThickness}"
+                                CornerRadius="6"
+                                Padding="{TemplateBinding Padding}">
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="border" Property="Background" Value="{DynamicResource CardBackground}"/>
+                                <Setter TargetName="border" Property="Opacity" Value="0.9"/>
+                            </Trigger>
+                            <Trigger Property="IsPressed" Value="True">
+                                <Setter TargetName="border" Property="Opacity" Value="0.7"/>
+                            </Trigger>
+                            <Trigger Property="IsEnabled" Value="False">
+                                <Setter TargetName="border" Property="Opacity" Value="0.4"/>
+                                <Setter Property="Foreground" Value="{DynamicResource TextSecondary}"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <Style x:Key="ConsultationDataGridStyle" TargetType="DataGrid">
+            <Setter Property="Background" Value="Transparent"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="GridLinesVisibility" Value="Horizontal"/>
+            <Setter Property="HorizontalGridLinesBrush" Value="{DynamicResource BorderColor}"/>
+            <Setter Property="HeadersVisibility" Value="Column"/>
+            <Setter Property="AutoGenerateColumns" Value="False"/>
+            <Setter Property="CanUserAddRows" Value="False"/>
         </Style>
 
         <Style x:Key="ConsultationDataGridCellStyle" TargetType="DataGridCell">
@@ -129,35 +198,6 @@
                         <ControlTemplate.Triggers>
                             <Trigger Property="IsMouseOver" Value="True">
                                 <Setter TargetName="headerBorder" Property="Background" Value="{DynamicResource SecondaryBackground}"/>
-                            </Trigger>
-                        </ControlTemplate.Triggers>
-                    </ControlTemplate>
-                </Setter.Value>
-            </Setter>
-        </Style>
-
-        <Style x:Key="ActionButtonStyle" TargetType="Button">
-            <Setter Property="Background" Value="Transparent"/>
-            <Setter Property="BorderThickness" Value="0"/>
-            <Setter Property="Padding" Value="8"/>
-            <Setter Property="MinHeight" Value="32"/>
-            <Setter Property="MinWidth" Value="32"/>
-            <Setter Property="Cursor" Value="Hand"/>
-            <Setter Property="Template">
-                <Setter.Value>
-                    <ControlTemplate TargetType="Button">
-                        <Border Background="{TemplateBinding Background}" 
-                                Padding="{TemplateBinding Padding}"
-                                CornerRadius="4">
-                            <ContentPresenter VerticalAlignment="Center" 
-                                            HorizontalAlignment="Center"/>
-                        </Border>
-                        <ControlTemplate.Triggers>
-                            <Trigger Property="IsMouseOver" Value="True">
-                                <Setter Property="Background" Value="{DynamicResource SecondaryBackground}"/>
-                            </Trigger>
-                            <Trigger Property="IsPressed" Value="True">
-                                <Setter Property="Opacity" Value="0.7"/>
                             </Trigger>
                         </ControlTemplate.Triggers>
                     </ControlTemplate>
@@ -267,60 +307,83 @@
                             <TextBlock Text="{Binding ConsultationCountDisplay}" FontSize="12" Foreground="{DynamicResource TextSecondary}"/>
                         </StackPanel>
                         <Button Content="+ Nouvelle Consultation" HorizontalAlignment="Right" VerticalAlignment="Center" 
-                                Style="{StaticResource ConsultationAddButtonStyle}"
+                                Style="{StaticResource NewPatientButtonStyle}"
                                 Command="{Binding AddConsultationCommand}"/>
                     </Grid>
                 </Border>
 
                 <Border Grid.Row="1" Background="{DynamicResource CardBackground}" CornerRadius="12" BorderThickness="1" BorderBrush="{DynamicResource BorderColor}" Padding="10">
-                    <DataGrid ItemsSource="{Binding Consultations}" Style="{StaticResource ConsultationDataGridStyle}" CellStyle="{StaticResource ConsultationDataGridCellStyle}" RowStyle="{StaticResource ConsultationDataGridRowStyle}" ColumnHeaderStyle="{StaticResource ConsultationColumnHeaderStyle}">
-                        <DataGrid.Columns>
-                            <DataGridTextColumn Header="Date" Binding="{Binding Date, StringFormat=dd/MM/yyyy}" Width="110"/>
-                            <DataGridTextColumn Header="Dent (FDI)" Binding="{Binding Tooth}" Width="80"/>
-                            <DataGridTemplateColumn Header="Acte" Width="*">
-                                <DataGridTemplateColumn.CellTemplate>
-                                    <DataTemplate>
-                                        <ItemsControl ItemsSource="{Binding ActeNameList}">
-                                            <ItemsControl.ItemTemplate>
-                                                <DataTemplate>
-                                                    <TextBlock Text="{Binding}" Foreground="{DynamicResource TextPrimary}" Margin="0,4,0,4" TextWrapping="Wrap"/>
-                                                </DataTemplate>
-                                            </ItemsControl.ItemTemplate>
-                                        </ItemsControl>
-                                    </DataTemplate>
-                                </DataGridTemplateColumn.CellTemplate>
-                            </DataGridTemplateColumn>
-                            <DataGridTextColumn Header="Montant" Binding="{Binding Amount, StringFormat={}{0:N2} DT}" Width="100"/>
-                            <DataGridTextColumn Header="Notes" Binding="{Binding Notes}" Width="1.5*"/>
-                            <DataGridTemplateColumn Header="Action" Width="140">
-                                <DataGridTemplateColumn.CellTemplate>
-                                    <DataTemplate>
-                                        <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center">
-                                            <!-- Edit Button with Pen SVG -->
-                                            <Button Style="{StaticResource ActionButtonStyle}"
-                                                    ToolTip="Modifier consultation"
-                                                    Command="{Binding DataContext.EditConsultationCommand, RelativeSource={RelativeSource AncestorType=DataGrid}}"
-                                                    CommandParameter="{Binding}"
-                                                    Margin="0,0,8,0">
-                                                <Path Data="M3,17.25V21h3.75L17.81,9.94l-3.75,-3.75L3,17.25M20.71,7.04c0.39,-0.39 0.39,-1.02 0,-1.41l-2.34,-2.34c-0.39,-0.39 -1.02,-0.39 -1.41,0l-1.83,1.83l3.75,3.75L20.71,7.04Z"
-                                                      Fill="{DynamicResource AccentColor}" 
-                                                      Stretch="Uniform"
-                                                      Width="18" 
-                                                      Height="18"/>
-                                            </Button>
-                                            <!-- Gerer Acte Button -->
-                                            <Button Content="Gerer acte" 
-                                                    Style="{StaticResource ActionButtonStyle}" 
-                                                    Foreground="{DynamicResource AccentColor}" 
-                                                    FontSize="12"
-                                                    Command="{Binding DataContext.GererActeCommand, RelativeSource={RelativeSource AncestorType=DataGrid}}"
-                                                    CommandParameter="{Binding}"/>
-                                        </StackPanel>
-                                    </DataTemplate>
-                                </DataGridTemplateColumn.CellTemplate>
-                            </DataGridTemplateColumn>
-                        </DataGrid.Columns>
-                    </DataGrid>
+                    <!-- Wrap DataGrid and pager inside a Grid -->
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="*" />
+                            <RowDefinition Height="Auto" />
+                        </Grid.RowDefinitions>
+
+                        <DataGrid Grid.Row="0" ItemsSource="{Binding Consultations}" Style="{StaticResource ConsultationDataGridStyle}" CellStyle="{StaticResource ConsultationDataGridCellStyle}" RowStyle="{StaticResource ConsultationDataGridRowStyle}" ColumnHeaderStyle="{StaticResource ConsultationColumnHeaderStyle}"
+                                  HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Hidden">
+                            <DataGrid.Columns>
+                                <DataGridTextColumn Header="Date" Binding="{Binding Date, StringFormat=dd/MM/yyyy}" Width="110"/>
+                                <DataGridTextColumn Header="Dent (FDI)" Binding="{Binding Tooth}" Width="80"/>
+                                <DataGridTemplateColumn Header="Acte" Width="*">
+                                    <DataGridTemplateColumn.CellTemplate>
+                                        <DataTemplate>
+                                            <ItemsControl ItemsSource="{Binding ActeNameList}">
+                                                <ItemsControl.ItemTemplate>
+                                                    <DataTemplate>
+                                                        <TextBlock Text="{Binding}" Foreground="{DynamicResource TextPrimary}" Margin="0,4,0,4" TextWrapping="Wrap"/>
+                                                    </DataTemplate>
+                                                </ItemsControl.ItemTemplate>
+                                            </ItemsControl>
+                                        </DataTemplate>
+                                    </DataGridTemplateColumn.CellTemplate>
+                                </DataGridTemplateColumn>
+                                <DataGridTextColumn Header="Montant" Binding="{Binding Amount, StringFormat={}{0:N2} DT}" Width="100"/>
+                                <DataGridTextColumn Header="Notes" Binding="{Binding Notes}" Width="1.5*"/>
+                                <DataGridTemplateColumn Header="Action" Width="140">
+                                    <DataGridTemplateColumn.CellTemplate>
+                                        <DataTemplate>
+                                            <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center">
+                                                <!-- Edit Button with Pen SVG -->
+                                                <Button Style="{StaticResource ActionButtonStyle}"
+                                                        ToolTip="Modifier consultation"
+                                                        Command="{Binding DataContext.EditConsultationCommand, RelativeSource={RelativeSource AncestorType=DataGrid}}"
+                                                        CommandParameter="{Binding}"
+                                                        Margin="0,0,8,0">
+                                                    <Path Data="M3,17.25V21h3.75L17.81,9.94l-3.75,-3.75L3,17.25M20.71,7.04c0.39,-0.39 0.39,-1.02 0,-1.41l-2.34,-2.34c-0.39,-0.39 -1.02,-0.39 -1.41,0l-1.83,1.83l3.75,3.75L20.71,7.04Z"
+                                                          Fill="{DynamicResource AccentColor}" 
+                                                          Stretch="Uniform"
+                                                          Width="18" 
+                                                          Height="18"/>
+                                                </Button>
+                                                <!-- Gerer Acte Button -->
+                                                <Button Content="Gerer acte" 
+                                                        Style="{StaticResource ActionButtonStyle}" 
+                                                        Foreground="{DynamicResource AccentColor}" 
+                                                        FontSize="12"
+                                                        Command="{Binding DataContext.GererActeCommand, RelativeSource={RelativeSource AncestorType=DataGrid}}"
+                                                        CommandParameter="{Binding}"/>
+                                            </StackPanel>
+                                        </DataTemplate>
+                                    </DataGridTemplateColumn.CellTemplate>
+                                </DataGridTemplateColumn>
+                            </DataGrid.Columns>
+                        </DataGrid>
+
+                        <!-- Pagination controls -->
+                        <StackPanel Grid.Row="1" Orientation="Horizontal" HorizontalAlignment="Center" Margin="0,10,0,0">
+                            <Button Content="Precedant" Style="{StaticResource PaginationButtonStyle}" Command="{Binding PreviousPageCommand}" Margin="6,0" Padding="10,6" />
+
+                            <TextBlock VerticalAlignment="Center" Margin="12,0" FontSize="13" Foreground="{DynamicResource TextPrimary}">
+                                <Run Text="Page " />
+                                <Run Text="{Binding CurrentPage}" />
+                                <Run Text=" de " />
+                                <Run Text="{Binding TotalPages}" />
+                            </TextBlock>
+
+                            <Button Content="Suivant" Style="{StaticResource PaginationButtonStyle}" Command="{Binding NextPageCommand}" Margin="6,0" Padding="10,6" />
+                        </StackPanel>
+                    </Grid>
                 </Border>
             </Grid>
         </Grid>
