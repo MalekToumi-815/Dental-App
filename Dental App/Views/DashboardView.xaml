@@ -96,7 +96,7 @@
 
                 <Border Grid.Column="1" Style="{StaticResource SectionBorderStyle}">
                     <DockPanel>
-                        <TextBlock DockPanel.Dock="Top" Text="Prochain Rendez-Vous" Foreground="{DynamicResource TextPrimary}" FontSize="18" FontWeight="SemiBold" Margin="0,0,0,15"/>
+                        <TextBlock DockPanel.Dock="Top" Text="Prochain Rendez-Vous Aujourd'hui" Foreground="{DynamicResource TextPrimary}" FontSize="18" FontWeight="SemiBold" Margin="0,0,0,15"/>
                         <ItemsControl ItemsSource="{Binding UpcomingAppointments}">
                             <ItemsControl.ItemTemplate>
                                 <DataTemplate>

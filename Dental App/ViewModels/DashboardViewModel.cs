@@ -73,7 +73,10 @@ namespace Dental_App.ViewModels
             }
 
             // 3. Upcoming List
-            var upcoming = allRvs.Where(r => r.DateDebut >= DateTime.Now && r.Statut == "en attente").OrderBy(r => r.DateDebut).Take(4);
+            // Only today's appointments that are still upcoming (time >= now) and with status "en attente"
+            var upcoming = allRvs
+                .Where(r => r.DateDebut.Date == DateTime.Today && r.DateDebut >= DateTime.Now && r.Statut == "en attente")
+                .OrderBy(r => r.DateDebut);
             UpcomingAppointments.Clear();
             foreach (var rv in upcoming)
             {
