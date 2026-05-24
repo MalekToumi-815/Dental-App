@@ -24,5 +24,16 @@ namespace Dental_App.Views
         {
             InitializeComponent();
         }
+
+        private void ScrollViewer_MouseWheel(object sender, MouseWheelEventArgs e)
+        {
+            ScrollViewer scrollViewer = sender as ScrollViewer;
+            if (scrollViewer != null)
+            {
+                double newOffset = scrollViewer.VerticalOffset - (e.Delta / 3.0);
+                scrollViewer.ScrollToVerticalOffset(Math.Max(0, Math.Min(newOffset, scrollViewer.ScrollableHeight)));
+                e.Handled = true;
+            }
+        }
     }
 }

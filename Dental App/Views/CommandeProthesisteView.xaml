@@ -207,6 +207,44 @@
 			<Setter Property="VerticalContentAlignment" Value="Center"/>
 			<Setter Property="HorizontalContentAlignment" Value="Left"/>
 		</Style>
+
+        <!-- Pagination Button Style -->
+        <Style x:Key="PaginationButtonStyle" TargetType="Button">
+            <Setter Property="Background" Value="{DynamicResource SecondaryBackground}"/>
+            <Setter Property="Foreground" Value="{DynamicResource TextPrimary}"/>
+            <Setter Property="BorderBrush" Value="{DynamicResource BorderColor}"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="Padding" Value="12,6"/>
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="FontSize" Value="14"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border x:Name="border"
+                                Background="{TemplateBinding Background}"
+                                BorderBrush="{TemplateBinding BorderBrush}"
+                                BorderThickness="{TemplateBinding BorderThickness}"
+                                CornerRadius="6"
+                                Padding="{TemplateBinding Padding}">
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="border" Property="Background" Value="{DynamicResource CardBackground}"/>
+                                <Setter TargetName="border" Property="Opacity" Value="0.9"/>
+                            </Trigger>
+                            <Trigger Property="IsPressed" Value="True">
+                                <Setter TargetName="border" Property="Opacity" Value="0.7"/>
+                            </Trigger>
+                            <Trigger Property="IsEnabled" Value="False">
+                                <Setter TargetName="border" Property="Opacity" Value="0.4"/>
+                                <Setter Property="Foreground" Value="{DynamicResource TextSecondary}"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
 	</UserControl.Resources>
 
 	<Grid>
@@ -218,6 +256,7 @@
 				<RowDefinition Height="Auto"/>
 				<RowDefinition Height="16"/>
 				<RowDefinition Height="*"/>
+				<RowDefinition Height="Auto"/>
 			</Grid.RowDefinitions>
 
 			<!-- En-tete -->
@@ -257,7 +296,7 @@
                         <ColumnDefinition Width="Auto"/>
                     </Grid.ColumnDefinitions>
                     
-                    <Path Data="M9.5,2A7.5,7.5 0 0,1 17,9.5A7.5,7.5 0 0,1 9.5,17A7.5,7.5 0 0,1 2,9.5A7.5,7.5 0 0,1 9.5,2M9.5,4A5.5,5.5 0 0,0 4,9.5A5.5,5.5 0 0,0 9.5,15A5.5,5.5 0 0,0 15,9.5A5.5,5.5 0 0,0 9.5,4M14.5,13L21,19.5L19.5,21L13,14.5Z"
+                    <Path Data="M9.5,2A7.5,7.5 0 0,1 17,9.5A7.5,7.5 0 0,1 9.5,17A7.5,7.5 0 0,1 2,9.5A7.5,7.5 0 0,1 9.5,2M9.5,4A5.5,5.5 0 0,0 4,9.5A5.5,5.5 0 0,0 9.5,15A5.5,5.5 0 0,0 15,9.5A5.5,5.5 0 0,0 9.5,4M14.5,13L21,19.5L19.5,21L13,14.5z"
                           Fill="{DynamicResource TextSecondary}" Stretch="Uniform" Width="18" Margin="0,0,10,0" VerticalAlignment="Center"/>
 
                     <TextBox Grid.Column="1" Text="{Binding SearchText, UpdateSourceTrigger=PropertyChanged}" Background="Transparent" BorderThickness="0" Foreground="{DynamicResource TextPrimary}" Padding="8,0" VerticalAlignment="Center"/>
@@ -401,6 +440,32 @@
 					</ScrollViewer>
 				</Grid>
 			</Border>
+
+            <!-- Pagination Footer -->
+            <Grid Grid.Row="5" Margin="0,20,0,0">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
+
+                <Button Grid.Column="0" 
+                        Content="Precedant" 
+                        Style="{StaticResource PaginationButtonStyle}"
+                        Command="{Binding PreviousPageCommand}"/>
+                
+                <StackPanel Grid.Column="1" Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center">
+                    <TextBlock Text="Page " Foreground="{DynamicResource TextSecondary}"/>
+                    <TextBlock Text="{Binding CurrentPage}" FontWeight="Bold" Foreground="{DynamicResource TextPrimary}"/>
+                    <TextBlock Text=" sur " Foreground="{DynamicResource TextSecondary}"/>
+                    <TextBlock Text="{Binding TotalPages}" FontWeight="Bold" Foreground="{DynamicResource TextPrimary}"/>
+                </StackPanel>
+
+                <Button Grid.Column="2" 
+                        Content="Suivant" 
+                        Style="{StaticResource PaginationButtonStyle}"
+                        Command="{Binding NextPageCommand}"/>
+            </Grid>
 		</Grid>
 
 		<!-- MODAL OVERLAY -->
@@ -441,7 +506,7 @@
 					<!-- Prothesiste - Recherche Predictive avec Icone Loupe -->
 					<StackPanel Margin="0,0,0,16">
 						<StackPanel Orientation="Horizontal" Margin="0,0,0,8">
-							<TextBlock Text="Prothesiste (Nom ou Tel)"
+							<TextBlock Text="Prothesiste (Nom)"
                                        Foreground="{DynamicResource TextPrimary}"
                                        FontSize="14" FontWeight="SemiBold"/>
 							<TextBlock Text=" *"

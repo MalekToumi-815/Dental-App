@@ -27,6 +27,11 @@ namespace Dental_App.ViewModels
         private DelegateCommand<PatientDisplayRow> _viewPatientCommand;
         private DelegateCommand<PatientDisplayRow> _editPatientCommand;
 
+        private int _currentPage = 1;
+        private int _pageSize = 10;
+        private DelegateCommand _nextPageCommand;
+        private DelegateCommand _previousPageCommand;
+
         public PatientsViewModel(IPatientService patientService, ILiveSearchService<Patient> searchService, IAppNotificationService notificationService)
         {
             _patientService = patientService ?? throw new ArgumentNullException(nameof(patientService));
@@ -38,8 +43,56 @@ namespace Dental_App.ViewModels
             ViewPatientCommand = new DelegateCommand<PatientDisplayRow>(ViewPatient);
             EditPatientCommand = new DelegateCommand<PatientDisplayRow>(EditPatient);
 
+            NextPageCommand = new DelegateCommand(NextPage);
+            PreviousPageCommand = new DelegateCommand(PreviousPage, () => CurrentPage > 1);
+
             System.Diagnostics.Debug.WriteLine("PatientsViewModel: Constructor called");
             _ = LoadPatientsAsync();
+        }
+
+        public int CurrentPage
+        {
+            get => _currentPage;
+            set
+            {
+                if (SetProperty(ref _currentPage, value))
+                {
+                    PreviousPageCommand.RaiseCanExecuteChanged();
+                }
+            }
+        }
+
+        public int PageSize
+        {
+            get => _pageSize;
+            set => SetProperty(ref _pageSize, value);
+        }
+
+        public DelegateCommand NextPageCommand
+        {
+            get => _nextPageCommand;
+            set => SetProperty(ref _nextPageCommand, value);
+        }
+
+        public DelegateCommand PreviousPageCommand
+        {
+            get => _previousPageCommand;
+            set => SetProperty(ref _previousPageCommand, value);
+        }
+
+        private void NextPage()
+        {
+            CurrentPage++;
+            _ = LoadPatientsAsync();
+        }
+
+        private void PreviousPage()
+        {
+            if (CurrentPage > 1)
+            {
+                CurrentPage--;
+                _ = LoadPatientsAsync();
+            }
         }
 
         public ObservableCollection<PatientDisplayRow> Patients
@@ -228,7 +281,20 @@ namespace Dental_App.ViewModels
             {
                 System.Diagnostics.Debug.WriteLine("PatientsViewModel: LoadPatientsAsync started");
                 IsLoading = true;
-                var patients = await _patientService.GetAllAsync();
+                
+                List<Patient> patients;
+                
+                if (string.IsNullOrWhiteSpace(SearchText))
+                {
+                    patients = await _patientService.GetPatientsAsync(CurrentPage, PageSize);
+                } 
+                else
+                {
+                    // For simplicity, skip pagination when searching
+                    var allSearchResults = await _patientService.SearchByNameAsync(SearchText);
+                    patients = allSearchResults.Skip((CurrentPage - 1) * PageSize).Take(PageSize).ToList();
+                }
+
                 System.Diagnostics.Debug.WriteLine($"PatientsViewModel: Retrieved {patients?.Count ?? 0} patients from database");
                 await BuildPatientRows(patients);
                 System.Diagnostics.Debug.WriteLine($"PatientsViewModel: LoadPatientsAsync completed, Patients count: {Patients?.Count ?? 0}");
@@ -249,6 +315,8 @@ namespace Dental_App.ViewModels
         {
             try
             {
+                CurrentPage = 1; // Reset to first page on new search
+                
                 if (string.IsNullOrWhiteSpace(query))
                 {
                     await LoadPatientsAsync();
@@ -261,7 +329,8 @@ namespace Dental_App.ViewModels
 
                 if (results != null)
                 {
-                    await BuildPatientRows(results.ToList());
+                    var pagedResults = results.Take(PageSize).ToList();
+                    await BuildPatientRows(pagedResults);
                 }
             }
             catch (Exception ex)

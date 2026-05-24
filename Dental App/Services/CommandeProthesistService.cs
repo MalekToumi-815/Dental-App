@@ -12,6 +12,7 @@ namespace Dental_App.Services
         Task<CommandeProthesiste> CreateAsync(CommandeProthesiste commande);
         Task<CommandeProthesiste?> GetByIdAsync(int id);
         Task<List<CommandeProthesiste>> GetAllAsync();
+        Task<List<CommandeProthesiste>> GetCommandesAsync(int pageIndex, int pageSize);
         Task<List<CommandeProthesiste>> GetByProthesisteAsync(int prothesisteId);
         Task<List<CommandeProthesiste>> GetByProthesisteNameAsync(string nomProthesiste);
         Task<List<CommandeProthesiste>> GetByProthesistePhoneAsync(string telProthesiste);
@@ -62,6 +63,16 @@ namespace Dental_App.Services
             return await _context.CommandeProthesistes
                 .Include(c => c.IdProthesisteNavigation)
                 .OrderByDescending(c => c.Date)
+                .ToListAsync();
+        }
+
+        public async Task<List<CommandeProthesiste>> GetCommandesAsync(int pageIndex, int pageSize)
+        {
+            return await _context.CommandeProthesistes
+                .Include(c => c.IdProthesisteNavigation)
+                .OrderByDescending(c => c.Date)
+                .Skip((pageIndex - 1) * pageSize)
+                .Take(pageSize)
                 .ToListAsync();
         }
 

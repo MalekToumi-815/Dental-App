@@ -20,6 +20,36 @@ namespace Dental_App.ViewModels
         private readonly ILiveSearchService<CommandeProthesiste> _liveSearchService;
         private readonly IAppNotificationService _notificationService;
 
+        // --- Pagination ---
+        private int _currentPage = 1;
+        public int CurrentPage
+        {
+            get => _currentPage;
+            set
+            {
+                if (SetProperty(ref _currentPage, value))
+                {
+                    PreviousPageCommand.RaiseCanExecuteChanged();
+                    NextPageCommand.RaiseCanExecuteChanged();
+                }
+            }
+        }
+
+        private int _totalPages = 1;
+        public int TotalPages
+        {
+            get => _totalPages;
+            set
+            {
+                if (SetProperty(ref _totalPages, value))
+                {
+                    NextPageCommand.RaiseCanExecuteChanged();
+                }
+            }
+        }
+
+        private int _pageSize = 10;
+
         // --- Collections ---
         private ObservableCollection<CommandeProthesisteDisplayItem> _commandes;
         public ObservableCollection<CommandeProthesisteDisplayItem> Commandes
@@ -113,6 +143,8 @@ namespace Dental_App.ViewModels
         public DelegateCommand<CommandeProthesisteDisplayItem> EditCommand { get; }
         public DelegateCommand PrepareCommandeCommand { get; }
         public DelegateCommand ClearSearchCommand { get; }
+        public DelegateCommand NextPageCommand { get; }
+        public DelegateCommand PreviousPageCommand { get; }
 
         public CommandeProthesisteViewModel(ICommandeProthesisteService commandeService, IProthesisteService prothesisteService, ILiveSearchService<CommandeProthesiste> liveSearchService, IAppNotificationService notificationService)
         {
@@ -132,12 +164,35 @@ namespace Dental_App.ViewModels
             EditCommand = new DelegateCommand<CommandeProthesisteDisplayItem>(EditCommande);
             PrepareCommandeCommand = new DelegateCommand(PrepareCommande);
             ClearSearchCommand = new DelegateCommand(ClearSearch);
+            NextPageCommand = new DelegateCommand(NextPage, CanNextPage);
+            PreviousPageCommand = new DelegateCommand(PreviousPage, CanPreviousPage);
 
             // S'abonner à l'événement de sélection du prothésiste
             ProthesisteSearchViewModel.OnProthesisteSelected += OnProthesisteSelectedHandler;
 
             Debug.WriteLine("[ViewModel] CommandeProthesisteViewModel initialisé");
             LoadData();
+        }
+
+        private bool CanNextPage() => CurrentPage < TotalPages;
+        private bool CanPreviousPage() => CurrentPage > 1;
+
+        private void NextPage()
+        {
+            if (CanNextPage())
+            {
+                CurrentPage++;
+                _ = LoadCommandes();
+            }
+        }
+
+        private void PreviousPage()
+        {
+            if (CanPreviousPage())
+            {
+                CurrentPage--;
+                _ = LoadCommandes();
+            }
         }
 
         private async void LoadData()
@@ -154,7 +209,11 @@ namespace Dental_App.ViewModels
                 IsLoading = true;
                 Debug.WriteLine("[LoadCommandes] Début du chargement");
                 
-                var items = await _commandeService.GetAllAsync();
+                int totalCount = await _commandeService.CountAsync();
+                TotalPages = (int)Math.Ceiling(totalCount / (double)_pageSize);
+                if (TotalPages == 0) TotalPages = 1;
+                
+                var items = await _commandeService.GetCommandesAsync(CurrentPage, _pageSize);
                 Debug.WriteLine($"[LoadCommandes] {items.Count} commandes chargées");
                 
                 Commandes.Clear();
@@ -170,6 +229,9 @@ namespace Dental_App.ViewModels
                     });
                 }
                 
+                PreviousPageCommand.RaiseCanExecuteChanged();
+                NextPageCommand.RaiseCanExecuteChanged();
+
                 Debug.WriteLine($"[LoadCommandes] {Commandes.Count} commandes affichées");
             }
             catch (Exception ex) 
@@ -190,6 +252,7 @@ namespace Dental_App.ViewModels
         {
             try
             {
+                CurrentPage = 1; // Reset to first page
                 IsLoading = true;
                 Debug.WriteLine($"[FilterCommandesAsync] Début avec SearchText='{SearchText}'");
 
@@ -220,10 +283,15 @@ namespace Dental_App.ViewModels
                 if (results == null) return; // Search was cancelled
 
                 Debug.WriteLine($"[FilterCommandesAsync] {results.Count()} résultats trouvés");
+                
+                // Set total pages properly for filtered results
+                TotalPages = 1; // Simplify logic for search, typically we could page search results too
 
                 // Mettre à jour la liste affichée
                 Commandes.Clear();
-                foreach (var c in results)
+                // for simplicity skip pagination while searching
+                var pagedResults = results.Skip((CurrentPage - 1) * _pageSize).Take(_pageSize).ToList();
+                foreach (var c in pagedResults)
                 {
                     Commandes.Add(new CommandeProthesisteDisplayItem
                     {
@@ -235,6 +303,9 @@ namespace Dental_App.ViewModels
                     });
                 }
                 
+                PreviousPageCommand.RaiseCanExecuteChanged();
+                NextPageCommand.RaiseCanExecuteChanged();
+
                 Debug.WriteLine($"[FilterCommandesAsync] {Commandes.Count} commandes affichées");
             }
             catch (Exception ex)

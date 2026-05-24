@@ -13,6 +13,7 @@ namespace Dental_App.Services
         Task<Patient?> GetByIdAsync(int id);
         Task<Patient?> GetByIdWithConsultationsAsync(int id);
         Task<List<Patient>> GetAllAsync();
+        Task<List<Patient>> GetPatientsAsync(int pageIndex, int pageSize = 10);
         Task<List<Patient>> GetByNameAsync(string nom, string prenom);
         Task<List<Patient>> SearchByNameAsync(string term);
         Task<Patient> UpdateAsync(Patient patient);
@@ -67,7 +68,15 @@ namespace Dental_App.Services
             return await _context.Patients.ToListAsync();
         }
 
-
+        public async Task<List<Patient>> GetPatientsAsync(int pageIndex, int pageSize = 10)
+        {
+            if (pageIndex < 1) pageIndex = 1;
+            if (pageSize < 1) pageSize = 10;
+            return await _context.Patients
+                .Skip((pageIndex - 1) * pageSize)
+                .Take(pageSize)
+                .ToListAsync();
+        }
 
         /// <summary>
         /// Recherche des patients par nom et prénom exacts (insensible à la casse)

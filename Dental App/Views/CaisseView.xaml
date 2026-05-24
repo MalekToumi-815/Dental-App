@@ -373,7 +373,7 @@
     </UserControl.Resources>
 
     <Grid Background="{DynamicResource PrimaryBackground}">
-        <ScrollViewer VerticalScrollBarVisibility="Auto" 
+        <ScrollViewer VerticalScrollBarVisibility="Hidden" 
                       HorizontalScrollBarVisibility="Disabled"
                       PanningMode="VerticalOnly">
             <StackPanel>

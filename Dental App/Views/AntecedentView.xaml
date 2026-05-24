@@ -159,59 +159,62 @@
 			</Grid>
 
 			<!-- Patient Search -->
-			<Border Grid.Row="2" Style="{StaticResource SearchBoxStyle}" Width="600" HorizontalAlignment="Left" Padding="8">
-				<Grid>
-					<Grid.ColumnDefinitions>
-						<ColumnDefinition Width="Auto"/>
-						<ColumnDefinition Width="*"/>
-                        <ColumnDefinition Width="Auto"/>
-					</Grid.ColumnDefinitions>
+            <StackPanel Grid.Row="2" HorizontalAlignment="Left">
+                <TextBlock Text="Chercher patient" Foreground="{DynamicResource TextSecondary}" FontSize="12" Margin="0,0,0,4"/>
+			    <Border Style="{StaticResource SearchBoxStyle}" Width="600" Padding="8">
+				    <Grid>
+					    <Grid.ColumnDefinitions>
+						    <ColumnDefinition Width="Auto"/>
+						    <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="Auto"/>
+					    </Grid.ColumnDefinitions>
 
-                    <Path Data="M9.5,2A7.5,7.5 0 0,1 17,9.5A7.5,7.5 0 0,1 9.5,17A7.5,7.5 0 0,1 2,9.5A7.5,7.5 0 0,1 9.5,2M9.5,4A5.5,5.5 0 0,0 4,9.5A5.5,5.5 0 0,0 9.5,15A5.5,5.5 0 0,0 15,9.5A5.5,5.5 0 0,0 9.5,4M14.5,13L21,19.5L19.5,21L13,14.5Z"
+                        <Path Data="M9.5,2A7.5,7.5 0 0,1 17,9.5A7.5,7.5 0 0,1 9.5,17A7.5,7.5 0 0,1 2,9.5A7.5,7.5 0 0,1 9.5,2M9.5,4A5.5,5.5 0 0,0 4,9.5A5.5,5.5 0 0,0 9.5,15A5.5,5.5 0 0,0 15,9.5A5.5,5.5 0 0,0 9.5,4M14.5,13L21,19.5L19.5,21L13,14.5Z"
                           Fill="{DynamicResource TextSecondary}" Stretch="Uniform" Width="18" Margin="0,0,10,0" VerticalAlignment="Center"/>
 
-                    <Grid Grid.Column="1">
-                        <TextBox x:Name="PatientSearchBox" Text="{Binding PatientSearchText, UpdateSourceTrigger=PropertyChanged}" Background="Transparent" BorderThickness="0" Foreground="{DynamicResource TextPrimary}" Padding="8,0" VerticalAlignment="Center"/>
+                        <Grid Grid.Column="1">
+                            <TextBox x:Name="PatientSearchBox" Text="{Binding PatientSearchText, UpdateSourceTrigger=PropertyChanged}" Background="Transparent" BorderThickness="0" Foreground="{DynamicResource TextPrimary}" Padding="8,0" VerticalAlignment="Center"/>
 
-                        <Popup IsOpen="{Binding HasPatients}" PlacementTarget="{Binding ElementName=PatientSearchBox}" Placement="Bottom" StaysOpen="False" AllowsTransparency="True">
-                            <Border Background="{DynamicResource CardBackground}" BorderBrush="{DynamicResource BorderColor}" BorderThickness="1" CornerRadius="8" Width="{Binding ActualWidth, ElementName=PatientSearchBox}" Margin="0,4,0,0">
-                                <Border.Effect>
-                                    <DropShadowEffect BlurRadius="10" Opacity="0.1" ShadowDepth="4"/>
-                                </Border.Effect>
-                                <ScrollViewer VerticalScrollBarVisibility="Auto" MaxHeight="240">
-                                    <ItemsControl ItemsSource="{Binding Patients}" HorizontalContentAlignment="Stretch">
-                                        <ItemsControl.ItemTemplate>
-                                            <DataTemplate>
-                                                <Border BorderBrush="{DynamicResource BorderColor}" BorderThickness="0,0,0,1" Padding="16,12" Background="Transparent" Cursor="Hand">
-                                                    <Border.Style>
-                                                        <Style TargetType="Border">
-                                                            <Setter Property="Background" Value="Transparent"/>
-                                                            <Style.Triggers>
-                                                                <Trigger Property="IsMouseOver" Value="True">
-                                                                    <Setter Property="Background" Value="{DynamicResource SecondaryBackground}"/>
-                                                                </Trigger>
-                                                            </Style.Triggers>
-                                                        </Style>
-                                                    </Border.Style>
-                                                    <Grid>
-                                                        <Grid.InputBindings>
-                                                            <MouseBinding MouseAction="LeftClick" Command="{Binding DataContext.SelectPatientCommand, RelativeSource={RelativeSource AncestorType=ItemsControl}}" CommandParameter="{Binding}"/>
-                                                        </Grid.InputBindings>
-                                                        <StackPanel VerticalAlignment="Center">
-                                                            <TextBlock Text="{Binding Nom}" Foreground="{DynamicResource TextPrimary}" FontWeight="SemiBold" FontSize="14"/>
-                                                            <TextBlock Text="{Binding Prenom, StringFormat='Prenom: {0}'}" Foreground="{DynamicResource TextSecondary}" FontSize="12" Margin="0,4,0,0"/>
-                                                        </StackPanel>
-                                                    </Grid>
-                                                </Border>
-                                            </DataTemplate>
-                                        </ItemsControl.ItemTemplate>
-                                    </ItemsControl>
-                                </ScrollViewer>
-                            </Border>
-                        </Popup>
+                            <Popup IsOpen="{Binding HasPatients}" PlacementTarget="{Binding ElementName=PatientSearchBox}" Placement="Bottom" StaysOpen="False" AllowsTransparency="True">
+                                <Border Background="{DynamicResource CardBackground}" BorderBrush="{DynamicResource BorderColor}" BorderThickness="1" CornerRadius="8" Width="{Binding ActualWidth, ElementName=PatientSearchBox}" Margin="0,4,0,0">
+                                    <Border.Effect>
+                                        <DropShadowEffect BlurRadius="10" Opacity="0.1" ShadowDepth="4"/>
+                                    </Border.Effect>
+                                    <ScrollViewer VerticalScrollBarVisibility="Auto" MaxHeight="240">
+                                        <ItemsControl ItemsSource="{Binding Patients}" HorizontalContentAlignment="Stretch">
+                                            <ItemsControl.ItemTemplate>
+                                                <DataTemplate>
+                                                    <Border BorderBrush="{DynamicResource BorderColor}" BorderThickness="0,0,0,1" Padding="16,12" Background="Transparent" Cursor="Hand">
+                                                        <Border.Style>
+                                                            <Style TargetType="Border">
+                                                                <Setter Property="Background" Value="Transparent"/>
+                                                                <Style.Triggers>
+                                                                    <Trigger Property="IsMouseOver" Value="True">
+                                                                        <Setter Property="Background" Value="{DynamicResource SecondaryBackground}"/>
+                                                                    </Trigger>
+                                                                </Style.Triggers>
+                                                            </Style>
+                                                        </Border.Style>
+                                                        <Grid>
+                                                            <Grid.InputBindings>
+                                                                <MouseBinding MouseAction="LeftClick" Command="{Binding DataContext.SelectPatientCommand, RelativeSource={RelativeSource AncestorType=ItemsControl}}" CommandParameter="{Binding}"/>
+                                                            </Grid.InputBindings>
+                                                            <StackPanel VerticalAlignment="Center">
+                                                                <TextBlock Text="{Binding Nom}" Foreground="{DynamicResource TextPrimary}" FontWeight="SemiBold" FontSize="14"/>
+                                                                <TextBlock Text="{Binding Prenom, StringFormat='Prenom: {0}'}" Foreground="{DynamicResource TextSecondary}" FontSize="12" Margin="0,4,0,0"/>
+                                                            </StackPanel>
+                                                        </Grid>
+                                                    </Border>
+                                                </DataTemplate>
+                                            </ItemsControl.ItemTemplate>
+                                        </ItemsControl>
+                                    </ScrollViewer>
+                                </Border>
+                            </Popup>
+                        </Grid>
                     </Grid>
-                </Grid>
-			</Border>
+			    </Border>
+            </StackPanel>
 
 			<!-- Selected Patient Info -->
 			<Border Grid.Row="4" Background="{DynamicResource CardBackground}" BorderBrush="{DynamicResource BorderColor}" BorderThickness="1" CornerRadius="8" Padding="16,12" Visibility="{Binding HasSelectedPatient, Converter={StaticResource BoolToVis}}">

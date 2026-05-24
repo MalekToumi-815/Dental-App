@@ -149,9 +149,47 @@
                 </Setter.Value>
             </Setter>
         </Style>
+
+        <!-- Pagination Button Style -->
+        <Style x:Key="PaginationButtonStyle" TargetType="Button">
+            <Setter Property="Background" Value="{DynamicResource SecondaryBackground}"/>
+            <Setter Property="Foreground" Value="{DynamicResource TextPrimary}"/>
+            <Setter Property="BorderBrush" Value="{DynamicResource BorderColor}"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="Padding" Value="12,6"/>
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="FontSize" Value="14"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border x:Name="border"
+                                Background="{TemplateBinding Background}"
+                                BorderBrush="{TemplateBinding BorderBrush}"
+                                BorderThickness="{TemplateBinding BorderThickness}"
+                                CornerRadius="6"
+                                Padding="{TemplateBinding Padding}">
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="border" Property="Background" Value="{DynamicResource CardBackground}"/>
+                                <Setter TargetName="border" Property="Opacity" Value="0.9"/>
+                            </Trigger>
+                            <Trigger Property="IsPressed" Value="True">
+                                <Setter TargetName="border" Property="Opacity" Value="0.7"/>
+                            </Trigger>
+                            <Trigger Property="IsEnabled" Value="False">
+                                <Setter TargetName="border" Property="Opacity" Value="0.4"/>
+                                <Setter Property="Foreground" Value="{DynamicResource TextSecondary}"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
     </UserControl.Resources>
 
-    <ScrollViewer VerticalScrollBarVisibility="Auto">
+    <ScrollViewer VerticalScrollBarVisibility="Hidden" MouseWheel="ScrollViewer_MouseWheel" AllowDrop="False">
         <StackPanel Margin="30">
 
             <!-- Header -->
@@ -209,7 +247,7 @@
                           HeadersVisibility="Column"
                           GridLinesVisibility="Horizontal"
                           HorizontalScrollBarVisibility="Disabled"
-                          VerticalScrollBarVisibility="Auto">
+                          VerticalScrollBarVisibility="Hidden">
 
                     <DataGrid.ColumnHeaderStyle>
                         <Style TargetType="DataGridColumnHeader">
@@ -290,6 +328,30 @@
                     </DataGrid.Columns>
                 </DataGrid>
             </Border>
+
+            <!-- Pagination Footer -->
+            <Grid Margin="0,20,0,0">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
+
+                <Button Grid.Column="0" 
+                        Content="Precedant" 
+                        Style="{StaticResource PaginationButtonStyle}"
+                        Command="{Binding PreviousPageCommand}"/>
+                
+                <StackPanel Grid.Column="1" Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center">
+                    <TextBlock Text="Page " Foreground="{DynamicResource TextSecondary}"/>
+                    <TextBlock Text="{Binding CurrentPage}" FontWeight="Bold" Foreground="{DynamicResource TextPrimary}"/>
+                </StackPanel>
+
+                <Button Grid.Column="2" 
+                        Content="Suivant" 
+                        Style="{StaticResource PaginationButtonStyle}"
+                        Command="{Binding NextPageCommand}"/>
+            </Grid>
 
         </StackPanel>
     </ScrollViewer>
