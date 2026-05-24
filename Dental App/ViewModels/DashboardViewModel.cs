@@ -18,6 +18,13 @@ namespace Dental_App.ViewModels
         private readonly IOrdonnanceService _ordonnanceService;
         private readonly CultureInfo _frenchCulture = new CultureInfo("fr-FR");
 
+        // Maximum visual height for the tallest bar in pixels
+        private const double MaxBarVisualHeight = 240.0;
+        // Default unit height per consult when counts are small
+        private const double DefaultUnitHeight = 40.0;
+        // Minimum bar height to keep visibility
+        private const double MinBarHeight = 5.0;
+
         public DashboardViewModel(IPatientService p, IRendezVousService rv, IConsultationService c, ICaisseService cs, IActeMedicalService a, IOrdonnanceService o)
         {
             _patientService = p; _rvService = rv; _consultService = c; _caisseService = cs; _acteService = a; _ordonnanceService = o;
@@ -60,15 +67,38 @@ namespace Dental_App.ViewModels
             // 2. Build 7-Day Chart Data
             var last7DaysConsults = await _consultService.GetByDateRangeAsync(DateTime.Today.AddDays(-6), DateTime.Now);
             ConsultationChartData.Clear();
+
+            // compute counts first
+            var dayCounts = new int[7];
             for (int i = 6; i >= 0; i--)
             {
                 var date = DateTime.Today.AddDays(-i);
                 int count = last7DaysConsults.Count(c => c.DateConsultation.HasValue && c.DateConsultation.Value.Date == date.Date);
+                dayCounts[6 - i] = count; // store in same order we will display
+            }
+
+            int maxCount = dayCounts.Max();
+
+            // determine unit height: if maxCount * DefaultUnitHeight <= MaxBarVisualHeight then use DefaultUnitHeight
+            // otherwise scale down so that maxCount maps to MaxBarVisualHeight
+            double unitHeight = DefaultUnitHeight;
+            if (maxCount > 0 && maxCount * DefaultUnitHeight > MaxBarVisualHeight)
+            {
+                unitHeight = MaxBarVisualHeight / maxCount;
+            }
+
+            // Now add items in display order (oldest to newest)
+            for (int i = 0; i < 7; i++)
+            {
+                var date = DateTime.Today.AddDays(i - 6);
+                int count = dayCounts[i];
+                double barHeight = Math.Max(count * unitHeight, MinBarHeight);
+
                 ConsultationChartData.Add(new ChartBarItem
                 {
                     DayName = date.ToString("ddd", _frenchCulture),
                     Value = count,
-                    BarHeight = Math.Max(count * 40, 5) // Min height of 5 so the bar is visible even if small
+                    BarHeight = barHeight
                 });
             }
 

@@ -76,6 +76,9 @@ namespace Dental_App.ViewModels
             {
                 if (SetProperty(ref _patientSearchText, value))
                 {
+                    // Update popup visibility based on typing
+                    UpdateShowPatientSuggestions();
+
                     // Débouncer la recherche patient
                     _searchDebounceTimer?.Dispose();
                     _searchDebounceTimer = new Timer(
@@ -172,7 +175,22 @@ namespace Dental_App.ViewModels
         public bool HasPatients
         {
             get { return _hasPatients; }
-            set { SetProperty(ref _hasPatients, value); }
+            set
+            {
+                if (SetProperty(ref _hasPatients, value))
+                {
+                    // When patient result availability changes, update whether suggestions should show
+                    UpdateShowPatientSuggestions();
+                }
+            }
+        }
+
+        // New property: show suggestions only when user is typing and there are results
+        private bool _showPatientSuggestions;
+        public bool ShowPatientSuggestions
+        {
+            get => _showPatientSuggestions;
+            set => SetProperty(ref _showPatientSuggestions, value);
         }
 
         private Antecedant _selectedAntecedent;
@@ -201,6 +219,7 @@ namespace Dental_App.ViewModels
             // Initialize state - no patients shown by default
             HasPatients = false;
             HasSelectedPatient = false;
+            ShowPatientSuggestions = false;
 
             OpenModalCommand = new DelegateCommand(OpenModal);
             CloseModalCommand = new DelegateCommand(CloseModal);
@@ -310,6 +329,11 @@ namespace Dental_App.ViewModels
                 Debug.WriteLine($"[SearchPatientsAsync] ERREUR: {ex.Message}");
                 MessageBox.Show($"Erreur lors de la recherche: {ex.Message}", "Erreur", MessageBoxButton.OK, MessageBoxImage.Error);
             }
+            finally
+            {
+                // ensure suggestion visibility updates after search completes
+                UpdateShowPatientSuggestions();
+            }
         }
 
         /// <summary>
@@ -321,6 +345,7 @@ namespace Dental_App.ViewModels
             PatientSearchText = string.Empty;
             Patients.Clear();
             HasPatients = false;
+            UpdateShowPatientSuggestions();
         }
 
         /// <summary>
@@ -335,6 +360,7 @@ namespace Dental_App.ViewModels
             
             // Hide the patient search popup after selection
             HasPatients = false;
+            UpdateShowPatientSuggestions();
         }
 
         /// <summary>
@@ -574,6 +600,12 @@ namespace Dental_App.ViewModels
         {
             AntecedentsCount = Antecedents.Count;
             HasAntecedents = Antecedents.Count > 0;
+        }
+
+        // Update ShowPatientSuggestions based on whether user is typing and there are results
+        private void UpdateShowPatientSuggestions()
+        {
+            ShowPatientSuggestions = HasPatients && !string.IsNullOrWhiteSpace(PatientSearchText);
         }
     }
 }

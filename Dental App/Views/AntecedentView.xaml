@@ -162,7 +162,7 @@
             <StackPanel Grid.Row="2" HorizontalAlignment="Left">
                 <TextBlock Text="Chercher patient" Foreground="{DynamicResource TextSecondary}" FontSize="12" Margin="0,0,0,4"/>
 			    <Border Style="{StaticResource SearchBoxStyle}" Width="600" Padding="8">
-				    <Grid>
+			    	<Grid>
 					    <Grid.ColumnDefinitions>
 						    <ColumnDefinition Width="Auto"/>
 						    <ColumnDefinition Width="*"/>
@@ -175,7 +175,7 @@
                         <Grid Grid.Column="1">
                             <TextBox x:Name="PatientSearchBox" Text="{Binding PatientSearchText, UpdateSourceTrigger=PropertyChanged}" Background="Transparent" BorderThickness="0" Foreground="{DynamicResource TextPrimary}" Padding="8,0" VerticalAlignment="Center"/>
 
-                            <Popup IsOpen="{Binding HasPatients}" PlacementTarget="{Binding ElementName=PatientSearchBox}" Placement="Bottom" StaysOpen="False" AllowsTransparency="True">
+                            <Popup IsOpen="{Binding ShowPatientSuggestions}" PlacementTarget="{Binding ElementName=PatientSearchBox}" Placement="Bottom" StaysOpen="False" AllowsTransparency="True">
                                 <Border Background="{DynamicResource CardBackground}" BorderBrush="{DynamicResource BorderColor}" BorderThickness="1" CornerRadius="8" Width="{Binding ActualWidth, ElementName=PatientSearchBox}" Margin="0,4,0,0">
                                     <Border.Effect>
                                         <DropShadowEffect BlurRadius="10" Opacity="0.1" ShadowDepth="4"/>
@@ -300,7 +300,7 @@
 								</DataTemplate>
 							</ItemsControl.ItemTemplate>
 						</ItemsControl>
-					</ScrollViewer>
+						</ScrollViewer>
 
 					<!-- Empty Message -->
 					<TextBlock Grid.Row="1" Text="No antecedent registered" Foreground="{DynamicResource TextSecondary}" FontSize="14" HorizontalAlignment="Center" VerticalAlignment="Center" Visibility="{Binding HasAntecedents, Converter={StaticResource InverseBoolToVis}}"/>
