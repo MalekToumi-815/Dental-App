@@ -26,25 +26,134 @@
         <converters:EmptyListToVisibilityConverter x:Key="EmptyListToVisibilityConverter"/>
         <converters:DateTimeToDateOnlyConverter x:Key="DateTimeToDateOnlyConverter"/>
 
-        <!-- Dark Theme Colors (Default) -->
-        <Color x:Key="PrimaryBackgroundColor">#0D1117</Color>
-        <Color x:Key="SecondaryBackgroundColor">#0F172A</Color>
-        <Color x:Key="CardBackgroundColor">#0F172A</Color>
-        <Color x:Key="TextPrimaryColor">#FFFFFF</Color>
-        <Color x:Key="TextSecondaryColor">#94A3B8</Color>
-        <Color x:Key="BorderColorValue">#1E293B</Color>
-        <Color x:Key="AccentColorValue">#2ECC71</Color>
-        <Color x:Key="SidebarBackgroundColor">#101926</Color>
+        <!-- Dentia Theme Colors -->
+        <Color x:Key="AccentColorValue">#1E6DC0</Color>
+        <Color x:Key="AccentHoverColor">#1658A0</Color>
+        <Color x:Key="AccentPressedColor">#124D8C</Color>
+        <Color x:Key="DarkNavyColor">#163F6E</Color>
+        <Color x:Key="LightBackgroundColor">#F4F8FD</Color>
+        <Color x:Key="PrimaryBackgroundColor">#FFFFFF</Color>
+        <Color x:Key="TextMutedColor">#7A9FC2</Color>
+        <Color x:Key="BorderColorValue">#D0E3F7</Color>
+
+        <!-- Map legacy keys to Dentia palette (explicit hex values to avoid XAML parse issues) -->
+        <Color x:Key="SecondaryBackgroundColor">#FFFFFF</Color>
+        <Color x:Key="CardBackgroundColor">#FFFFFF</Color>
+        <Color x:Key="TextPrimaryColor">#163F6E</Color>
+        <Color x:Key="TextSecondaryColor">#7A9FC2</Color>
+        <Color x:Key="SidebarBackgroundColor">#163F6E</Color>
 
         <!-- Brush Resources -->
-        <SolidColorBrush x:Key="PrimaryBackground" Color="{StaticResource PrimaryBackgroundColor}"/>
-        <SolidColorBrush x:Key="SecondaryBackground" Color="{StaticResource SecondaryBackgroundColor}"/>
-        <SolidColorBrush x:Key="CardBackground" Color="{StaticResource CardBackgroundColor}"/>
+        <SolidColorBrush x:Key="AccentColor" Color="{StaticResource AccentColorValue}"/>
+        <SolidColorBrush x:Key="AccentHover" Color="{StaticResource AccentHoverColor}"/>
+        <SolidColorBrush x:Key="AccentPressed" Color="{StaticResource AccentPressedColor}"/>
+        <SolidColorBrush x:Key="PrimaryBackground" Color="{StaticResource LightBackgroundColor}"/>
+        <SolidColorBrush x:Key="CardBackground" Color="{StaticResource PrimaryBackgroundColor}"/>
+        <SolidColorBrush x:Key="SecondaryBackground" Color="{StaticResource PrimaryBackgroundColor}"/>
         <SolidColorBrush x:Key="TextPrimary" Color="{StaticResource TextPrimaryColor}"/>
         <SolidColorBrush x:Key="TextSecondary" Color="{StaticResource TextSecondaryColor}"/>
         <SolidColorBrush x:Key="BorderColor" Color="{StaticResource BorderColorValue}"/>
-        <SolidColorBrush x:Key="AccentColor" Color="{StaticResource AccentColorValue}"/>
         <SolidColorBrush x:Key="SidebarBackground" Color="{StaticResource SidebarBackgroundColor}"/>
+
+        <!-- Global implicit styles so the theme applies to all views -->
+        <Style TargetType="Window">
+            <Setter Property="Background" Value="{DynamicResource PrimaryBackground}"/>
+            <Setter Property="Foreground" Value="{DynamicResource TextPrimary}"/>
+            <Setter Property="FontFamily" Value="Segoe UI"/>
+        </Style>
+
+        <Style TargetType="UserControl">
+            <Setter Property="Background" Value="{DynamicResource PrimaryBackground}"/>
+            <Setter Property="Foreground" Value="{DynamicResource TextPrimary}"/>
+            <Setter Property="FontFamily" Value="Segoe UI"/>
+        </Style>
+
+        <Style TargetType="TextBlock">
+            <Setter Property="Foreground" Value="{DynamicResource TextPrimary}"/>
+            <Setter Property="FontFamily" Value="Segoe UI"/>
+        </Style>
+
+        <Style TargetType="Label">
+            <Setter Property="Foreground" Value="{DynamicResource TextPrimary}"/>
+            <Setter Property="FontFamily" Value="Segoe UI"/>
+        </Style>
+
+        <!-- Button implicit style (Dentia) -->
+        <Style TargetType="Button">
+            <Setter Property="Background" Value="{DynamicResource AccentColor}"/>
+            <Setter Property="Foreground" Value="White"/>
+            <Setter Property="BorderBrush" Value="{DynamicResource BorderColor}"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="Padding" Value="10,6"/>
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="FontWeight" Value="SemiBold"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border x:Name="RootBorder" Background="{TemplateBinding Background}" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" CornerRadius="7">
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center" Margin="{TemplateBinding Padding}"/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="RootBorder" Property="Background" Value="{DynamicResource AccentHover}"/>
+                            </Trigger>
+                            <Trigger Property="IsPressed" Value="True">
+                                <Setter TargetName="RootBorder" Property="Background" Value="{DynamicResource AccentPressed}"/>
+                            </Trigger>
+                            <Trigger Property="IsEnabled" Value="False">
+                                <Setter Property="Opacity" Value="0.6"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <Style TargetType="ListView">
+            <Setter Property="Background" Value="{DynamicResource PrimaryBackground}"/>
+            <Setter Property="Foreground" Value="{DynamicResource TextPrimary}"/>
+            <Setter Property="BorderBrush" Value="{DynamicResource BorderColor}"/>
+        </Style>
+
+        <Style TargetType="ListBox">
+            <Setter Property="Background" Value="{DynamicResource SidebarBackground}"/>
+            <Setter Property="Foreground" Value="White"/>
+            <Setter Property="BorderBrush" Value="{DynamicResource BorderColor}"/>
+        </Style>
+
+        <Style TargetType="ListBoxItem">
+            <Setter Property="Background" Value="Transparent"/>
+            <Setter Property="Foreground" Value="White"/>
+            <Setter Property="Padding" Value="8,6"/>
+            <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
+            <Setter Property="VerticalContentAlignment" Value="Center"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="ListBoxItem">
+                        <Border x:Name="Bd" Background="{TemplateBinding Background}" Padding="{TemplateBinding Padding}">
+                            <ContentPresenter VerticalAlignment="Center" HorizontalAlignment="Left"/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsSelected" Value="True">
+                                <Setter TargetName="Bd" Property="Background" Value="{DynamicResource AccentColor}"/>
+                                <Setter Property="Foreground" Value="White"/>
+                            </Trigger>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="Bd" Property="Background" Value="{DynamicResource AccentHover}"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <Style TargetType="TextBox">
+            <Setter Property="Background" Value="{DynamicResource CardBackground}"/>
+            <Setter Property="Foreground" Value="{DynamicResource TextPrimary}"/>
+            <Setter Property="BorderBrush" Value="{DynamicResource BorderColor}"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="Padding" Value="6"/>
+        </Style>
 
         <!-- Icon Geometries -->
         <Geometry x:Key="IconMoon">
@@ -128,7 +237,7 @@
                             <Border x:Name="PART_MonthViewBorder" Grid.Row="1" Background="Transparent" Margin="0" Padding="0">
                                 <Grid x:Name="PART_MonthView" Visibility="Visible"/>
                             </Border>
-                            
+
                             <Border x:Name="PART_YearViewBorder" Grid.Row="1" Background="Transparent" Margin="0" Padding="0">
                                 <Grid x:Name="PART_YearView" Visibility="Hidden"/>
                             </Border>

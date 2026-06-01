@@ -12,7 +12,7 @@ namespace Dental_App
     /// Interaction logic for App.xaml
     /// </summary>
     public partial class App : PrismApplication
-    {   
+    {
         protected override Window CreateShell()
         {
             return ContainerLocator.Container.Resolve<MainView>();
@@ -57,6 +57,9 @@ namespace Dental_App
             containerRegistry.RegisterSingleton<IOdontogrammeLibreService, OdontogrammeLibreService>();
             containerRegistry.RegisterSingleton<IAppNotificationService, AppNotificationService>();
 
+            // Register ThemeService
+            containerRegistry.RegisterSingleton<IThemeService, ThemeService>();
+
             // Register Views for Navigation
             containerRegistry.RegisterForNavigation<SidebarView, SidebarViewModel>("SidebarView");
             containerRegistry.RegisterForNavigation<ToolbarView, ToolbarViewModel>("ToolbarView");
@@ -74,7 +77,7 @@ namespace Dental_App
             containerRegistry.RegisterForNavigation<OrdonnanceView, OrdonnanceViewModel>("OrdonnanceView");
             containerRegistry.RegisterForNavigation<OrdonnanceTemplateDialogView, OrdonnanceTemplateDialogViewModel>("OrdonnanceTemplateDialogView");
             containerRegistry.RegisterForNavigation<MainView>();
-            
+
             containerRegistry.RegisterDialog<NotificationDialogView, NotificationDialogViewModel>();
         }
 
@@ -94,6 +97,18 @@ namespace Dental_App
 
                 // This "injects" the Dashboard into the right column immediately
                 regionManager.RegisterViewWithRegion("ContentRegion", typeof(DashboardView));
+
+                // Apply theme based on saved preference
+                var themeService = Container.Resolve<IThemeService>();
+                var isDark = themeService.LoadThemePreference();
+                if (isDark)
+                {
+                    themeService.RestoreDarkTheme();
+                }
+                else
+                {
+                    themeService.ApplyLightTheme();
+                }
             }
             catch (Exception ex)
             {
