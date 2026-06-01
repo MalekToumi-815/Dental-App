@@ -3,7 +3,8 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:local="clr-namespace:Dental_App"
              xmlns:converters="clr-namespace:Dental_App.Converters"
-             xmlns:prism="http://prismlibrary.com/">
+             xmlns:prism="http://prismlibrary.com/"
+             xmlns:sys="clr-namespace:System;assembly=mscorlib">
 
     <prism:PrismApplication.Resources>
         <!-- Converters -->
@@ -26,22 +27,35 @@
         <converters:EmptyListToVisibilityConverter x:Key="EmptyListToVisibilityConverter"/>
         <converters:DateTimeToDateOnlyConverter x:Key="DateTimeToDateOnlyConverter"/>
 
-        <!-- Dentia Theme Colors -->
-        <Color x:Key="AccentColorValue">#1E6DC0</Color>
-        <Color x:Key="AccentHoverColor">#1658A0</Color>
-        <Color x:Key="AccentPressedColor">#124D8C</Color>
-        <Color x:Key="DarkNavyColor">#163F6E</Color>
-        <Color x:Key="LightBackgroundColor">#F4F8FD</Color>
-        <Color x:Key="PrimaryBackgroundColor">#FFFFFF</Color>
-        <Color x:Key="TextMutedColor">#7A9FC2</Color>
-        <Color x:Key="BorderColorValue">#D0E3F7</Color>
+        <!-- App font and sizes -->
+        <FontFamily x:Key="AppFontFamily">Calisto MT</FontFamily>
+        <sys:Double x:Key="BaseFontSize">14</sys:Double>
+        <sys:Double x:Key="SmallFontSize">12</sys:Double>
+        <sys:Double x:Key="LargeFontSize">18</sys:Double>
+        <sys:Double x:Key="TitleFontSize">22</sys:Double>
 
-        <!-- Map legacy keys to Dentia palette (explicit hex values to avoid XAML parse issues) -->
+        <!-- Theme Colors (harmonised for light sidebar) -->
+        <Color x:Key="AccentColorValue">#17B6D8</Color>
+        <Color x:Key="AccentHoverColor">#13A3BC</Color>
+        <Color x:Key="AccentPressedColor">#0E8B9E</Color>
+        <Color x:Key="DarkNavyColor">#0B3B45</Color>
+        <Color x:Key="LightBackgroundColor">#E9FBFF</Color>
+        <Color x:Key="PrimaryBackgroundColor">#FFFFFF</Color>
+        <Color x:Key="TextMutedColor">#88C2CE</Color>
+        <Color x:Key="BorderColorValue">#D3EEF2</Color>
+
+        <!-- Map legacy keys to palette -->
         <Color x:Key="SecondaryBackgroundColor">#FFFFFF</Color>
         <Color x:Key="CardBackgroundColor">#FFFFFF</Color>
-        <Color x:Key="TextPrimaryColor">#163F6E</Color>
-        <Color x:Key="TextSecondaryColor">#7A9FC2</Color>
-        <Color x:Key="SidebarBackgroundColor">#163F6E</Color>
+        <Color x:Key="TextPrimaryColor">#0B3B45</Color>
+        <Color x:Key="TextSecondaryColor">#88C2CE</Color>
+
+        <!-- Sidebar: light, harmonious tone -->
+        <Color x:Key="SidebarBackgroundColor">#F3FBFD</Color>
+
+        <!-- Global border used for most elements (keeps RendezVous intact because it uses local styles) -->
+        <Color x:Key="GlobalElementBorderColor">#CDEEF4</Color>
+        <SolidColorBrush x:Key="GlobalElementBorderBrush" Color="{StaticResource GlobalElementBorderColor}"/>
 
         <!-- Brush Resources -->
         <SolidColorBrush x:Key="AccentColor" Color="{StaticResource AccentColorValue}"/>
@@ -55,38 +69,47 @@
         <SolidColorBrush x:Key="BorderColor" Color="{StaticResource BorderColorValue}"/>
         <SolidColorBrush x:Key="SidebarBackground" Color="{StaticResource SidebarBackgroundColor}"/>
 
-        <!-- Global implicit styles so the theme applies to all views -->
+        <!-- App logo brush removed to avoid missing resource error; add back if logo asset included in project resources -->
+        <!--<ImageBrush x:Key="AppLogoBrush" Stretch="Uniform" ImageSource="pack://application:,,,/Dental App;component/Assets/Images/logo.png"/>-->
+
+        <!-- Global implicit styles so the theme applies to all views (RendezVous overrides its local styles) -->
         <Style TargetType="Window">
             <Setter Property="Background" Value="{DynamicResource PrimaryBackground}"/>
             <Setter Property="Foreground" Value="{DynamicResource TextPrimary}"/>
-            <Setter Property="FontFamily" Value="Segoe UI"/>
+            <Setter Property="FontFamily" Value="{StaticResource AppFontFamily}"/>
+            <Setter Property="FontSize" Value="{StaticResource BaseFontSize}"/>
         </Style>
 
         <Style TargetType="UserControl">
             <Setter Property="Background" Value="{DynamicResource PrimaryBackground}"/>
             <Setter Property="Foreground" Value="{DynamicResource TextPrimary}"/>
-            <Setter Property="FontFamily" Value="Segoe UI"/>
+            <Setter Property="FontFamily" Value="{StaticResource AppFontFamily}"/>
+            <Setter Property="FontSize" Value="{StaticResource BaseFontSize}"/>
         </Style>
 
         <Style TargetType="TextBlock">
             <Setter Property="Foreground" Value="{DynamicResource TextPrimary}"/>
-            <Setter Property="FontFamily" Value="Segoe UI"/>
+            <Setter Property="FontFamily" Value="{StaticResource AppFontFamily}"/>
+            <Setter Property="FontSize" Value="{StaticResource BaseFontSize}"/>
         </Style>
 
         <Style TargetType="Label">
             <Setter Property="Foreground" Value="{DynamicResource TextPrimary}"/>
-            <Setter Property="FontFamily" Value="Segoe UI"/>
+            <Setter Property="FontFamily" Value="{StaticResource AppFontFamily}"/>
+            <Setter Property="FontSize" Value="{StaticResource BaseFontSize}"/>
         </Style>
 
-        <!-- Button implicit style (Dentia) -->
+        <!-- Implicit Button style for all views (RendezVous has explicit local ButtonStyle so it is not affected) -->
         <Style TargetType="Button">
             <Setter Property="Background" Value="{DynamicResource AccentColor}"/>
-            <Setter Property="Foreground" Value="White"/>
-            <Setter Property="BorderBrush" Value="{DynamicResource BorderColor}"/>
-            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="Foreground" Value="{DynamicResource PrimaryBackground}"/>
+            <Setter Property="BorderBrush" Value="{DynamicResource GlobalElementBorderBrush}"/>
+            <Setter Property="BorderThickness" Value="1"/>
             <Setter Property="Padding" Value="10,6"/>
             <Setter Property="Cursor" Value="Hand"/>
             <Setter Property="FontWeight" Value="SemiBold"/>
+            <Setter Property="FontFamily" Value="{StaticResource AppFontFamily}"/>
+            <Setter Property="FontSize" Value="{StaticResource BaseFontSize}"/>
             <Setter Property="Template">
                 <Setter.Value>
                     <ControlTemplate TargetType="Button">
@@ -109,50 +132,53 @@
             </Setter>
         </Style>
 
+        <!-- TextBox implicit style: harmonised border color -->
+        <Style TargetType="TextBox">
+            <Setter Property="Background" Value="{DynamicResource CardBackground}"/>
+            <Setter Property="Foreground" Value="{DynamicResource TextPrimary}"/>
+            <Setter Property="BorderBrush" Value="{DynamicResource GlobalElementBorderBrush}"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="Padding" Value="6"/>
+            <Setter Property="FontFamily" Value="{StaticResource AppFontFamily}"/>
+            <Setter Property="FontSize" Value="{StaticResource BaseFontSize}"/>
+        </Style>
+
+        <!-- ComboBox implicit style: harmonised border color -->
+        <Style TargetType="ComboBox">
+            <Setter Property="Background" Value="{DynamicResource SecondaryBackground}"/>
+            <Setter Property="Foreground" Value="{DynamicResource TextPrimary}"/>
+            <Setter Property="BorderBrush" Value="{DynamicResource GlobalElementBorderBrush}"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="Padding" Value="10,8"/>
+            <Setter Property="Height" Value="40"/>
+            <Setter Property="FontFamily" Value="{StaticResource AppFontFamily}"/>
+            <Setter Property="FontSize" Value="{StaticResource BaseFontSize}"/>
+        </Style>
+
+        <!-- ListView and ListBox harmonised borders -->
         <Style TargetType="ListView">
             <Setter Property="Background" Value="{DynamicResource PrimaryBackground}"/>
             <Setter Property="Foreground" Value="{DynamicResource TextPrimary}"/>
-            <Setter Property="BorderBrush" Value="{DynamicResource BorderColor}"/>
+            <Setter Property="BorderBrush" Value="{DynamicResource GlobalElementBorderBrush}"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="FontFamily" Value="{StaticResource AppFontFamily}"/>
+            <Setter Property="FontSize" Value="{StaticResource BaseFontSize}"/>
         </Style>
 
         <Style TargetType="ListBox">
             <Setter Property="Background" Value="{DynamicResource SidebarBackground}"/>
-            <Setter Property="Foreground" Value="White"/>
-            <Setter Property="BorderBrush" Value="{DynamicResource BorderColor}"/>
-        </Style>
-
-        <Style TargetType="ListBoxItem">
-            <Setter Property="Background" Value="Transparent"/>
-            <Setter Property="Foreground" Value="White"/>
-            <Setter Property="Padding" Value="8,6"/>
-            <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
-            <Setter Property="VerticalContentAlignment" Value="Center"/>
-            <Setter Property="Template">
-                <Setter.Value>
-                    <ControlTemplate TargetType="ListBoxItem">
-                        <Border x:Name="Bd" Background="{TemplateBinding Background}" Padding="{TemplateBinding Padding}">
-                            <ContentPresenter VerticalAlignment="Center" HorizontalAlignment="Left"/>
-                        </Border>
-                        <ControlTemplate.Triggers>
-                            <Trigger Property="IsSelected" Value="True">
-                                <Setter TargetName="Bd" Property="Background" Value="{DynamicResource AccentColor}"/>
-                                <Setter Property="Foreground" Value="White"/>
-                            </Trigger>
-                            <Trigger Property="IsMouseOver" Value="True">
-                                <Setter TargetName="Bd" Property="Background" Value="{DynamicResource AccentHover}"/>
-                            </Trigger>
-                        </ControlTemplate.Triggers>
-                    </ControlTemplate>
-                </Setter.Value>
-            </Setter>
-        </Style>
-
-        <Style TargetType="TextBox">
-            <Setter Property="Background" Value="{DynamicResource CardBackground}"/>
             <Setter Property="Foreground" Value="{DynamicResource TextPrimary}"/>
-            <Setter Property="BorderBrush" Value="{DynamicResource BorderColor}"/>
+            <Setter Property="BorderBrush" Value="{DynamicResource GlobalElementBorderBrush}"/>
             <Setter Property="BorderThickness" Value="1"/>
-            <Setter Property="Padding" Value="6"/>
+            <Setter Property="FontFamily" Value="{StaticResource AppFontFamily}"/>
+            <Setter Property="FontSize" Value="{StaticResource BaseFontSize}"/>
+        </Style>
+
+        <!-- Border default appearance if not set locally -->
+        <Style TargetType="Border">
+            <Setter Property="BorderBrush" Value="{DynamicResource GlobalElementBorderBrush}"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="CornerRadius" Value="6"/>
         </Style>
 
         <!-- Icon Geometries -->
@@ -211,6 +237,7 @@
                                                         <Setter Property="FontSize" Value="16"/>
                                                         <Setter Property="FontWeight" Value="Bold"/>
                                                         <Setter Property="Foreground" Value="{DynamicResource AccentColor}"/>
+                                                        <Setter Property="FontFamily" Value="{StaticResource AppFontFamily}"/>
                                                     </Style>
                                                 </ContentPresenter.Resources>
                                             </ContentPresenter>
@@ -264,6 +291,7 @@
                                     <Style TargetType="TextBlock">
                                         <Setter Property="FontSize" Value="14"/>
                                         <Setter Property="FontWeight" Value="SemiBold"/>
+                                        <Setter Property="FontFamily" Value="{StaticResource AppFontFamily}"/>
                                     </Style>
                                 </ContentPresenter.Resources>
                             </ContentPresenter>
