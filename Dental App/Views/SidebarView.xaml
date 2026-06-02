@@ -6,6 +6,12 @@
              Width="280" Background="{DynamicResource SidebarBackground}">
 
     <UserControl.Resources>
+        <!-- Override Border style locally to remove global borders in the sidebar -->
+        <Style TargetType="Border">
+            <Setter Property="BorderBrush" Value="Transparent"/>
+            <Setter Property="BorderThickness" Value="0"/>
+        </Style>
+
         <!-- SVG Geometries for Icons -->
         <Geometry x:Key="IconLogo">
             M12,2C10,2 9.5,3.5 8,4.5C6,5.5 4,6 4,11C4,15 5.5,20 7.5,21C9.5,22 11,21 12,20C13,21 14.5,22 16.5,21C18.5,20 20,15 20,11C20,6 18,5.5 16,4.5C14.5,3.5 14,2 12,2Z
@@ -36,7 +42,8 @@
             <Setter Property="Height" Value="44"/>
             <Setter Property="Margin" Value="12,6"/>
             <Setter Property="Background" Value="Transparent"/>
-            <Setter Property="Foreground" Value="{DynamicResource TextSecondary}"/>
+            <!-- Use darker text for better contrast on light sidebar -->
+            <Setter Property="Foreground" Value="{DynamicResource TextPrimary}"/>
             <Setter Property="BorderThickness" Value="0"/>
             <Setter Property="Padding" Value="0"/>
             <Setter Property="Template">
@@ -110,67 +117,67 @@
         </Border>
 
         <!-- Navigation Sections -->
-        <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Hidden">
+        <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Hidden" Background="Transparent">
             <StackPanel>
                 <!-- PRINCIPAL Section -->
                 <TextBlock Text="PRINCIPAL" Style="{StaticResource SectionTitleStyle}"/>
                 
                 <Button Content="Dashboard" Tag="{StaticResource IconDashboard}" 
                         x:Name="DashboardButton"
-                        Command="{Binding NavigateCommand}" CommandParameter="DashboardView"/>
+                        Command="{Binding NavigateCommand}" CommandParameter="DashboardView" Style="{StaticResource NavButtonStyle}"/>
                 
                 <Button Content="Rendez-Vous" Tag="{StaticResource IconCalendar}" 
                         x:Name="RendezVousButton"
-                        Command="{Binding NavigateCommand}" CommandParameter="RendezVousView"/>
+                        Command="{Binding NavigateCommand}" CommandParameter="RendezVousView" Style="{StaticResource NavButtonStyle}"/>
                 
                 <Button Content="Consultation" Tag="{StaticResource IconConsultation}" 
                         x:Name="ConsultationButton"
-                        Command="{Binding NavigateCommand}" CommandParameter="ConsultationView"/>
+                        Command="{Binding NavigateCommand}" CommandParameter="ConsultationView" Style="{StaticResource NavButtonStyle}"/>
 
                 <!-- PATIENTS Section -->
                 <TextBlock Text="PATIENTS" Style="{StaticResource SectionTitleStyle}"/>
                 
                 <Button Content="Patients" Tag="{StaticResource IconPatients}" 
                         x:Name="PatientsButton"
-                        Command="{Binding NavigateCommand}" CommandParameter="PatientsView"/>
+                        Command="{Binding NavigateCommand}" CommandParameter="PatientsView" Style="{StaticResource NavButtonStyle}"/>
                 
                 <Button Content="Antecedents" Tag="{StaticResource IconAntecedents}" 
                         x:Name="AntecedentsButton"
-                        Command="{Binding NavigateCommand}" CommandParameter="AntecedentView"/>
+                        Command="{Binding NavigateCommand}" CommandParameter="AntecedentView" Style="{StaticResource NavButtonStyle}" Click="AntecedentsButton_Click"/>
                 
                 <Button Content="Ordonnances" Tag="{StaticResource IconOrdonnances}" 
                         x:Name="OrdonnancesButton"
-                        Command="{Binding NavigateCommand}" CommandParameter="OrdonnanceView"/>
+                        Command="{Binding NavigateCommand}" CommandParameter="OrdonnanceView" Style="{StaticResource NavButtonStyle}"/>
                 
                 <Button Content="Actes Medicaux" Tag="{StaticResource IconActes}" 
                         x:Name="ActesMedicauxButton"
-                        Command="{Binding NavigateCommand}" CommandParameter="ActesMedicauxView"/>
+                        Command="{Binding NavigateCommand}" CommandParameter="ActesMedicauxView" Style="{StaticResource NavButtonStyle}"/>
                 
                 <Button Content="Radio Images" Tag="{StaticResource IconRadio}" 
                         x:Name="RadioImagesButton"
-                        Command="{Binding NavigateCommand}" CommandParameter="RadioImagesView"/>
+                        Command="{Binding NavigateCommand}" CommandParameter="RadioImagesView" Style="{StaticResource NavButtonStyle}"/>
                 
                 <Button Content="Odontogramme" Tag="{StaticResource IconOdonto}" 
                         x:Name="OdontogrammeButton"
-                        Command="{Binding NavigateCommand}" CommandParameter="OdontogrammeView"/>
+                        Command="{Binding NavigateCommand}" CommandParameter="OdontogrammeView" Style="{StaticResource NavButtonStyle}"/>
 
                 <!-- FINANCES Section -->
                 <TextBlock Text="FINANCES" Style="{StaticResource SectionTitleStyle}"/>
                 
                 <Button Content="Caisse" Tag="{StaticResource IconCaisse}" 
                         x:Name="CaisseButton"
-                        Command="{Binding NavigateCommand}" CommandParameter="CaisseView"/>
+                        Command="{Binding NavigateCommand}" CommandParameter="CaisseView" Style="{StaticResource NavButtonStyle}"/>
 
                 <!-- PROTHESE Section -->
                 <TextBlock Text="PROTHESE" Style="{StaticResource SectionTitleStyle}"/>
                 
                 <Button Content="Commande Protesiste" Tag="{StaticResource IconProthese}" 
                         x:Name="CommandeProthesisteButton"
-                        Command="{Binding NavigateCommand}" CommandParameter="CommandeProthesisteView"/>
+                        Command="{Binding NavigateCommand}" CommandParameter="CommandeProthesisteView" Style="{StaticResource NavButtonStyle}"/>
                 
                 <Button Content="Protesistes" Tag="{StaticResource IconProthesistes}" 
                         x:Name="ProthesistesButton"
-                        Command="{Binding NavigateCommand}" CommandParameter="ProthesisteView"/>
+                        Command="{Binding NavigateCommand}" CommandParameter="ProthesisteView" Style="{StaticResource NavButtonStyle}"/>
             </StackPanel>
         </ScrollViewer>
     </Grid>

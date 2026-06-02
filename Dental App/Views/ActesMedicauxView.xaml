@@ -57,6 +57,8 @@
 			<Setter Property="Background" Value="Transparent"/>
 			<Setter Property="BorderThickness" Value="0"/>
 			<Setter Property="Padding" Value="15,10"/>
+			<Setter Property="FontFamily" Value="{StaticResource AppFontFamily}"/>
+			<Setter Property="FontSize" Value="{StaticResource BaseFontSize}"/>
 			<Setter Property="Template">
 				<Setter.Value>
 					<ControlTemplate TargetType="DataGridCell">
@@ -85,6 +87,8 @@
 		<Style x:Key="ActeDataGridRowStyle" TargetType="DataGridRow">
 			<Setter Property="Background" Value="Transparent"/>
 			<Setter Property="BorderThickness" Value="0"/>
+			<Setter Property="FontFamily" Value="{StaticResource AppFontFamily}"/>
+			<Setter Property="FontSize" Value="{StaticResource BaseFontSize}"/>
 			<Setter Property="Template">
 				<Setter.Value>
 					<ControlTemplate TargetType="DataGridRow">
@@ -118,6 +122,8 @@
 			<Setter Property="RowHeaderWidth" Value="0"/>
 			<Setter Property="VerticalGridLinesBrush" Value="Transparent"/>
 			<Setter Property="HorizontalGridLinesBrush" Value="{DynamicResource BorderColor}"/>
+			<Setter Property="FontFamily" Value="{StaticResource AppFontFamily}"/>
+			<Setter Property="FontSize" Value="{StaticResource BaseFontSize}"/>
 		</Style>
 	</UserControl.Resources>
 
@@ -155,14 +161,14 @@
 						<ColumnDefinition Width="*"/>
 					</Grid.ColumnDefinitions>
 					<Path Data="M9.5,2A7.5,7.5 0 0,1 17,9.5A7.5,7.5 0 0,1 9.5,17A7.5,7.5 0 0,1 2,9.5A7.5,7.5 0 0,1 9.5,2M9.5,4A5.5,5.5 0 0,0 4,9.5A5.5,5.5 0 0,0 9.5,15A5.5,5.5 0 0,0 15,9.5A5.5,5.5 0 0,0 9.5,4M14.5,13L21,19.5L19.5,21L13,14.5Z"
-                          Fill="{DynamicResource TextSecondary}" Stretch="Uniform" Width="18" Margin="0,0,10,0"/>
+					      Fill="{DynamicResource TextSecondary}" Stretch="Uniform" Width="18" Margin="0,0,10,0"/>
 					<TextBox Grid.Column="1" 
-                             Text="{Binding SearchText, UpdateSourceTrigger=PropertyChanged}"
-                             Background="Transparent" 
-                             BorderThickness="0" 
-                             VerticalAlignment="Center"
-                             Foreground="{DynamicResource TextPrimary}"
-                             Padding="8,0"/>
+					     Text="{Binding SearchText, UpdateSourceTrigger=PropertyChanged}"
+					     Background="Transparent" 
+					     BorderThickness="0" 
+					     VerticalAlignment="Center"
+					     Foreground="{DynamicResource TextPrimary}"
+					     Padding="8,0"/>
 				</Grid>
 			</Border>
 
@@ -185,7 +191,7 @@
 							<Setter Property="Background" Value="Transparent"/>
 							<Setter Property="Foreground" Value="{DynamicResource TextSecondary}"/>
 							<Setter Property="FontWeight" Value="SemiBold"/>
-							<Setter Property="FontSize" Value="12"/>
+							<Setter Property="FontSize" Value="{StaticResource BaseFontSize}"/>
 							<Setter Property="Padding" Value="15,12"/>
 							<Setter Property="BorderThickness" Value="0,0,0,1"/>
 							<Setter Property="BorderBrush" Value="{DynamicResource BorderColor}"/>
@@ -201,7 +207,8 @@
                                                        Foreground="{TemplateBinding Foreground}"
                                                        FontWeight="{TemplateBinding FontWeight}"
                                                        FontSize="{TemplateBinding FontSize}"
-                                                       VerticalAlignment="Center"/>
+                                                       VerticalAlignment="Center"
+                                                       FontFamily="{StaticResource AppFontFamily}"/>
 										</Border>
 										<ControlTemplate.Triggers>
 											<Trigger Property="IsMouseOver" Value="True">
@@ -212,7 +219,7 @@
 								</Setter.Value>
 							</Setter>
 						</Style>
-					</DataGrid.ColumnHeaderStyle>
+						</DataGrid.ColumnHeaderStyle>
 
 					<DataGrid.Columns>
 						<DataGridTextColumn Header="#" Binding="{Binding Id}" Width="60"/>
@@ -223,7 +230,7 @@
 								<DataTemplate>
 									<StackPanel Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center">
 										<Button Command="{Binding DataContext.EditActeCommand, RelativeSource={RelativeSource AncestorType=DataGrid}}"
-                                                CommandParameter="{Binding}" 
+                                                CommandParameter="{Binding}"
                                                 Background="Transparent" 
                                                 BorderThickness="0" 
                                                 Margin="5,0"
@@ -234,9 +241,9 @@
 										</Button>
 									</StackPanel>
 								</DataTemplate>
-							</DataGridTemplateColumn.CellTemplate>
-						</DataGridTemplateColumn>
-					</DataGrid.Columns>
+								</DataGridTemplateColumn.CellTemplate>
+							</DataGridTemplateColumn>
+						</DataGrid.Columns>
 				</DataGrid>
 			</Border>
 

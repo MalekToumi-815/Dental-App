@@ -79,5 +79,10 @@ namespace Dental_App.Views
                 activeButton.Style = (Style)this.Resources["NavButtonActiveStyle"];
             }
         }
+
+        private void AntecedentsButton_Click(object sender, RoutedEventArgs e)
+        {
+
+        }
     }
 }

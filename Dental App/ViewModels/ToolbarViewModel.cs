@@ -1,11 +1,11 @@
 using Prism.Commands;
 using Prism.Mvvm;
 using System;
-using System.Collections.Generic;
 using System.Globalization;
 using System.Windows;
 using System.Windows.Media;
 using System.Windows.Media.Animation;
+using Dental_App.Services;
 
 namespace Dental_App.ViewModels
 {
@@ -15,9 +15,12 @@ namespace Dental_App.ViewModels
         private string _todayDate;
         private bool _isDarkMode = true;
         private Geometry _themeIconGeometry;
+        private readonly IThemeService _themeService;
 
-        public ToolbarViewModel()
+        public ToolbarViewModel(IThemeService themeService)
         {
+            _themeService = themeService;
+
             TodayDate = DateTime.Now.ToString("dddd d MMMM yyyy", _frenchCulture);
             ToggleThemeCommand = new DelegateCommand(ToggleTheme);
             CloseApplicationCommand = new DelegateCommand(CloseApplication);
@@ -55,11 +58,13 @@ namespace Dental_App.ViewModels
 
             if (IsDarkMode)
             {
-                ApplyDarkTheme();
+                // Restore the original dark theme snapshot
+                _themeService.RestoreDarkTheme();
             }
             else
             {
-                ApplyLightTheme();
+                // Apply the lighter color scheme
+                _themeService.ApplyLightTheme();
             }
 
             UpdateThemeIcon();
@@ -83,61 +88,6 @@ namespace Dental_App.ViewModels
             catch
             {
                 // Resources not yet available, will retry after toggle
-            }
-        }
-
-        private void ApplyDarkTheme()
-        {
-            var resources = Application.Current.Resources;
-            var darkColors = new Dictionary<string, string>
-            {
-                { "PrimaryBackgroundColor", "#0D1117" },
-                { "SecondaryBackgroundColor", "#0F172A" },
-                { "CardBackgroundColor", "#0F172A" },
-                { "TextPrimaryColor", "#FFFFFF" },
-                { "TextSecondaryColor", "#94A3B8" },
-                { "BorderColorValue", "#1E293B" },
-                { "AccentColorValue", "#2ECC71" },
-                { "SidebarBackgroundColor", "#101926" }
-            };
-
-            UpdateThemeColors(resources, darkColors);
-        }
-
-        private void ApplyLightTheme()
-        {
-            var resources = Application.Current.Resources;
-            var lightColors = new Dictionary<string, string>
-            {
-                { "PrimaryBackgroundColor", "#F8FAFC" },   // A cleaner, modern "off-white" (Slate 50)
-{ "SecondaryBackgroundColor", "#FFFFFF" },
-{ "CardBackgroundColor", "#FFFFFF" },
-{ "TextPrimaryColor", "#0F172A" },        // Deepest Slate (900) for high contrast
-{ "TextSecondaryColor", "#64748B" },      // Muted Slate (500) for labels
-{ "BorderColorValue", "#CBD5E1" },        // More defined borders (Slate 200)
-{ "AccentColorValue", "#10B981" },        // A slightly more "Emerald" green (Modern SaaS feel)
-{ "SidebarBackgroundColor", "#FFFFFF" }    // Keep sidebar white for a "clean-cut" look
-            };
-
-            UpdateThemeColors(resources, lightColors);
-        }
-
-        private void UpdateThemeColors(ResourceDictionary resources, Dictionary<string, string> colorMap)
-        {
-            foreach (var kvp in colorMap)
-            {
-                var colorKey = kvp.Key;
-                var colorValue = (Color)ColorConverter.ConvertFromString(kvp.Value);
-                
-                resources[colorKey] = colorValue;
-                
-                var brushKey = colorKey.Replace("Color", "");
-                if (resources.Contains(brushKey))
-                {
-                    // Create new unfrozen brush instead of modifying frozen one
-                    var newBrush = new SolidColorBrush(colorValue);
-                    resources[brushKey] = newBrush;
-                }
             }
         }
 
