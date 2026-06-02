@@ -39,7 +39,7 @@
         <Color x:Key="AccentHoverColor">#13A3BC</Color>
         <Color x:Key="AccentPressedColor">#0E8B9E</Color>
         <Color x:Key="DarkNavyColor">#0B3B45</Color>
-        <Color x:Key="LightBackgroundColor">#E9FBFF</Color>
+        <Color x:Key="LightBackgroundColor">#B8E8F5</Color>
         <Color x:Key="PrimaryBackgroundColor">#FFFFFF</Color>
         <Color x:Key="TextMutedColor">#88C2CE</Color>
         <Color x:Key="BorderColorValue">#D3EEF2</Color>
@@ -50,11 +50,11 @@
         <Color x:Key="TextPrimaryColor">#0B3B45</Color>
         <Color x:Key="TextSecondaryColor">#88C2CE</Color>
 
-        <!-- Sidebar: light, harmonious tone -->
-        <Color x:Key="SidebarBackgroundColor">#F3FBFD</Color>
+        <!-- Sidebar: set to pure white as requested -->
+        <Color x:Key="SidebarBackgroundColor">#FFFFFF</Color>
 
         <!-- Global border used for most elements (keeps RendezVous intact because it uses local styles) -->
-        <Color x:Key="GlobalElementBorderColor">#CDEEF4</Color>
+        <Color x:Key="GlobalElementBorderColor">#1f99b8</Color>
         <SolidColorBrush x:Key="GlobalElementBorderBrush" Color="{StaticResource GlobalElementBorderColor}"/>
 
         <!-- Brush Resources -->
@@ -104,7 +104,7 @@
             <Setter Property="Background" Value="{DynamicResource AccentColor}"/>
             <Setter Property="Foreground" Value="{DynamicResource PrimaryBackground}"/>
             <Setter Property="BorderBrush" Value="{DynamicResource GlobalElementBorderBrush}"/>
-            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="BorderThickness" Value="0"/>
             <Setter Property="Padding" Value="10,6"/>
             <Setter Property="Cursor" Value="Hand"/>
             <Setter Property="FontWeight" Value="SemiBold"/>
@@ -134,7 +134,7 @@
 
         <!-- TextBox implicit style: harmonised border color -->
         <Style TargetType="TextBox">
-            <Setter Property="Background" Value="{DynamicResource CardBackground}"/>
+            <Setter Property="Background" Value="{DynamicResource TextPrimary}"/>
             <Setter Property="Foreground" Value="{DynamicResource TextPrimary}"/>
             <Setter Property="BorderBrush" Value="{DynamicResource GlobalElementBorderBrush}"/>
             <Setter Property="BorderThickness" Value="1"/>
@@ -174,12 +174,7 @@
             <Setter Property="FontSize" Value="{StaticResource BaseFontSize}"/>
         </Style>
 
-        <!-- Border default appearance if not set locally -->
-        <Style TargetType="Border">
-            <Setter Property="BorderBrush" Value="{DynamicResource GlobalElementBorderBrush}"/>
-            <Setter Property="BorderThickness" Value="1"/>
-            <Setter Property="CornerRadius" Value="6"/>
-        </Style>
+      
 
         <!-- Icon Geometries -->
         <Geometry x:Key="IconMoon">
