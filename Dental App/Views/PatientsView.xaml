@@ -57,6 +57,8 @@
             <Setter Property="Background" Value="Transparent"/>
             <Setter Property="BorderThickness" Value="0"/>
             <Setter Property="Padding" Value="12,8"/>
+            <Setter Property="FontFamily" Value="{StaticResource AppFontFamily}"/>
+            <Setter Property="FontSize" Value="{StaticResource BaseFontSize}"/>
             <Setter Property="Template">
                 <Setter.Value>
                     <ControlTemplate TargetType="DataGridCell">
@@ -85,6 +87,8 @@
         <Style x:Key="PatientDataGridRowStyle" TargetType="DataGridRow">
             <Setter Property="Background" Value="Transparent"/>
             <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="FontFamily" Value="{StaticResource AppFontFamily}"/>
+            <Setter Property="FontSize" Value="{StaticResource BaseFontSize}"/>
             <Setter Property="Template">
                 <Setter.Value>
                     <ControlTemplate TargetType="DataGridRow">
@@ -118,6 +122,8 @@
             <Setter Property="RowHeaderWidth" Value="0"/>
             <Setter Property="VerticalGridLinesBrush" Value="Transparent"/>
             <Setter Property="HorizontalGridLinesBrush" Value="{DynamicResource BorderColor}"/>
+            <Setter Property="FontFamily" Value="{StaticResource AppFontFamily}"/>
+            <Setter Property="FontSize" Value="{StaticResource BaseFontSize}"/>
         </Style>
 
         <!-- Action Button Style -->
@@ -254,7 +260,7 @@
                             <Setter Property="Background" Value="Transparent"/>
                             <Setter Property="Foreground" Value="{DynamicResource TextSecondary}"/>
                             <Setter Property="FontWeight" Value="SemiBold"/>
-                            <Setter Property="FontSize" Value="12"/>
+                            <Setter Property="FontSize" Value="{StaticResource BaseFontSize}"/>
                             <Setter Property="Padding" Value="12,12"/>
                             <Setter Property="BorderThickness" Value="0,0,0,1"/>
                             <Setter Property="BorderBrush" Value="{DynamicResource BorderColor}"/>
@@ -270,7 +276,8 @@
                                                        Foreground="{TemplateBinding Foreground}"
                                                        FontWeight="{TemplateBinding FontWeight}"
                                                        FontSize="{TemplateBinding FontSize}"
-                                                       VerticalAlignment="Center"/>
+                                                       VerticalAlignment="Center"
+                                                       FontFamily="{StaticResource AppFontFamily}"/>
                                         </Border>
                                         <ControlTemplate.Triggers>
                                             <Trigger Property="IsMouseOver" Value="True">
