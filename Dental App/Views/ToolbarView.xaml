@@ -39,27 +39,16 @@
             <ColumnDefinition Width="Auto"/>
             <ColumnDefinition Width="*"/>
             <ColumnDefinition Width="Auto"/>
-            <ColumnDefinition Width="Auto"/>
         </Grid.ColumnDefinitions>
 
         <!-- Greeting and Date -->
         <StackPanel Grid.Column="0" VerticalAlignment="Center">
-            <TextBlock Text="Bonjour, Dr. Iheb Chermiti 👋" Foreground="{DynamicResource TextPrimary}" FontSize="16" FontWeight="SemiBold"/>
+            <TextBlock Text=" Dr.Iheb Chermiti et Dr Nadine Benchawecha 👋" Foreground="{DynamicResource TextPrimary}" FontSize="16" FontWeight="SemiBold"/>
             <TextBlock Text="{Binding TodayDate}" Foreground="{DynamicResource TextSecondary}" FontSize="12" Margin="0,5,0,0"/>
         </StackPanel>
 
-        <!-- Dark/Light Mode Toggle -->
-        <Button Grid.Column="2" 
-                Style="{StaticResource ThemeToggleButtonStyle}"
-                Command="{Binding ToggleThemeCommand}"
-                ToolTip="Toggle Dark/Light Mode">
-            <Path Width="24" Height="24" Stretch="Uniform" 
-                  Fill="{DynamicResource TextSecondary}"
-                  Data="{Binding ThemeIconGeometry}"/>
-        </Button>
-
         <!-- Close Button -->
-        <Button Grid.Column="3" 
+        <Button Grid.Column="2" 
                 Style="{StaticResource ThemeToggleButtonStyle}"
                 Command="{Binding CloseApplicationCommand}"
                 ToolTip="Close Application"

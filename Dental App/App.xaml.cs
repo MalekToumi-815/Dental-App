@@ -98,17 +98,9 @@ namespace Dental_App
                 // This "injects" the Dashboard into the right column immediately
                 regionManager.RegisterViewWithRegion("ContentRegion", typeof(DashboardView));
 
-                // Apply theme based on saved preference
+                // Always restore dark theme (single-mode app)
                 var themeService = Container.Resolve<IThemeService>();
-                var isDark = themeService.LoadThemePreference();
-                if (isDark)
-                {
-                    themeService.RestoreDarkTheme();
-                }
-                else
-                {
-                    themeService.ApplyLightTheme();
-                }
+                themeService.RestoreDarkTheme();
             }
             catch (Exception ex)
             {
