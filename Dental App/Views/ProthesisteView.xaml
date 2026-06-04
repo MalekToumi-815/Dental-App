@@ -17,7 +17,7 @@
 		<Style x:Key="InputStyle" TargetType="TextBox">
 			<Setter Property="Background"      Value="{DynamicResource SecondaryBackground}"/>
 			<Setter Property="Foreground"      Value="{DynamicResource TextPrimary}"/>
-			<Setter Property="BorderBrush"     Value="{DynamicResource BorderColor}"/>
+			<Setter Property="BorderBrush"     Value="{DynamicResource GlobalElementBorderBrush}"/>
 			<Setter Property="BorderThickness" Value="1"/>
 			<Setter Property="FontSize"        Value="14"/>
 			<Setter Property="Height"          Value="44"/>
@@ -119,7 +119,7 @@
 		<Style x:Key="SearchBoxStyle" TargetType="Border">
             <Setter Property="Background" Value="{DynamicResource CardBackground}"/>
             <Setter Property="CornerRadius" Value="8"/>
-            <Setter Property="BorderBrush" Value="{DynamicResource BorderColor}"/>
+            <Setter Property="BorderBrush" Value="{DynamicResource GlobalElementBorderBrush}"/>
             <Setter Property="BorderThickness" Value="1"/>
             <Setter Property="Padding" Value="12"/>
         </Style>
@@ -175,14 +175,14 @@
                                 <ColumnDefinition Width="*"/>
                             </Grid.ColumnDefinitions>
                             <Path Data="M9.5,2A7.5,7.5 0 0,1 17,9.5A7.5,7.5 0 0,1 9.5,17A7.5,7.5 0 0,1 2,9.5A7.5,7.5 0 0,1 9.5,2M9.5,4A5.5,5.5 0 0,0 4,9.5A5.5,5.5 0 0,0 9.5,15A5.5,5.5 0 0,0 15,9.5A5.5,5.5 0 0,0 9.5,4M14.5,13L21,19.5L19.5,21L13,14.5Z"
-								  Fill="{DynamicResource TextSecondary}" Stretch="Uniform" Width="18" Margin="0,0,10,0"/>
+                                  Fill="{DynamicResource TextSecondary}" Stretch="Uniform" Width="18" Margin="0,0,10,0"/>
                             <TextBox Grid.Column="1"
-									 Background="Transparent"
-									 BorderThickness="0"
-									 Foreground="{DynamicResource TextPrimary}"
-									 Padding="8,0"
-									 VerticalAlignment="Center"
-									 Text="{Binding SearchText, UpdateSourceTrigger=PropertyChanged}"/>
+                                     Background="Transparent"
+                                     BorderThickness="0"
+                                     Foreground="{DynamicResource TextPrimary}"
+                                     Padding="8,0"
+                                     VerticalAlignment="Center"
+                                     Text="{Binding SearchText, UpdateSourceTrigger=PropertyChanged}"/>
                         </Grid>
                     </Border>
                 </StackPanel>
@@ -191,8 +191,8 @@
 			<!-- Tableau -->
 			<Border Grid.Row="4"
                     Background="{DynamicResource CardBackground}"
-                    BorderBrush="{DynamicResource BorderColor}"
-                    BorderThickness="1"
+                    BorderBrush="{DynamicResource GlobalElementBorderBrush}"
+                    BorderThickness="2"
                     CornerRadius="12"
                     ClipToBounds="True">
 				<Grid>
@@ -201,8 +201,8 @@
 						<RowDefinition Height="*"/>
 					</Grid.RowDefinitions>
 
-					<!-- En-tête colonnes -->
-					<Border BorderBrush="{DynamicResource BorderColor}"
+					<!-- En-tete colonnes -->
+					<Border BorderBrush="{DynamicResource GlobalElementBorderBrush}"
                             BorderThickness="0,0,0,1"
                             Padding="20,14"
                             Background="{DynamicResource PrimaryBackground}">
@@ -246,7 +246,7 @@
                                       HorizontalContentAlignment="Stretch">
 							<ItemsControl.ItemTemplate>
 								<DataTemplate>
-									<Border BorderBrush="{DynamicResource BorderColor}"
+									<Border BorderBrush="{DynamicResource GlobalElementBorderBrush}"
                                             BorderThickness="0,0,0,1"
                                             Padding="20,16">
 										<Border.Style>
@@ -336,8 +336,8 @@
 
 			<!-- Carte modale -->
 			<Border Background="{DynamicResource CardBackground}"
-                    BorderBrush="{DynamicResource BorderColor}"
-                    BorderThickness="1"
+                    BorderBrush="{DynamicResource GlobalElementBorderBrush}"
+                    BorderThickness="2"
                     CornerRadius="14"
                     Width="500"
                     Padding="30,26"

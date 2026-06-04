@@ -301,7 +301,7 @@
                             </Trigger>
                             <Trigger Property="IsInactive" Value="True">
                                 <Setter Property="Foreground" Value="{DynamicResource TextSecondary}"/>
-                                <Setter Property="Opacity" Value="0.3"/>
+                                <Setter Property="Opacity" Value="1.0"/>
                             </Trigger>
                         </ControlTemplate.Triggers>
                     </ControlTemplate>

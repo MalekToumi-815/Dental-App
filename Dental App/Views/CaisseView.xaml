@@ -18,7 +18,7 @@
         <Style x:Key="InputStyle" TargetType="TextBox">
             <Setter Property="Background" Value="{DynamicResource SecondaryBackground}"/>
             <Setter Property="Foreground" Value="{DynamicResource TextPrimary}"/>
-            <Setter Property="BorderBrush" Value="{DynamicResource BorderColor}"/>
+            <Setter Property="BorderBrush" Value="{DynamicResource GlobalElementBorderBrush}"/>
             <Setter Property="BorderThickness" Value="1"/>
             <Setter Property="FontSize" Value="14"/>
             <Setter Property="Height" Value="44"/>
@@ -115,7 +115,7 @@
                                    IsOpen="{Binding IsOpen, RelativeSource={RelativeSource TemplatedParent}}"
                                    PopupAnimation="Fade">
                                 <Border Background="{DynamicResource CardBackground}"
-                                        BorderBrush="{DynamicResource BorderColor}"
+                                        BorderBrush="{DynamicResource GlobalElementBorderBrush}"
                                         BorderThickness="1"
                                         CornerRadius="6"
                                         Margin="0,5,0,0">
@@ -131,79 +131,6 @@
                 </Setter.Value>
             </Setter>
         </Style>
-
-        <!-- DatePickerStyle is now replaced by FormDatePickerStyle for unified styling -->
-        <!-- <Style x:Key="DatePickerStyle" TargetType="DatePicker">
-            <Setter Property="Foreground" Value="{DynamicResource TextPrimary}"/>
-            <Setter Property="Background" Value="{DynamicResource SecondaryBackground}"/>
-            <Setter Property="BorderBrush" Value="{DynamicResource BorderColor}"/>
-            <Setter Property="Height" Value="44"/>
-            <Setter Property="Template">
-                <Setter.Value>
-                    <ControlTemplate TargetType="DatePicker">
-                        <Border BorderBrush="{TemplateBinding BorderBrush}"
-                                BorderThickness="1"
-                                Background="{TemplateBinding Background}"
-                                CornerRadius="8"
-                                Padding="0">
-                            <Grid>
-                                <Grid.ColumnDefinitions>
-                                    <ColumnDefinition Width="*"/>
-                                    <ColumnDefinition Width="Auto"/>
-                                </Grid.ColumnDefinitions>
-
-                                <DatePickerTextBox x:Name="PART_TextBox" 
-                                                   Grid.Column="0"
-                                                   Margin="12,0,5,0"
-                                                   Background="Transparent"
-                                                   Foreground="{TemplateBinding Foreground}"
-                                                   BorderThickness="0"
-                                                   FontSize="14"
-                                                   VerticalContentAlignment="Center"
-                                                   Padding="0"/>
-
-                                <Button x:Name="PART_Button"
-                                        Grid.Column="1"
-                                        Width="44"
-                                        Height="44"
-                                        Background="Transparent"
-                                        BorderThickness="0"
-                                        Cursor="Hand"
-                                        Margin="0"
-                                        Padding="10">
-                                    <Viewbox Width="20" Height="20" VerticalAlignment="Center">
-                                        <Path Fill="{DynamicResource AccentColor}" 
-                                              Data="M19,4H17V3a1,1,0,0,0-2,0V4H9V3A1,1,0,0,0,7,3V4H5V7H19ZM9,8V7a1,1,0,0,1,2,0V8Zm4,0V7a1,1,0,0,1,2,0V8ZM5,10H19V9H5ZM19,12H5v-1H19ZM5,14H19v-1H5ZM19,16H5v-1H19Z"
-                                              Stretch="Uniform"/>
-                                    </Viewbox>
-                                </Button>
-
-                                <Popup x:Name="PART_Popup"
-                                       PlacementTarget="{Binding ElementName=PART_TextBox}"
-                                       AllowsTransparency="True"
-                                       Placement="Bottom"
-                                       StaysOpen="False">
-                                    <Border Background="{DynamicResource CardBackground}"
-                                            BorderBrush="{DynamicResource BorderColor}"
-                                            BorderThickness="1"
-                                            CornerRadius="8"
-                                            Padding="10"
-                                            Effect="{x:Null}">
-                                        <StackPanel>
-                                            <Calendar x:Name="PART_Calendar"
-                                                      Background="{DynamicResource CardBackground}"
-                                                      Foreground="{DynamicResource TextPrimary}"
-                                                      BorderThickness="0"
-                                                      Padding="0"/>
-                                        </StackPanel>
-                                    </Border>
-                                </Popup>
-                            </Grid>
-                        </Border>
-                    </ControlTemplate>
-                </Setter.Value>
-            </Setter>
-        </Style> -->
 
         <!-- Bouton Teal -->
         <Style x:Key="TealBtn" TargetType="Button">
@@ -263,7 +190,7 @@
         <Style x:Key="ComboBoxStyle" TargetType="ComboBox">
             <Setter Property="Background" Value="{DynamicResource SecondaryBackground}"/>
             <Setter Property="Foreground" Value="{DynamicResource TextPrimary}"/>
-            <Setter Property="BorderBrush" Value="{DynamicResource BorderColor}"/>
+            <Setter Property="BorderBrush" Value="{DynamicResource GlobalElementBorderBrush}"/>
             <Setter Property="BorderThickness" Value="1"/>
             <Setter Property="Padding" Value="12,12"/>
             <Setter Property="Height" Value="44"/>
@@ -316,7 +243,7 @@
                                    PopupAnimation="Slide"
                                    MinWidth="{Binding ActualWidth, ElementName=MainBorder}">
                                 <Border Background="{DynamicResource CardBackground}"
-                                        BorderBrush="{DynamicResource BorderColor}"
+                                        BorderBrush="{DynamicResource GlobalElementBorderBrush}"
                                         BorderThickness="1"
                                         CornerRadius="8"
                                         Padding="4">
@@ -400,19 +327,19 @@
 
                 <!-- Statistics Cards -->
                 <UniformGrid Columns="3" Height="120" Margin="20,10,20,20">
-                    <Border Background="{DynamicResource CardBackground}" Margin="5" Padding="15">
+                    <Border Background="{DynamicResource CardBackground}" Margin="5" Padding="15" BorderBrush="{DynamicResource GlobalElementBorderBrush}" BorderThickness="2" CornerRadius="8">
                         <StackPanel>
                             <TextBlock Text="TOTAL REVENUS" Foreground="{DynamicResource TextSecondary}" FontSize="12"/>
                             <TextBlock Text="{Binding TotalRevenus, StringFormat='0.00 DT'}" Foreground="#14B8A6" FontSize="24" FontWeight="Bold" Margin="0,10,0,0"/>
                         </StackPanel>
                     </Border>
-                    <Border Background="{DynamicResource CardBackground}" Margin="5" Padding="15">
+                    <Border Background="{DynamicResource CardBackground}" Margin="5" Padding="15" BorderBrush="{DynamicResource GlobalElementBorderBrush}" BorderThickness="2" CornerRadius="8">
                         <StackPanel>
                             <TextBlock Text="TOTAL DEPENSES" Foreground="{DynamicResource TextSecondary}" FontSize="12"/>
                             <TextBlock Text="{Binding TotalDepenses, StringFormat='0.00 DT'}" Foreground="#FF6B6B" FontSize="24" FontWeight="Bold" Margin="0,10,0,0"/>
                         </StackPanel>
                     </Border>
-                    <Border Background="{DynamicResource CardBackground}" Margin="5" Padding="15">
+                    <Border Background="{DynamicResource CardBackground}" Margin="5" Padding="15" BorderBrush="{DynamicResource GlobalElementBorderBrush}" BorderThickness="2" CornerRadius="8">
                         <StackPanel>
                             <TextBlock Text="SOLDE NET" Foreground="{DynamicResource TextSecondary}" FontSize="12"/>
                             <TextBlock Text="{Binding SoldeNet, StringFormat='0.00 DT'}" Foreground="#FFA500" FontSize="24" FontWeight="Bold" Margin="0,10,0,0"/>
@@ -421,7 +348,7 @@
                 </UniformGrid>
 
                 <!-- Chart -->
-                <Border Background="{DynamicResource CardBackground}" Margin="20,0,20,20" Padding="20" Height="350" CornerRadius="12">
+                <Border Background="{DynamicResource CardBackground}" Margin="20,0,20,20" Padding="20" Height="350" CornerRadius="12" BorderBrush="{DynamicResource GlobalElementBorderBrush}" BorderThickness="2">
                     <DockPanel>
                         <TextBlock DockPanel.Dock="Top" Text="Evolution des revenus et depenses (7 derniers jours)" Foreground="{DynamicResource TextPrimary}" FontSize="16" FontWeight="Bold" Margin="0,0,0,20"/>
                         <ItemsControl ItemsSource="{Binding ChartData}" VerticalAlignment="Bottom">
@@ -451,7 +378,7 @@
                 </Border>
 
                 <!-- Transactions List -->
-                <Border Background="{DynamicResource CardBackground}" Margin="20,0,20,20" Padding="0" CornerRadius="12" ClipToBounds="True">
+                <Border Background="{DynamicResource CardBackground}" Margin="20,0,20,20" Padding="0" CornerRadius="12" ClipToBounds="True" BorderBrush="{DynamicResource GlobalElementBorderBrush}" BorderThickness="2">
                     <Grid>
                         <Grid.RowDefinitions>
                             <RowDefinition Height="Auto"/>
@@ -462,7 +389,7 @@
 
                         <!-- Search Bar by Date -->
                         <Border Grid.Row="0"
-                                BorderBrush="{DynamicResource BorderColor}"
+                                BorderBrush="{DynamicResource GlobalElementBorderBrush}"
                                 BorderThickness="0,0,0,1"
                                 Padding="20,16"
                                 Background="{DynamicResource PrimaryBackground}">
@@ -473,7 +400,7 @@
                                            VerticalAlignment="Center"
                                            Margin="0,0,12,0"/>
                                 <Border Background="{DynamicResource SecondaryBackground}" 
-                                        BorderBrush="{DynamicResource BorderColor}" 
+                                        BorderBrush="{DynamicResource GlobalElementBorderBrush}" 
                                         BorderThickness="1" 
                                         CornerRadius="8">
                                     <DatePicker Style="{StaticResource FormDatePickerStyle}"
@@ -493,7 +420,7 @@
 
                         <!-- En-tête colonnes -->
                         <Border Grid.Row="1"
-                                BorderBrush="{DynamicResource BorderColor}"
+                                BorderBrush="{DynamicResource GlobalElementBorderBrush}"
                                 BorderThickness="0,0,0,1"
                                 Padding="20,14"
                                 Background="{DynamicResource PrimaryBackground}">
@@ -526,7 +453,7 @@
                                       HorizontalContentAlignment="Stretch">
                             <ItemsControl.ItemTemplate>
                                 <DataTemplate>
-                                    <Border BorderBrush="{DynamicResource BorderColor}"
+                                    <Border BorderBrush="{DynamicResource GlobalElementBorderBrush}"
                                             BorderThickness="0,0,0,1"
                                             Padding="20,16">
                                         <Border.Style>
@@ -662,8 +589,8 @@
             <Rectangle Fill="#000000" Opacity="0.65"/>
 
             <Border Background="{DynamicResource CardBackground}"
-                    BorderBrush="{DynamicResource BorderColor}"
-                    BorderThickness="1"
+                    BorderBrush="{DynamicResource GlobalElementBorderBrush}"
+                    BorderThickness="2"
                     CornerRadius="14"
                     Width="480"
                     Padding="30,26"
@@ -699,7 +626,7 @@
                                        FontSize="14" FontWeight="SemiBold"/>
                         </StackPanel>
                         <Border Background="{DynamicResource SecondaryBackground}" 
-                                BorderBrush="{DynamicResource BorderColor}" 
+                                BorderBrush="{DynamicResource GlobalElementBorderBrush}" 
                                 BorderThickness="1" 
                                 CornerRadius="8">
                             <DatePicker Style="{StaticResource FormDatePickerStyle}"

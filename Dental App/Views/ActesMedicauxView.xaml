@@ -38,16 +38,16 @@
 		<Style x:Key="SectionBorderStyle" TargetType="Border">
 			<Setter Property="Background" Value="{DynamicResource CardBackground}"/>
 			<Setter Property="CornerRadius" Value="12"/>
-			<Setter Property="BorderThickness" Value="1"/>
-			<Setter Property="BorderBrush" Value="{DynamicResource BorderColor}"/>
+			<Setter Property="BorderThickness" Value="2"/>
+			<Setter Property="BorderBrush" Value="{DynamicResource GlobalElementBorderBrush}"/>
 			<Setter Property="Padding" Value="20"/>
 		</Style>
 
 		<Style x:Key="SearchBoxStyle" TargetType="Border">
 			<Setter Property="Background" Value="{DynamicResource CardBackground}"/>
 			<Setter Property="CornerRadius" Value="8"/>
-			<Setter Property="BorderBrush" Value="{DynamicResource BorderColor}"/>
-			<Setter Property="BorderThickness" Value="1"/>
+			<Setter Property="BorderBrush" Value="{DynamicResource GlobalElementBorderBrush}"/>
+			<Setter Property="BorderThickness" Value="2"/>
 			<Setter Property="Padding" Value="12"/>
 		</Style>
 

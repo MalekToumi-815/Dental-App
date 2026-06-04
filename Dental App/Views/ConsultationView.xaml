@@ -20,8 +20,8 @@
         <Style x:Key="SearchBoxStyle" TargetType="Border">
             <Setter Property="Background" Value="{DynamicResource CardBackground}"/>
             <Setter Property="CornerRadius" Value="8"/>
-            <Setter Property="BorderBrush" Value="{DynamicResource BorderColor}"/>
-            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="BorderBrush" Value="{DynamicResource GlobalElementBorderBrush}"/>
+            <Setter Property="BorderThickness" Value="2"/>
             <Setter Property="Padding" Value="12"/>
         </Style>
 
@@ -88,8 +88,8 @@
         <Style x:Key="PaginationButtonStyle" TargetType="Button">
             <Setter Property="Background" Value="{DynamicResource SecondaryBackground}"/>
             <Setter Property="Foreground" Value="{DynamicResource TextPrimary}"/>
-            <Setter Property="BorderBrush" Value="{DynamicResource BorderColor}"/>
-            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="BorderBrush" Value="{DynamicResource GlobalElementBorderBrush}"/>
+            <Setter Property="BorderThickness" Value="2"/>
             <Setter Property="Padding" Value="12,6"/>
             <Setter Property="Cursor" Value="Hand"/>
             <Setter Property="FontSize" Value="14"/>
@@ -188,7 +188,7 @@
             <Setter Property="FontSize" Value="12"/>
             <Setter Property="Padding" Value="12,12"/>
             <Setter Property="BorderThickness" Value="0,0,0,1"/>
-            <Setter Property="BorderBrush" Value="{DynamicResource BorderColor}"/>
+            <Setter Property="BorderBrush" Value="{DynamicResource GlobalElementBorderBrush}"/>
             <Setter Property="Template">
                 <Setter.Value>
                     <ControlTemplate TargetType="DataGridColumnHeader">
@@ -241,7 +241,7 @@
                 </Grid>
             </Border>
 
-            <Border Grid.Row="1" Background="{DynamicResource CardBackground}" CornerRadius="12" BorderThickness="1" BorderBrush="{DynamicResource BorderColor}">
+            <Border Grid.Row="1" Background="{DynamicResource CardBackground}" CornerRadius="12" BorderThickness="2" BorderBrush="{DynamicResource GlobalElementBorderBrush}">
                 <ListBox ItemsSource="{Binding FilteredPatients}" SelectedItem="{Binding SelectedPatient}" Background="Transparent" BorderThickness="0"
                          ScrollViewer.VerticalScrollBarVisibility="Hidden" MaxHeight="520">
                     <ListBox.ItemContainerStyle>
@@ -301,7 +301,7 @@
                     <RowDefinition Height="*"/>
                 </Grid.RowDefinitions>
 
-                <Border Grid.Row="0" Background="{DynamicResource SecondaryBackground}" CornerRadius="10" Padding="15" Margin="0,0,0,20">
+                <Border Grid.Row="0" Background="{DynamicResource SecondaryBackground}" CornerRadius="10" Padding="15" Margin="0,0,0,20" BorderBrush="{DynamicResource GlobalElementBorderBrush}" BorderThickness="2">
                     <Grid>
                         <StackPanel>
                             <TextBlock Text="Historique des soins" FontSize="18" FontWeight="Bold" Foreground="{DynamicResource TextPrimary}"/>
@@ -313,7 +313,7 @@
                     </Grid>
                 </Border>
 
-                <Border Grid.Row="1" Background="{DynamicResource CardBackground}" CornerRadius="12" BorderThickness="1" BorderBrush="{DynamicResource BorderColor}" Padding="10">
+                <Border Grid.Row="1" Background="{DynamicResource CardBackground}" CornerRadius="12" BorderThickness="2" BorderBrush="{DynamicResource GlobalElementBorderBrush}" Padding="10">
                     <!-- Wrap DataGrid and pager inside a Grid -->
                     <Grid>
                         <Grid.RowDefinitions>

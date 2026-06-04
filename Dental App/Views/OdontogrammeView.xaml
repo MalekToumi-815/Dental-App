@@ -343,7 +343,7 @@
             </Grid.ColumnDefinitions>
 
             <!-- Dental Schema Section -->
-            <Border Grid.Column="0" Background="{DynamicResource CardBackground}" CornerRadius="12" BorderThickness="1" BorderBrush="{DynamicResource BorderColor}" Padding="20" Margin="0,0,20,0">
+            <Border Grid.Column="0" Background="{DynamicResource CardBackground}" CornerRadius="12" BorderThickness="2" BorderBrush="{DynamicResource GlobalElementBorderBrush}" Padding="20" Margin="0,0,20,0">
                 <!-- Dental Schema with Template Image -->
                 <Grid>
                     <Grid.RowDefinitions>
@@ -473,7 +473,7 @@
             </Border>
 
             <!-- Right Panel - Historiques des Actes -->
-            <Border Grid.Column="1" Background="{DynamicResource CardBackground}" CornerRadius="12" BorderThickness="1" BorderBrush="{DynamicResource BorderColor}" Padding="20">
+            <Border Grid.Column="1" Background="{DynamicResource CardBackground}" CornerRadius="12" BorderThickness="2" BorderBrush="{DynamicResource GlobalElementBorderBrush}" Padding="20">
                 <Grid>
                     <Grid.RowDefinitions>
                         <RowDefinition Height="Auto"/>

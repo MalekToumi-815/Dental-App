@@ -29,6 +29,7 @@ namespace Dental_App.ViewModels
 
         private int _currentPage = 1;
         private int _pageSize = 10;
+        private bool _hasNextPage = true;
         private DelegateCommand _nextPageCommand;
         private DelegateCommand _previousPageCommand;
 
@@ -43,7 +44,7 @@ namespace Dental_App.ViewModels
             ViewPatientCommand = new DelegateCommand<PatientDisplayRow>(ViewPatient);
             EditPatientCommand = new DelegateCommand<PatientDisplayRow>(EditPatient);
 
-            NextPageCommand = new DelegateCommand(NextPage);
+            NextPageCommand = new DelegateCommand(NextPage, () => HasNextPage);
             PreviousPageCommand = new DelegateCommand(PreviousPage, () => CurrentPage > 1);
 
             System.Diagnostics.Debug.WriteLine("PatientsViewModel: Constructor called");
@@ -66,6 +67,18 @@ namespace Dental_App.ViewModels
         {
             get => _pageSize;
             set => SetProperty(ref _pageSize, value);
+        }
+
+        public bool HasNextPage
+        {
+            get => _hasNextPage;
+            set
+            {
+                if (SetProperty(ref _hasNextPage, value))
+                {
+                    NextPageCommand.RaiseCanExecuteChanged();
+                }
+            }
         }
 
         public DelegateCommand NextPageCommand
@@ -295,6 +308,8 @@ namespace Dental_App.ViewModels
                     patients = allSearchResults.Skip((CurrentPage - 1) * PageSize).Take(PageSize).ToList();
                 }
 
+                HasNextPage = patients != null && patients.Count == PageSize;
+
                 System.Diagnostics.Debug.WriteLine($"PatientsViewModel: Retrieved {patients?.Count ?? 0} patients from database");
                 await BuildPatientRows(patients);
                 System.Diagnostics.Debug.WriteLine($"PatientsViewModel: LoadPatientsAsync completed, Patients count: {Patients?.Count ?? 0}");
@@ -338,7 +353,8 @@ namespace Dental_App.ViewModels
 
                 if (results != null)
                 {
-                    var pagedResults = results.Take(PageSize).ToList();
+                    var pagedResults = results.Skip((CurrentPage - 1) * PageSize).Take(PageSize).ToList();
+                    HasNextPage = pagedResults.Count == PageSize;
                     await BuildPatientRows(pagedResults);
                 }
             }

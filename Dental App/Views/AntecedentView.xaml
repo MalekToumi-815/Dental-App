@@ -17,8 +17,8 @@
         <Style x:Key="InputStyle" TargetType="TextBox">
             <Setter Property="Background" Value="{DynamicResource SecondaryBackground}"/>
             <Setter Property="Foreground" Value="{DynamicResource TextPrimary}"/>
-            <Setter Property="BorderBrush" Value="{DynamicResource BorderColor}"/>
-            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="BorderBrush" Value="{DynamicResource GlobalElementBorderBrush}"/>
+            <Setter Property="BorderThickness" Value="2"/>
             <Setter Property="FontSize" Value="14"/>
             <Setter Property="Height" Value="44"/>
             <Setter Property="CaretBrush" Value="{DynamicResource AccentColor}"/>
@@ -60,8 +60,8 @@
         <Style x:Key="SimpleInputStyle" TargetType="TextBox">
             <Setter Property="Background" Value="{DynamicResource SecondaryBackground}"/>
             <Setter Property="Foreground" Value="{DynamicResource TextPrimary}"/>
-            <Setter Property="BorderBrush" Value="{DynamicResource BorderColor}"/>
-            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="BorderBrush" Value="{DynamicResource GlobalElementBorderBrush}"/>
+            <Setter Property="BorderThickness" Value="2"/>
             <Setter Property="FontSize" Value="14"/>
             <Setter Property="Height" Value="44"/>
             <Setter Property="CaretBrush" Value="{DynamicResource AccentColor}"/>
@@ -73,8 +73,8 @@
         <Style x:Key="SearchBoxStyle" TargetType="Border">
             <Setter Property="Background" Value="{DynamicResource CardBackground}"/>
             <Setter Property="CornerRadius" Value="8"/>
-            <Setter Property="BorderBrush" Value="{DynamicResource BorderColor}"/>
-            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="BorderBrush" Value="{DynamicResource GlobalElementBorderBrush}"/>
+            <Setter Property="BorderThickness" Value="2"/>
             <Setter Property="Padding" Value="12"/>
         </Style>
 
@@ -161,7 +161,7 @@
 			<!-- Patient Search -->
             <StackPanel Grid.Row="2" HorizontalAlignment="Left">
                 <TextBlock Text="Chercher patient" Foreground="{DynamicResource TextSecondary}" FontSize="12" Margin="0,0,0,4"/>
-			    <Border Style="{StaticResource SearchBoxStyle}" Width="600" Padding="8">
+			    <Border Style="{StaticResource SearchBoxStyle}" Width="600" Padding="8" BorderBrush="{DynamicResource GlobalElementBorderBrush}" BorderThickness="2">
 			    	<Grid>
 					    <Grid.ColumnDefinitions>
 						    <ColumnDefinition Width="Auto"/>
@@ -217,7 +217,7 @@
             </StackPanel>
 
 			<!-- Selected Patient Info -->
-			<Border Grid.Row="4" Background="{DynamicResource CardBackground}" BorderBrush="{DynamicResource BorderColor}" BorderThickness="1" CornerRadius="8" Padding="16,12" Visibility="{Binding HasSelectedPatient, Converter={StaticResource BoolToVis}}">
+			<Border Grid.Row="4" Background="{DynamicResource CardBackground}" BorderBrush="{DynamicResource GlobalElementBorderBrush}" BorderThickness="2" CornerRadius="8" Padding="16,12" Visibility="{Binding HasSelectedPatient, Converter={StaticResource BoolToVis}}">
 				<Grid>
 					<Grid.ColumnDefinitions>
 						<ColumnDefinition Width="*"/>
@@ -236,7 +236,7 @@
 			
 
 			<!-- Antecedents Table -->
-			<Border Grid.Row="6" Background="{DynamicResource CardBackground}" BorderBrush="{DynamicResource BorderColor}" BorderThickness="1" CornerRadius="12" ClipToBounds="True" Margin="0,50,0,0">
+			<Border Grid.Row="6" Background="{DynamicResource CardBackground}" BorderBrush="{DynamicResource GlobalElementBorderBrush}" BorderThickness="2" CornerRadius="12" ClipToBounds="True" Margin="0,50,0,0">
 				<Grid>
 					<Grid.RowDefinitions>
 						<RowDefinition Height="Auto"/>
@@ -244,7 +244,7 @@
 					</Grid.RowDefinitions>
 
 					<!-- Header -->
-					<Border BorderBrush="{DynamicResource BorderColor}" BorderThickness="0,0,0,1" Padding="20,14" Background="{DynamicResource PrimaryBackground}">
+					<Border BorderBrush="{DynamicResource GlobalElementBorderBrush}" BorderThickness="0,0,0,2" Padding="20,14" Background="{DynamicResource PrimaryBackground}">
 						<Grid>
 							<Grid.ColumnDefinitions>
 								<ColumnDefinition Width="50"/>
@@ -264,7 +264,7 @@
 						<ItemsControl x:Name="AntecedentList" ItemsSource="{Binding Antecedents}" HorizontalContentAlignment="Stretch">
 							<ItemsControl.ItemTemplate>
 								<DataTemplate>
-									<Border BorderBrush="{DynamicResource BorderColor}" BorderThickness="0,0,0,1" Padding="20,16">
+									<Border BorderBrush="{DynamicResource GlobalElementBorderBrush}" BorderThickness="0,0,0,1" Padding="20,16">
 										<Border.Style>
 											<Style TargetType="Border">
 												<Setter Property="Background" Value="Transparent"/>

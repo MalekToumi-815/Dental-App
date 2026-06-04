@@ -10,80 +10,80 @@
              mc:Ignorable="d"
              Background="{DynamicResource PrimaryBackground}">
 
-	<UserControl.Resources>
-		<BooleanToVisibilityConverter x:Key="BoolToVis"/>
-		<local:InverseBooleanConverter x:Key="InverseBoolToVis"/>
-		<!-- Style TextBox avec placeholder et icone loupe -->
-		<Style x:Key="InputStyle" TargetType="TextBox">
-			<Setter Property="Background" Value="{DynamicResource SecondaryBackground}"/>
-			<Setter Property="Foreground" Value="{DynamicResource TextPrimary}"/>
-			<Setter Property="BorderBrush" Value="{DynamicResource BorderColor}"/>
-			<Setter Property="BorderThickness" Value="1"/>
-			<Setter Property="FontSize" Value="14"/>
-			<Setter Property="Height" Value="44"/>
-			<Setter Property="CaretBrush" Value="{DynamicResource AccentColor}"/>
-			<Setter Property="Padding" Value="12,0"/>
-			<Setter Property="Template">
-				<Setter.Value>
-					<ControlTemplate TargetType="TextBox">
-						<Border Background="{TemplateBinding Background}"
+    <UserControl.Resources>
+        <BooleanToVisibilityConverter x:Key="BoolToVis"/>
+        <local:InverseBooleanConverter x:Key="InverseBoolToVis"/>
+        <!-- Style TextBox avec placeholder et icone loupe -->
+        <Style x:Key="InputStyle" TargetType="TextBox">
+            <Setter Property="Background" Value="{DynamicResource SecondaryBackground}"/>
+            <Setter Property="Foreground" Value="{DynamicResource TextPrimary}"/>
+            <Setter Property="BorderBrush" Value="{DynamicResource GlobalElementBorderBrush}"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="FontSize" Value="14"/>
+            <Setter Property="Height" Value="44"/>
+            <Setter Property="CaretBrush" Value="{DynamicResource AccentColor}"/>
+            <Setter Property="Padding" Value="12,0"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="TextBox">
+                        <Border Background="{TemplateBinding Background}"
                                 BorderBrush="{TemplateBinding BorderBrush}"
                                 BorderThickness="{TemplateBinding BorderThickness}"
                                 CornerRadius="8">
-							<Grid Margin="12,0">
-								<TextBlock x:Name="Placeholder"
+                            <Grid Margin="12,0">
+                                <TextBlock x:Name="Placeholder"
                                            Text="{TemplateBinding Tag}"
                                            Foreground="{DynamicResource TextSecondary}"
                                            FontSize="{TemplateBinding FontSize}"
                                            VerticalAlignment="Center"
                                            IsHitTestVisible="False"
                                            Visibility="Collapsed"/>
-								<ScrollViewer x:Name="PART_ContentHost"
+                                <ScrollViewer x:Name="PART_ContentHost"
                                               VerticalAlignment="{TemplateBinding VerticalContentAlignment}"
                                               HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"/>
-							</Grid>
-						</Border>
-						<ControlTemplate.Triggers>
-							<!-- Afficher placeholder uniquement si le TextBox est vide -->
-							<Trigger Property="Text" Value="">
-								<Setter TargetName="Placeholder" Property="Visibility" Value="Visible"/>
-							</Trigger>
-						</ControlTemplate.Triggers>
-					</ControlTemplate>
-				</Setter.Value>
-			</Setter>
-		</Style>
+                            </Grid>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <!-- Afficher placeholder uniquement si le TextBox est vide -->
+                            <Trigger Property="Text" Value="">
+                                <Setter TargetName="Placeholder" Property="Visibility" Value="Visible"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
 
-		<!-- DatePickerTextBox style for consistent date input appearance -->
-		<Style TargetType="{x:Type DatePickerTextBox}">
-			<Setter Property="Template">
-				<Setter.Value>
-					<ControlTemplate TargetType="{x:Type DatePickerTextBox}">
-						<ScrollViewer x:Name="PART_ContentHost" 
+        <!-- DatePickerTextBox style for consistent date input appearance -->
+        <Style TargetType="{x:Type DatePickerTextBox}">
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="{x:Type DatePickerTextBox}">
+                        <ScrollViewer x:Name="PART_ContentHost" 
                                       Focusable="False" 
                                       HorizontalContentAlignment="{TemplateBinding HorizontalContentAlignment}" 
                                       VerticalContentAlignment="{TemplateBinding VerticalContentAlignment}" />
-					</ControlTemplate>
-				</Setter.Value>
-			</Setter>
-		</Style>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
 
-		<!-- FormDatePickerStyle copied from ConsultationDialogView for unified styling -->
-		<Style x:Key="FormDatePickerStyle" TargetType="DatePicker">
-			<Setter Property="Background" Value="Transparent"/>
-			<Setter Property="Foreground" Value="{DynamicResource TextPrimary}"/>
-			<Setter Property="IsTodayHighlighted" Value="True"/>
-			<Setter Property="SelectedDateFormat" Value="Short"/>
-			<Setter Property="Template">
-				<Setter.Value>
-					<ControlTemplate TargetType="DatePicker">
-						<Grid x:Name="DatePickerRoot">
-							<Grid.ColumnDefinitions>
-								<ColumnDefinition Width="*"/>
-								<ColumnDefinition Width="Auto"/>
-							</Grid.ColumnDefinitions>
+        <!-- FormDatePickerStyle copied from ConsultationDialogView for unified styling -->
+        <Style x:Key="FormDatePickerStyle" TargetType="DatePicker">
+            <Setter Property="Background" Value="Transparent"/>
+            <Setter Property="Foreground" Value="{DynamicResource TextPrimary}"/>
+            <Setter Property="IsTodayHighlighted" Value="True"/>
+            <Setter Property="SelectedDateFormat" Value="Short"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="DatePicker">
+                        <Grid x:Name="DatePickerRoot">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="Auto"/>
+                            </Grid.ColumnDefinitions>
 
-							<DatePickerTextBox x:Name="PART_TextBox"
+                            <DatePickerTextBox x:Name="PART_TextBox"
                                                Grid.Column="0"
                                                Focusable="{TemplateBinding Focusable}"
                                                HorizontalContentAlignment="Stretch"
@@ -96,7 +96,7 @@
                                                VerticalAlignment="Center"
                                                CaretBrush="{DynamicResource AccentColor}"/>
 
-							<Button Grid.Column="1"
+                            <Button Grid.Column="1"
                                     x:Name="PART_Button"
                                     Background="Transparent"
                                     BorderThickness="0"
@@ -116,7 +116,7 @@
                                    IsOpen="{Binding IsOpen, RelativeSource={RelativeSource TemplatedParent}}"
                                    PopupAnimation="Fade">
                                 <Border Background="{DynamicResource CardBackground}"
-                                        BorderBrush="{DynamicResource BorderColor}"
+                                        BorderBrush="{DynamicResource GlobalElementBorderBrush}"
                                         BorderThickness="1"
                                         CornerRadius="6"
                                         Margin="0,5,0,0">
@@ -130,89 +130,89 @@
                         </Grid>
                     </ControlTemplate>
                 </Setter.Value>
-			</Setter>
-		</Style>
+            </Setter>
+        </Style>
 
-		<!-- Bouton Teal -->
-		<Style x:Key="TealBtn" TargetType="Button">
-			<Setter Property="Background" Value="{DynamicResource AccentColor}"/>
-			<Setter Property="Foreground" Value="{DynamicResource PrimaryBackground}"/>
-			<Setter Property="FontWeight" Value="SemiBold"/>
-			<Setter Property="FontSize" Value="14"/>
-			<Setter Property="BorderThickness" Value="0"/>
-			<Setter Property="Cursor" Value="Hand"/>
-			<Setter Property="Template">
-				<Setter.Value>
-					<ControlTemplate TargetType="Button">
-						<Border x:Name="Bd"
+        <!-- Bouton Teal -->
+        <Style x:Key="TealBtn" TargetType="Button">
+            <Setter Property="Background" Value="{DynamicResource AccentColor}"/>
+            <Setter Property="Foreground" Value="{DynamicResource PrimaryBackground}"/>
+            <Setter Property="FontWeight" Value="SemiBold"/>
+            <Setter Property="FontSize" Value="14"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border x:Name="Bd"
                                 Background="{TemplateBinding Background}"
                                 CornerRadius="8"
                                 Padding="{TemplateBinding Padding}">
-							<ContentPresenter HorizontalAlignment="Center"
+                            <ContentPresenter HorizontalAlignment="Center"
                                               VerticalAlignment="Center"/>
-						</Border>
-						<ControlTemplate.Triggers>
-							<Trigger Property="IsMouseOver" Value="True">
-								<Setter TargetName="Bd" Property="Opacity" Value="0.8"/>
-							</Trigger>
-						</ControlTemplate.Triggers>
-					</ControlTemplate>
-				</Setter.Value>
-			</Setter>
-		</Style>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="Bd" Property="Opacity" Value="0.8"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
 
-		<!-- Bouton icone -->
-		<Style x:Key="IconBtn" TargetType="Button">
-			<Setter Property="Background" Value="Transparent"/>
-			<Setter Property="BorderThickness" Value="0"/>
-			<Setter Property="Cursor" Value="Hand"/>
-			<Setter Property="Width" Value="32"/>
-			<Setter Property="Height" Value="32"/>
-			<Setter Property="Template">
-				<Setter.Value>
-					<ControlTemplate TargetType="Button">
-						<Border x:Name="Bd"
+        <!-- Bouton icone -->
+        <Style x:Key="IconBtn" TargetType="Button">
+            <Setter Property="Background" Value="Transparent"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="Width" Value="32"/>
+            <Setter Property="Height" Value="32"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border x:Name="Bd"
                                 Background="{TemplateBinding Background}"
                                 CornerRadius="6">
-							<ContentPresenter HorizontalAlignment="Center"
+                            <ContentPresenter HorizontalAlignment="Center"
                                               VerticalAlignment="Center"/>
-						</Border>
-						<ControlTemplate.Triggers>
-							<Trigger Property="IsMouseOver" Value="True">
-								<Setter TargetName="Bd" Property="Background" Value="{DynamicResource CardBackground}"/>
-							</Trigger>
-						</ControlTemplate.Triggers>
-					</ControlTemplate>
-				</Setter.Value>
-			</Setter>
-		</Style>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="Bd" Property="Background" Value="{DynamicResource CardBackground}"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
 
         <Style x:Key="SearchBoxStyle" TargetType="Border">
             <Setter Property="Background" Value="{DynamicResource CardBackground}"/>
             <Setter Property="CornerRadius" Value="8"/>
-            <Setter Property="BorderBrush" Value="{DynamicResource BorderColor}"/>
+            <Setter Property="BorderBrush" Value="{DynamicResource GlobalElementBorderBrush}"/>
             <Setter Property="BorderThickness" Value="1"/>
             <Setter Property="Padding" Value="12"/>
         </Style>
 
-		<Style x:Key="SimpleInputStyle" TargetType="TextBox">
-			<Setter Property="Background" Value="{DynamicResource SecondaryBackground}"/>
-			<Setter Property="Foreground" Value="{DynamicResource TextPrimary}"/>
-			<Setter Property="BorderBrush" Value="{DynamicResource BorderColor}"/>
-			<Setter Property="BorderThickness" Value="1"/>
-			<Setter Property="FontSize" Value="14"/>
-			<Setter Property="Height" Value="44"/>
-			<Setter Property="CaretBrush" Value="{DynamicResource AccentColor}"/>
-			<Setter Property="Padding" Value="12,0"/>
-			<Setter Property="VerticalContentAlignment" Value="Center"/>
-			<Setter Property="HorizontalContentAlignment" Value="Left"/>
-		</Style>
+        <Style x:Key="SimpleInputStyle" TargetType="TextBox">
+            <Setter Property="Background" Value="{DynamicResource SecondaryBackground}"/>
+            <Setter Property="Foreground" Value="{DynamicResource TextPrimary}"/>
+            <Setter Property="BorderBrush" Value="{DynamicResource GlobalElementBorderBrush}"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="FontSize" Value="14"/>
+            <Setter Property="Height" Value="44"/>
+            <Setter Property="CaretBrush" Value="{DynamicResource AccentColor}"/>
+            <Setter Property="Padding" Value="12,0"/>
+            <Setter Property="VerticalContentAlignment" Value="Center"/>
+            <Setter Property="HorizontalContentAlignment" Value="Left"/>
+        </Style>
 
         <!-- Pagination Button Style -->
         <Style x:Key="PaginationButtonStyle" TargetType="Button">
             <Setter Property="Background" Value="{DynamicResource SecondaryBackground}"/>
             <Setter Property="Foreground" Value="{DynamicResource TextPrimary}"/>
-            <Setter Property="BorderBrush" Value="{DynamicResource BorderColor}"/>
+            <Setter Property="BorderBrush" Value="{DynamicResource GlobalElementBorderBrush}"/>
             <Setter Property="BorderThickness" Value="1"/>
             <Setter Property="Padding" Value="12,6"/>
             <Setter Property="Cursor" Value="Hand"/>
@@ -245,57 +245,57 @@
                 </Setter.Value>
             </Setter>
         </Style>
-	</UserControl.Resources>
+    </UserControl.Resources>
 
-	<Grid>
-		<!-- CONTENU PRINCIPAL -->
-		<Grid Margin="32,28">
-			<Grid.RowDefinitions>
-				<RowDefinition Height="Auto"/>
-				<RowDefinition Height="24"/>
-				<RowDefinition Height="Auto"/>
-				<RowDefinition Height="16"/>
-				<RowDefinition Height="*"/>
-				<RowDefinition Height="Auto"/>
-			</Grid.RowDefinitions>
+    <Grid>
+        <!-- CONTENU PRINCIPAL -->
+        <Grid Margin="32,28">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="24"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="16"/>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="Auto"/>
+            </Grid.RowDefinitions>
 
-			<!-- En-tete -->
-			<Grid Grid.Row="0">
-				<Grid.ColumnDefinitions>
-					<ColumnDefinition Width="*"/>
-					<ColumnDefinition Width="Auto"/>
-				</Grid.ColumnDefinitions>
+            <!-- En-tete -->
+            <Grid Grid.Row="0">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
 
-				<TextBlock Text="Commandes Prothesistes"
+                <TextBlock Text="Commandes Prothesistes"
                            Foreground="{DynamicResource TextPrimary}"
                            FontSize="28" FontWeight="Bold"
                            VerticalAlignment="Center"/>
 
-				<Button Grid.Column="1"
+                <Button Grid.Column="1"
                         Style="{StaticResource TealBtn}"
                         Padding="20,0" Height="42"
                         Command="{Binding OpenModalCommand}">
-					<StackPanel Orientation="Horizontal" VerticalAlignment="Center">
-						<TextBlock Text="+"
+                    <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                        <TextBlock Text="+"
                                    FontSize="20" FontWeight="Bold"
                                    Margin="0,0,8,2"
                                    VerticalAlignment="Center"/>
-						<TextBlock Text="Nouvelle Commande"
+                        <TextBlock Text="Nouvelle Commande"
                                    FontSize="14" FontWeight="SemiBold"
                                    VerticalAlignment="Center"/>
-					</StackPanel>
-				</Button>
-			</Grid>
+                    </StackPanel>
+                </Button>
+            </Grid>
 
-			<!-- Barre de recherche -->
-			<Border Grid.Row="2" Style="{StaticResource SearchBoxStyle}" Width="600" HorizontalAlignment="Left" Padding="8" Margin="0,0,0,8">
-				<Grid>
+            <!-- Barre de recherche -->
+            <Border Grid.Row="2" Style="{StaticResource SearchBoxStyle}" Width="600" HorizontalAlignment="Left" Padding="8" Margin="0,0,0,8" BorderThickness="2">
+                <Grid>
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="Auto"/>
                         <ColumnDefinition Width="*"/>
                         <ColumnDefinition Width="Auto"/>
                     </Grid.ColumnDefinitions>
-                    
+
                     <Path Data="M9.5,2A7.5,7.5 0 0,1 17,9.5A7.5,7.5 0 0,1 9.5,17A7.5,7.5 0 0,1 2,9.5A7.5,7.5 0 0,1 9.5,2M9.5,4A5.5,5.5 0 0,0 4,9.5A5.5,5.5 0 0,0 9.5,15A5.5,5.5 0 0,0 15,9.5A5.5,5.5 0 0,0 9.5,4M14.5,13L21,19.5L19.5,21L13,14.5z"
                           Fill="{DynamicResource TextSecondary}" Stretch="Uniform" Width="18" Margin="0,0,10,0" VerticalAlignment="Center"/>
 
@@ -303,143 +303,143 @@
                 </Grid>
             </Border>
 
-			<!-- Tableau -->
-			<Border Grid.Row="4"
+            <!-- Tableau -->
+            <Border Grid.Row="4"
                     Background="{DynamicResource CardBackground}"
-                    BorderBrush="{DynamicResource BorderColor}"
+                    BorderBrush="{DynamicResource GlobalElementBorderBrush}"
                     BorderThickness="1"
                     CornerRadius="12"
                     ClipToBounds="True">
-				<Grid>
-					<Grid.RowDefinitions>
-						<RowDefinition Height="Auto"/>
-						<RowDefinition Height="*"/>
-					</Grid.RowDefinitions>
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="*"/>
+                    </Grid.RowDefinitions>
 
-					<!-- En-tete colonnes -->
-					<Border BorderBrush="{DynamicResource BorderColor}"
+                    <!-- En-tete colonnes -->
+                    <Border BorderBrush="{DynamicResource GlobalElementBorderBrush}"
                             BorderThickness="0,0,0,1"
                             Padding="20,14"
                             Background="{DynamicResource PrimaryBackground}">
-						<Grid>
-							<Grid.ColumnDefinitions>
-								<ColumnDefinition Width="50"/>
-								<ColumnDefinition Width="1.5*"/>
-								<ColumnDefinition Width="120"/>
-								<ColumnDefinition Width="2*"/>
-								<ColumnDefinition Width="130"/>
-								<ColumnDefinition Width="100"/>
-							</Grid.ColumnDefinitions>
-							<TextBlock Grid.Column="0" Text="#"
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="50"/>
+                                <ColumnDefinition Width="1.5*"/>
+                                <ColumnDefinition Width="120"/>
+                                <ColumnDefinition Width="2*"/>
+                                <ColumnDefinition Width="130"/>
+                                <ColumnDefinition Width="100"/>
+                            </Grid.ColumnDefinitions>
+                            <TextBlock Grid.Column="0" Text="#"
                                        Foreground="{DynamicResource TextSecondary}"
                                        FontSize="12" FontWeight="SemiBold"/>
-							<TextBlock Grid.Column="1" Text="PROTHESISTE"
+                            <TextBlock Grid.Column="1" Text="PROTHESISTE"
                                        Foreground="{DynamicResource TextSecondary}"
                                        FontSize="12" FontWeight="SemiBold"/>
-							<TextBlock Grid.Column="2" Text="DATE"
+                            <TextBlock Grid.Column="2" Text="DATE"
                                        Foreground="{DynamicResource TextSecondary}"
                                        FontSize="12" FontWeight="SemiBold"/>
-							<TextBlock Grid.Column="3" Text="ACHATS"
+                            <TextBlock Grid.Column="3" Text="ACHATS"
                                        Foreground="{DynamicResource TextSecondary}"
                                        FontSize="12" FontWeight="SemiBold"/>
-							<TextBlock Grid.Column="4" Text="SOMME PAYEE"
+                            <TextBlock Grid.Column="4" Text="SOMME PAYEE"
                                        Foreground="{DynamicResource TextSecondary}"
                                        FontSize="12" FontWeight="SemiBold"/>
-							<TextBlock Grid.Column="5" Text="ACTIONS"
+                            <TextBlock Grid.Column="5" Text="ACTIONS"
                                        Foreground="{DynamicResource TextSecondary}"
                                        FontSize="12" FontWeight="SemiBold"
                                        HorizontalAlignment="Center"/>
-						</Grid>
-					</Border>
+                        </Grid>
+                    </Border>
 
-					<!-- Lignes -->
-					<ScrollViewer Grid.Row="1"
+                    <!-- Lignes -->
+                    <ScrollViewer Grid.Row="1"
                                   VerticalScrollBarVisibility="Auto"
                                   HorizontalScrollBarVisibility="Disabled">
-						<ItemsControl ItemsSource="{Binding Commandes}"
+                        <ItemsControl ItemsSource="{Binding Commandes}"
                                       HorizontalContentAlignment="Stretch">
-							<ItemsControl.ItemTemplate>
-								<DataTemplate>
-									<Border BorderBrush="{DynamicResource BorderColor}"
+                            <ItemsControl.ItemTemplate>
+                                <DataTemplate>
+                                    <Border BorderBrush="{DynamicResource GlobalElementBorderBrush}"
                                             BorderThickness="0,0,0,1"
                                             Padding="20,16">
-										<Border.Style>
-											<Style TargetType="Border">
-												<Setter Property="Background" Value="Transparent"/>
-												<Style.Triggers>
-													<Trigger Property="IsMouseOver" Value="True">
-														<Setter Property="Background" Value="{DynamicResource SecondaryBackground}"/>
-													</Trigger>
-												</Style.Triggers>
-											</Style>
-										</Border.Style>
-										<Grid>
-											<Grid.ColumnDefinitions>
-												<ColumnDefinition Width="50"/>
-												<ColumnDefinition Width="1.5*"/>
-												<ColumnDefinition Width="120"/>
-												<ColumnDefinition Width="2*"/>
-												<ColumnDefinition Width="130"/>
-												<ColumnDefinition Width="100"/>
-											</Grid.ColumnDefinitions>
+                                        <Border.Style>
+                                            <Style TargetType="Border">
+                                                <Setter Property="Background" Value="Transparent"/>
+                                                <Style.Triggers>
+                                                    <Trigger Property="IsMouseOver" Value="True">
+                                                        <Setter Property="Background" Value="{DynamicResource SecondaryBackground}"/>
+                                                    </Trigger>
+                                                </Style.Triggers>
+                                            </Style>
+                                        </Border.Style>
+                                        <Grid>
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="50"/>
+                                                <ColumnDefinition Width="1.5*"/>
+                                                <ColumnDefinition Width="120"/>
+                                                <ColumnDefinition Width="2*"/>
+                                                <ColumnDefinition Width="130"/>
+                                                <ColumnDefinition Width="100"/>
+                                            </Grid.ColumnDefinitions>
 
-											<TextBlock Grid.Column="0"
+                                            <TextBlock Grid.Column="0"
                                                        Text="{Binding Id}"
                                                        Foreground="{DynamicResource TextSecondary}"
                                                        FontSize="14"
                                                        VerticalAlignment="Center"/>
 
-											<TextBlock Grid.Column="1"
+                                            <TextBlock Grid.Column="1"
                                                        Text="{Binding ProthesisteNom}"
                                                        Foreground="{DynamicResource TextPrimary}"
                                                        FontWeight="SemiBold"
                                                        FontSize="14"
                                                        VerticalAlignment="Center"/>
 
-											<TextBlock Grid.Column="2"
+                                            <TextBlock Grid.Column="2"
                                                        Text="{Binding Date, StringFormat='dd/MM/yyyy'}"
                                                        Foreground="{DynamicResource TextSecondary}"
                                                        FontSize="14"
                                                        VerticalAlignment="Center"/>
 
-											<TextBlock Grid.Column="3"
+                                            <TextBlock Grid.Column="3"
                                                        Text="{Binding Achats}"
                                                        Foreground="{DynamicResource TextPrimary}"
                                                        TextWrapping="Wrap"
                                                        FontSize="14"
                                                        VerticalAlignment="Center"/>
 
-											<TextBlock Grid.Column="4"
+                                            <TextBlock Grid.Column="4"
                                                        Text="{Binding SommePayee, StringFormat='{}{0} DT'}"
                                                        Foreground="{DynamicResource AccentColor}"
                                                        FontWeight="Bold"
                                                        FontSize="14"
                                                        VerticalAlignment="Center"/>
 
-											<StackPanel Grid.Column="5"
+                                            <StackPanel Grid.Column="5"
                                                         Orientation="Horizontal"
                                                         HorizontalAlignment="Center"
                                                         VerticalAlignment="Center">
-												<!-- Modifier -->
-												<Button Style="{StaticResource IconBtn}"
+                                                <!-- Modifier -->
+                                                <Button Style="{StaticResource IconBtn}"
                                                         ToolTip="Modifier"
                                                         Command="{Binding DataContext.EditCommand,
                                                             RelativeSource={RelativeSource AncestorType=ItemsControl}}"
                                                         CommandParameter="{Binding}">
-													<Path Data="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75zM20.71 7.04a1 1 0 000-1.41l-2.34-2.34a1 1 0 00-1.41 0l-1.83 1.83 3.75 3.75z"
+                                                    <Path Data="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75zM20.71 7.04a1 1 0 000-1.41l-2.34-2.34a1 1 0 00-1.41 0l-1.83 1.83 3.75 3.75z"
                                                           Fill="{DynamicResource AccentColor}"
                                                           Width="15" Height="15"
                                                           Stretch="Uniform"/>
-												</Button>
-											</StackPanel>
-										</Grid>
-									</Border>
-								</DataTemplate>
-							</ItemsControl.ItemTemplate>
-						</ItemsControl>
-					</ScrollViewer>
-				</Grid>
-			</Border>
+                                                </Button>
+                                            </StackPanel>
+                                        </Grid>
+                                    </Border>
+                                </DataTemplate>
+                            </ItemsControl.ItemTemplate>
+                        </ItemsControl>
+                    </ScrollViewer>
+                </Grid>
+            </Border>
 
             <!-- Pagination Footer -->
             <Grid Grid.Row="5" Margin="0,20,0,0">
@@ -466,131 +466,131 @@
                         Style="{StaticResource PaginationButtonStyle}"
                         Command="{Binding NextPageCommand}"/>
             </Grid>
-		</Grid>
+        </Grid>
 
-		<!-- MODAL OVERLAY -->
-		<Grid Visibility="{Binding IsModalOpen, Converter={StaticResource BoolToVis}}">
+        <!-- MODAL OVERLAY -->
+        <Grid Visibility="{Binding IsModalOpen, Converter={StaticResource BoolToVis}}">
 
-			<!-- Fond sombre -->
-			<Rectangle Fill="#000000" Opacity="0.65"/>
+            <!-- Fond sombre -->
+            <Rectangle Fill="#000000" Opacity="0.65"/>
 
-			<!-- Carte modale -->
-			<Border Background="{DynamicResource CardBackground}"
-                    BorderBrush="{DynamicResource BorderColor}"
+            <!-- Carte modale -->
+            <Border Background="{DynamicResource CardBackground}"
+                    BorderBrush="{DynamicResource GlobalElementBorderBrush}"
                     BorderThickness="1"
                     CornerRadius="14"
                     Width="520"
                     Padding="30,26"
                     HorizontalAlignment="Center"
                     VerticalAlignment="Center">
-				<StackPanel>
+                <StackPanel>
 
-					<!-- Titre + bouton fermer -->
-					<Grid Margin="0,0,0,22">
-						<TextBlock Text="{Binding ModalTitle}"
+                    <!-- Titre + bouton fermer -->
+                    <Grid Margin="0,0,0,22">
+                        <TextBlock Text="{Binding ModalTitle}"
                                    Foreground="{DynamicResource TextPrimary}"
                                    FontSize="20" FontWeight="Bold"
                                    VerticalAlignment="Center"/>
-						<Button HorizontalAlignment="Right"
+                        <Button HorizontalAlignment="Right"
                                 Style="{StaticResource IconBtn}"
                                 Command="{Binding CloseModalCommand}"
                                 ToolTip="Fermer">
-							<TextBlock Text="X"
+                            <TextBlock Text="X"
                                        Foreground="{DynamicResource TextSecondary}"
                                        FontSize="14"
                                        HorizontalAlignment="Center"
                                        VerticalAlignment="Center"/>
-						</Button>
-					</Grid>
+                        </Button>
+                    </Grid>
 
-					<!-- Prothesiste - Recherche Predictive avec Icone Loupe -->
-					<StackPanel Margin="0,0,0,16">
-						<StackPanel Orientation="Horizontal" Margin="0,0,0,8">
-							<TextBlock Text="Prothesiste (Nom)"
+                    <!-- Prothesiste - Recherche Predictive avec Icone Loupe -->
+                    <StackPanel Margin="0,0,0,16">
+                        <StackPanel Orientation="Horizontal" Margin="0,0,0,8">
+                            <TextBlock Text="Prothesiste (Nom)"
                                        Foreground="{DynamicResource TextPrimary}"
                                        FontSize="14" FontWeight="SemiBold"/>
-							<TextBlock Text=" *"
+                            <TextBlock Text=" *"
                                        Foreground="#EF4444"
                                        FontSize="14" FontWeight="SemiBold"/>
-						</StackPanel>
+                        </StackPanel>
 
-						<!-- TextBox de recherche avec icone loupe -->
-						<Grid>
-							<Grid.RowDefinitions>
-								<RowDefinition Height="Auto"/>
-								<RowDefinition Height="Auto"/>
-							</Grid.RowDefinitions>
+                        <!-- TextBox de recherche avec icone loupe -->
+                        <Grid>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="Auto"/>
+                            </Grid.RowDefinitions>
 
-							<TextBox Grid.Row="0"
+                            <TextBox Grid.Row="0"
                                      Style="{StaticResource SimpleInputStyle}"
                                      Text="{Binding ProthesisteSearchViewModel.SearchText, UpdateSourceTrigger=PropertyChanged}"/>
 
-							<!-- ListBox des suggestions -->
-							<ListBox Grid.Row="1"
+                            <!-- ListBox des suggestions -->
+                            <ListBox Grid.Row="1"
                                      ItemsSource="{Binding ProthesisteSearchViewModel.SuggestedProthesistes}"
                                      SelectedItem="{Binding ProthesisteSearchViewModel.SelectedProthesiste, UpdateSourceTrigger=PropertyChanged}"
                                      Background="{DynamicResource SecondaryBackground}"
-                                     BorderBrush="{DynamicResource BorderColor}"
+                                     BorderBrush="{DynamicResource GlobalElementBorderBrush}"
                                      BorderThickness="1,0,1,1"
                                      Foreground="{DynamicResource TextPrimary}"
                                      MaxHeight="150"
                                      Margin="0,0,0,0"
                                      Visibility="{Binding ProthesisteSearchViewModel.IsSuggestionsVisible, Converter={StaticResource BoolToVis}}">
-								<ListBox.ItemTemplate>
-									<DataTemplate>
-										<StackPanel Margin="8,6">
-											<TextBlock Text="{Binding Nom}"
+                                <ListBox.ItemTemplate>
+                                    <DataTemplate>
+                                        <StackPanel Margin="8,6">
+                                            <TextBlock Text="{Binding Nom}"
                                                        FontWeight="SemiBold"
                                                        Foreground="{DynamicResource TextPrimary}"/>
-											<TextBlock Text="{Binding Tel, StringFormat='Tel: {0}'}"
+                                            <TextBlock Text="{Binding Tel, StringFormat='Tel: {0}'}"
                                                        FontSize="11"
                                                        Foreground="{DynamicResource TextSecondary}"/>
-										</StackPanel>
-									</DataTemplate>
-								</ListBox.ItemTemplate>
-							</ListBox>
-						</Grid>
+                                        </StackPanel>
+                                    </DataTemplate>
+                                </ListBox.ItemTemplate>
+                            </ListBox>
+                        </Grid>
 
-						<!-- Bouton pour effacer la recherche -->
-						<Button Content="Effacer"
+                        <!-- Bouton pour effacer la recherche -->
+                        <Button Content="Effacer"
                                 Style="{StaticResource TealBtn}"
                                 Height="32"
                                 FontSize="12"
                                 Margin="0,8,0,0"
                                 Padding="8,0"
                                 Command="{Binding ProthesisteSearchViewModel.ClearSearchCommand}"/>
-					</StackPanel>
+                    </StackPanel>
 
-					<!-- Date avec Icone Calendrier -->
-					<StackPanel Margin="0,0,0,16">
-						<StackPanel Orientation="Horizontal" Margin="0,0,0,8">
-							<TextBlock Text="Date"
+                    <!-- Date avec Icone Calendrier -->
+                    <StackPanel Margin="0,0,0,16">
+                        <StackPanel Orientation="Horizontal" Margin="0,0,0,8">
+                            <TextBlock Text="Date"
                                        Foreground="{DynamicResource TextPrimary}"
                                        FontSize="14" FontWeight="SemiBold"/>
-							<TextBlock Text=" *"
+                            <TextBlock Text=" *"
                                        Foreground="#EF4444"
                                        FontSize="14" FontWeight="SemiBold"/>
-						</StackPanel>
+                        </StackPanel>
                         <Border Background="{DynamicResource SecondaryBackground}" 
-                                BorderBrush="{DynamicResource BorderColor}" 
+                                BorderBrush="{DynamicResource GlobalElementBorderBrush}" 
                                 BorderThickness="1" 
                                 CornerRadius="8">
                             <DatePicker Style="{StaticResource FormDatePickerStyle}"
                                         SelectedDate="{Binding NewDate, UpdateSourceTrigger=PropertyChanged}"
                                         ToolTip="Cliquez pour sélectionner une date"/>
                         </Border>
-					</StackPanel>
+                    </StackPanel>
 
-					<!-- Details Achats -->
-					<StackPanel Margin="0,0,0,16">
+                    <!-- Details Achats -->
+                    <StackPanel Margin="0,0,0,16">
                         <StackPanel Orientation="Horizontal" Margin="0,0,0,8">
-						<TextBlock Text="Details Achats"
-                                   Foreground="{DynamicResource TextPrimary}"
-                                   FontSize="14" FontWeight="SemiBold"
-                                   Margin="0,0,0,8"/>
-                        <TextBlock Text=" *"
-							Foreground="#EF4444"
-							FontSize="14" FontWeight="SemiBold"/>
+                            <TextBlock Text="Details Achats"
+                                       Foreground="{DynamicResource TextPrimary}"
+                                       FontSize="14" FontWeight="SemiBold"
+                                       Margin="0,0,0,8"/>
+                            <TextBlock Text=" *"
+                                       Foreground="#EF4444"
+                                       FontSize="14" FontWeight="SemiBold"/>
                         </StackPanel>
                         <TextBox Style="{StaticResource InputStyle}"
                                  Text="{Binding NewAchats, UpdateSourceTrigger=PropertyChanged}"
@@ -600,36 +600,35 @@
                                  VerticalScrollBarVisibility="Auto"
                                  VerticalContentAlignment="Top"
                                  HorizontalContentAlignment="Left"/>
-					</StackPanel>
+                    </StackPanel>
 
-					<!-- Somme Payee -->
-					<StackPanel Margin="0,0,0,24">
-						<StackPanel Orientation="Horizontal" Margin="0,0,0,8">
-							<TextBlock Text="Somme Payee (DT)"
+                    <!-- Somme Payee -->
+                    <StackPanel Margin="0,0,0,24">
+                        <StackPanel Orientation="Horizontal" Margin="0,0,0,8">
+                            <TextBlock Text="Somme Payee (DT)"
                                        Foreground="{DynamicResource TextPrimary}"
                                        FontSize="14" FontWeight="SemiBold"
                                        Margin="0,0,0,8"/>
-							<TextBlock Text=" *"
+                            <TextBlock Text=" *"
                                        Foreground="#EF4444"
                                        FontSize="14" FontWeight="SemiBold"/>
-						</StackPanel>
-						<TextBox Style="{StaticResource SimpleInputStyle}"
+                        </StackPanel>
+                        <TextBox Style="{StaticResource SimpleInputStyle}"
                                  Text="{Binding NewSommePayee, UpdateSourceTrigger=PropertyChanged}"
                                  TextWrapping="Wrap"
                                  AcceptsReturn="True"
                                  VerticalScrollBarVisibility="Auto"/>
-					</StackPanel>
+                    </StackPanel>
 
-					<!-- Bouton Enregistrer -->
-					<Button Content="Enregistrer"
+                    <!-- Bouton Enregistrer -->
+                    <Button Content="Enregistrer"
                             Style="{StaticResource TealBtn}"
                             Height="46"
                             FontSize="15"
                             FontWeight="SemiBold"
                             Command="{Binding SaveCommand}"/>
-				</StackPanel>
-			</Border>
-		</Grid>
-
-	</Grid>
+                </StackPanel>
+            </Border>
+        </Grid>
+    </Grid>
 </UserControl>

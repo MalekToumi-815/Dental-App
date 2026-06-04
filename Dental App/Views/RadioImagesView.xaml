@@ -135,7 +135,7 @@
             <!-- Added label above the search box indicating search criteria -->
             <StackPanel Margin="0,0,0,15">
                 <TextBlock Text="Recherche (nom ou tel)" Foreground="{DynamicResource TextSecondary}" FontSize="12" Margin="4,0,0,6"/>
-                <Border Background="{DynamicResource CardBackground}" CornerRadius="8" BorderBrush="{DynamicResource BorderColor}" BorderThickness="1" Padding="12">
+                <Border Background="{DynamicResource CardBackground}" CornerRadius="8" BorderBrush="{DynamicResource GlobalElementBorderBrush}" BorderThickness="2" Padding="12">
                     <Grid>
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="Auto"/>
@@ -151,7 +151,7 @@
             </StackPanel>
 
             <!-- Patient List (ListBox styled exactly like ConsultationView) -->
-            <Border Grid.Row="1" Background="{DynamicResource CardBackground}" CornerRadius="12" BorderThickness="1" BorderBrush="{DynamicResource BorderColor}">
+            <Border Grid.Row="1" Background="{DynamicResource CardBackground}" CornerRadius="12" BorderThickness="2" BorderBrush="{DynamicResource GlobalElementBorderBrush}">
                 <ListBox ItemsSource="{Binding Patients}" SelectedItem="{Binding SelectedPatient}" Background="Transparent" BorderThickness="0"
                          ScrollViewer.VerticalScrollBarVisibility="Hidden" MaxHeight="520">
                     <!-- ADD EVENT TRIGGER FOR SELECTION CHANGED INSTEAD OF BUTTON CLICK -->
