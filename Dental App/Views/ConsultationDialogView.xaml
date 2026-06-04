@@ -20,8 +20,8 @@
         <Style x:Key="DialogContainerStyle" TargetType="Border">
             <Setter Property="Background" Value="{DynamicResource CardBackground}"/>
             <Setter Property="CornerRadius" Value="12"/>
-            <Setter Property="BorderBrush" Value="{DynamicResource BorderColor}"/>
-            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="BorderBrush" Value="{DynamicResource GlobalElementBorderBrush}"/>
+            <Setter Property="BorderThickness" Value="2"/>
             <Setter Property="Padding" Value="30"/>
             <Setter Property="MaxWidth" Value="600"/>
         </Style>

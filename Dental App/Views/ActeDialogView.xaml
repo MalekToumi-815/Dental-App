@@ -77,8 +77,8 @@
 	</UserControl.Resources>
 
 	<Border Background="{DynamicResource CardBackground}"
-            BorderBrush="{DynamicResource BorderColor}"
-            BorderThickness="1"
+            BorderBrush="{DynamicResource GlobalElementBorderBrush}"
+            BorderThickness="2"
             CornerRadius="12" Padding="30">
 
 		<StackPanel VerticalAlignment="Top">

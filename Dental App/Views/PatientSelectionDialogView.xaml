@@ -104,7 +104,7 @@
         </Grid.RowDefinitions>
 
         <!-- Header Section -->
-        <Border Grid.Row="0" Background="{DynamicResource CardBackground}" Padding="20,14">
+        <Border Grid.Row="0" Background="{DynamicResource CardBackground}" Padding="20,14" BorderBrush="{DynamicResource GlobalElementBorderBrush}" BorderThickness="2">
             <StackPanel>
                 <TextBlock Text="Selectionner un Patient" 
                            FontSize="18" 
@@ -143,7 +143,7 @@
         </StackPanel>
 
         <!-- Patient List Container -->
-        <Border Grid.Row="2" Background="{DynamicResource CardBackground}" Margin="20,0,20,12" CornerRadius="8" BorderThickness="1" BorderBrush="{DynamicResource BorderColor}">
+        <Border Grid.Row="2" Background="{DynamicResource CardBackground}" Margin="20,0,20,12" CornerRadius="8" BorderThickness="1" BorderBrush="{DynamicResource GlobalElementBorderBrush}">
             <Grid>
                 <!-- List with patients -->
                 <ListBox x:Name="PatientListBox"

@@ -43,7 +43,7 @@
 
         <!-- Greeting and Date -->
         <StackPanel Grid.Column="0" VerticalAlignment="Center">
-            <TextBlock Text=" Dr.Iheb Chermiti et Dr Nadine Benchawecha 👋" Foreground="{DynamicResource TextPrimary}" FontSize="16" FontWeight="SemiBold"/>
+            <TextBlock Text=" Bonjour Docteur 👋" Foreground="{DynamicResource TextPrimary}" FontSize="16" FontWeight="SemiBold"/>
             <TextBlock Text="{Binding TodayDate}" Foreground="{DynamicResource TextSecondary}" FontSize="12" Margin="0,5,0,0"/>
         </StackPanel>
 

@@ -280,21 +280,13 @@
         </Style>
     </UserControl.Resources>
 
-    <Grid HorizontalAlignment="Center" VerticalAlignment="Center" Width="400">
-        <Border Style="{StaticResource DialogContainerStyle}">
+    <Grid HorizontalAlignment="Center" VerticalAlignment="Center">
+        <Border Style="{StaticResource DialogContainerStyle}" 
+                BorderBrush="{DynamicResource GlobalElementBorderBrush}" 
+                BorderThickness="2">
             <StackPanel>
                 <Grid Margin="0,0,0,20">
                     <TextBlock Text="{Binding Title}" Style="{StaticResource DialogTitleStyle}"/>
-                    <Button Content="X"
-                            HorizontalAlignment="Right"
-                            VerticalAlignment="Top"
-                            Background="Transparent"
-                            Foreground="{DynamicResource TextSecondary}"
-                            BorderThickness="0"
-                            FontSize="16"
-                            FontWeight="Bold"
-                            Cursor="Hand"
-                            Command="{Binding CancelCommand}"/>
                 </Grid>
 
                 <Grid>

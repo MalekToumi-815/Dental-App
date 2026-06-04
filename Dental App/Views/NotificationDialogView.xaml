@@ -21,7 +21,7 @@
         </Style>
     </prism:Dialog.WindowStyle>
 
-    <Border Background="{DynamicResource CardBackground}" BorderBrush="{DynamicResource BorderColor}" BorderThickness="1" CornerRadius="12">
+    <Border Background="{DynamicResource CardBackground}" BorderBrush="{DynamicResource GlobalElementBorderBrush}" BorderThickness="2" CornerRadius="12">
         <Grid>
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto"/>
