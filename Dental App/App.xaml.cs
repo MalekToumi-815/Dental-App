@@ -6,6 +6,7 @@ using System.IO;
 using System.Windows;
 using Prism.Ioc;
 using System.Threading.Tasks;
+
 using System;
 
 namespace Dental_App
@@ -108,6 +109,18 @@ namespace Dental_App
                     try
                     {
                         var main = Container.Resolve<MainView>();
+
+                        // Ensure the Prism RegionManager is attached to the shell so regions/navigation work
+                        try
+                        {
+                            var regionManager = Container.Resolve<IRegionManager>();
+                            RegionManager.SetRegionManager(main, regionManager);
+                        }
+                        catch (Exception rex)
+                        {
+                            System.Diagnostics.Debug.WriteLine($"Failed to attach RegionManager: {rex}");
+                        }
+
                         Application.Current.MainWindow = main;
                         main.Show();
                     }

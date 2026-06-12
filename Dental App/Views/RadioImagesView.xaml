@@ -58,7 +58,7 @@
                                 ClipToBounds="True">
                             <StackPanel>
                                 <Border Height="200" Background="{DynamicResource SecondaryBackground}" CornerRadius="12,12,0,0" Margin="0">
-                                    <Image Source="{Binding ImagePath}" 
+                                    <Image Source="{Binding ImageSource}" 
                                            Stretch="UniformToFill"
                                            StretchDirection="Both"/>
                                 </Border>
@@ -275,9 +275,42 @@
                         </ItemsControl.ItemsPanel>
                         <ItemsControl.ItemTemplate>
                             <DataTemplate>
-                                <Button Style="{StaticResource ImageCardButtonStyle}"
-                                        Command="{Binding DataContext.ViewImageCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type UserControl}}}"
-                                        CommandParameter="{Binding}"/>
+                                <Grid Margin="12">
+                                    <Border Background="{DynamicResource CardBackground}" CornerRadius="12" BorderThickness="1" BorderBrush="{DynamicResource BorderColor}" ClipToBounds="True">
+                                        <StackPanel>
+                                            <Border Height="200" Background="{DynamicResource SecondaryBackground}" CornerRadius="12,12,0,0" Margin="0">
+                                                <Image Source="{Binding ImageSource}" Stretch="UniformToFill" StretchDirection="Both"/>
+                                            </Border>
+                                            <StackPanel Margin="16">
+                                                <TextBlock Text="{Binding ImageType}" Foreground="{DynamicResource TextPrimary}" FontSize="13" FontWeight="SemiBold"/>
+                                                <TextBlock Text="{Binding DateTaken, StringFormat='yyyy-MM-dd'}" Foreground="{DynamicResource TextSecondary}" FontSize="12" Margin="0,4,0,0"/>
+                                            </StackPanel>
+                                        </StackPanel>
+                                    </Border>
+
+                                    <!-- Full-card invisible button to view image -->
+                                    <Button Style="{StaticResource IconButtonStyle}"
+                                            Command="{Binding DataContext.ViewImageCommand, RelativeSource={RelativeSource AncestorType=UserControl}}"
+                                            CommandParameter="{Binding}"
+                                            Background="Transparent"
+                                            BorderThickness="0"
+                                            HorizontalAlignment="Stretch"
+                                            VerticalAlignment="Stretch"
+                                            ToolTip="Ouvrir">
+                                        <!-- Empty content so it just acts as overlay -->
+                                    </Button>
+
+                                    <!-- Delete button top-right: red trash icon -->
+                                    <Button Style="{StaticResource IconButtonStyle}"
+                                            Command="{Binding DataContext.DeleteImageCommand, RelativeSource={RelativeSource AncestorType=UserControl}}"
+                                            CommandParameter="{Binding}"
+                                            Width="36" Height="36" MinWidth="36" MinHeight="36"
+                                            HorizontalAlignment="Right" VerticalAlignment="Bottom" Margin="8" ToolTip="Supprimer"
+                                            Background="#E74C3C">
+                                        <Path Data="M6,19A2,2 0 0,0 8,21H16A2,2 0 0,0 18,19V7H6V19M19,4H15.5L14.79,3.29C14.61,3.11 14.35,3 14.09,3H9.91C9.65,3 9.39,3.11 9.21,3.29L8.5,4H5V6H19V4Z"
+                                              Fill="White" Width="16" Height="16" Stretch="Uniform" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                    </Button>
+                                </Grid>
                             </DataTemplate>
                         </ItemsControl.ItemTemplate>
                     </ItemsControl>

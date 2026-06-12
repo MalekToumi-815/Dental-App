@@ -9,6 +9,10 @@ using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
+using System.Windows.Media;
+using System.Windows.Media.Imaging;
+using Dental_App.ViewModels;
+using Dental_App.Views;
 
 namespace Dental_App.ViewModels
 {
@@ -38,6 +42,7 @@ namespace Dental_App.ViewModels
             ViewImageCommand = new DelegateCommand<RadioImageDisplayItem>(ViewImage);
             CloseImageViewerCommand = new DelegateCommand(CloseImageViewer);
             AddRadioCommand = new DelegateCommand(AddRadio, CanAddRadio).ObservesProperty(() => HasSelectedPatient);
+            DeleteImageCommand = new DelegateCommand<RadioImageDisplayItem>(DeleteImage);
 
             Patients = new ObservableCollection<PatientDisplayItem>();
             RadioImages = new ObservableCollection<RadioImageDisplayItem>();
@@ -97,6 +102,7 @@ namespace Dental_App.ViewModels
         public DelegateCommand<RadioImageDisplayItem> ViewImageCommand { get; }
         public DelegateCommand CloseImageViewerCommand { get; }
         public DelegateCommand AddRadioCommand { get; }
+        public DelegateCommand<RadioImageDisplayItem> DeleteImageCommand { get; }
 
         private async Task LoadPatientsAsync()
         {
@@ -104,7 +110,7 @@ namespace Dental_App.ViewModels
             {
                 IsLoading = true;
                 // Limit initial load to first 10 patients to improve performance in the patient selector
-                List<Patient> patients = null;
+                System.Collections.Generic.List<Patient> patients = null;
                 try
                 {
                     // Use paged fetch exposed on IPatientService (used elsewhere in the app)
@@ -219,12 +225,36 @@ namespace Dental_App.ViewModels
 
                 foreach (var image in radioImages)
                 {
+                    var fullPath = _radioImageService.GetFullPath(image.PatientId, image.FileName);
+
+                    ImageSource imgSource = null;
+                    try
+                    {
+                        if (File.Exists(fullPath))
+                        {
+                            var bitmap = new BitmapImage();
+                            bitmap.BeginInit();
+                            bitmap.UriSource = new Uri(fullPath, UriKind.Absolute);
+                            bitmap.CacheOption = BitmapCacheOption.OnLoad; // load into memory and release file
+                            bitmap.CreateOptions = BitmapCreateOptions.IgnoreImageCache;
+                            bitmap.EndInit();
+                            bitmap.Freeze();
+                            imgSource = bitmap;
+                        }
+                    }
+                    catch (Exception imgEx)
+                    {
+                        System.Diagnostics.Debug.WriteLine($"Failed to load image into memory: {imgEx.Message}");
+                        imgSource = null;
+                    }
+
                     RadioImages.Add(new RadioImageDisplayItem
                     {
                         Id = image.Id,
                         PatientId = image.PatientId,
                         FileName = image.FileName,
-                        ImagePath = _radioImageService.GetFullPath(image.PatientId, image.FileName),
+                        ImagePath = fullPath,
+                        ImageSource = imgSource,
                         ImageType = image.Type,
                         DateTaken = image.DatePrise ?? DateTime.Now
                     });
@@ -236,6 +266,70 @@ namespace Dental_App.ViewModels
             {
                 System.Diagnostics.Debug.WriteLine($"Error loading radio images: {ex.Message}");
                 MessageBox.Show($"Error loading radio images: {ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+            finally
+            {
+                IsLoading = false;
+            }
+        }
+
+        private async void DeleteImage(RadioImageDisplayItem radioImage)
+        {
+            if (radioImage == null)
+                return;
+
+            try
+            {
+                // Show custom confirmation dialog
+                var vm = new ConfirmationDialogViewModel()
+                {
+                    Title = "Confirmer la suppression",
+                    Message = "Voulez-vous vraiment supprimer cette radio ?"
+                };
+
+                bool? dialogResult = null;
+
+                vm.CloseAction = (res) =>
+                {
+                    dialogResult = res;
+                };
+
+                var view = new ConfirmationDialogView { DataContext = vm };
+                var win = new Window
+                {
+                    Content = view,
+                    SizeToContent = SizeToContent.WidthAndHeight,
+                    WindowStartupLocation = WindowStartupLocation.CenterOwner,
+                    Owner = Application.Current.MainWindow,
+                    WindowStyle = WindowStyle.None,
+                    Background = System.Windows.Media.Brushes.Transparent,
+                    AllowsTransparency = true,
+                    ResizeMode = ResizeMode.NoResize
+                };
+
+                // Show dialog modally
+                win.ShowDialog();
+
+                if (dialogResult != true)
+                    return;
+
+                IsLoading = true;
+
+                await _radioImageService.DeleteImageAsync(radioImage.Id);
+
+                // Remove from collection
+                var toRemove = RadioImages.FirstOrDefault(r => r.Id == radioImage.Id);
+                if (toRemove != null)
+                {
+                    RadioImages.Remove(toRemove);
+                }
+
+                _notificationService.ShowSuccess("Radio supprimée.", "Succès");
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"Error deleting radio image: {ex.Message}");
+                _notificationService.ShowError($"Erreur lors de la suppression: {ex.Message}", "Erreur");
             }
             finally
             {
@@ -352,12 +446,35 @@ namespace Dental_App.ViewModels
                                 result.SelectedDate);
 
                             // Add to the collection
+                            // Load into memory using BitmapImage OnLoad and Freeze
+                            var newPath = _radioImageService.GetFullPath(newRadio.PatientId, newRadio.FileName);
+                            ImageSource newImgSrc = null;
+                            try
+                            {
+                                if (File.Exists(newPath))
+                                {
+                                    var bitmap = new BitmapImage();
+                                    bitmap.BeginInit();
+                                    bitmap.UriSource = new Uri(newPath, UriKind.Absolute);
+                                    bitmap.CacheOption = BitmapCacheOption.OnLoad;
+                                    bitmap.CreateOptions = BitmapCreateOptions.IgnoreImageCache;
+                                    bitmap.EndInit();
+                                    bitmap.Freeze();
+                                    newImgSrc = bitmap;
+                                }
+                            }
+                            catch (Exception imgEx)
+                            {
+                                System.Diagnostics.Debug.WriteLine($"Failed to load new image into memory: {imgEx.Message}");
+                            }
+
                             RadioImages.Add(new RadioImageDisplayItem
                             {
                                 Id = newRadio.Id,
                                 PatientId = newRadio.PatientId,
                                 FileName = newRadio.FileName,
-                                ImagePath = _radioImageService.GetFullPath(newRadio.PatientId, newRadio.FileName),
+                                ImagePath = newPath,
+                                ImageSource = newImgSrc,
                                 ImageType = newRadio.Type,
                                 DateTaken = newRadio.DatePrise ?? DateTime.Now
                             });
@@ -462,6 +579,7 @@ namespace Dental_App.ViewModels
             private int _patientId;
             private string _fileName;
             private string _imagePath;
+            private ImageSource _imageSource;
             private string _imageType;
             private DateTime _dateTaken;
 
@@ -487,6 +605,12 @@ namespace Dental_App.ViewModels
             {
                 get => _imagePath;
                 set => SetProperty(ref _imagePath, value);
+            }
+
+            public ImageSource ImageSource
+            {
+                get => _imageSource;
+                set => SetProperty(ref _imageSource, value);
             }
 
             public string ImageType

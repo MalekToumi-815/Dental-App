@@ -64,7 +64,7 @@
 
                 <!-- Image -->
                 <Border Grid.Row="1" Margin="16" CornerRadius="12" Background="{DynamicResource SecondaryBackground}" ClipToBounds="True">
-                    <Image Source="{Binding SelectedImage.ImagePath}" 
+                    <Image Source="{Binding SelectedImage.ImageSource}" 
                            Stretch="Uniform"/>
                 </Border>
 
