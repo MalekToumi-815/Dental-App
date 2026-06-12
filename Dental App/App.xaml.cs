@@ -5,6 +5,8 @@ using Microsoft.EntityFrameworkCore;
 using System.IO;
 using System.Windows;
 using Prism.Ioc;
+using System.Threading.Tasks;
+using System;
 
 namespace Dental_App
 {
@@ -13,9 +15,10 @@ namespace Dental_App
     /// </summary>
     public partial class App : PrismApplication
     {
+        // Defer shell creation; we'll create and show it after splash finishes
         protected override Window CreateShell()
         {
-            return ContainerLocator.Container.Resolve<MainView>();
+            return null;
         }
 
         protected override void RegisterTypes(IContainerRegistry containerRegistry)
@@ -83,29 +86,76 @@ namespace Dental_App
 
         protected override void OnInitialized()
         {
-            base.OnInitialized();
+            // Show splash screen immediately on UI thread
+            var splash = new SplashScreenView();
+            splash.Show();
 
+            // Run initialization on background thread to keep UI responsive
+            Task.Run(async () =>
+            {
+                try
+                {
+                    await PerformStartupInitializationAsync();
+                }
+                catch (Exception ex)
+                {
+                    System.Diagnostics.Debug.WriteLine($"Startup initialization error: {ex}");
+                }
+
+                // After initialization, create and show main window on UI thread
+                Application.Current.Dispatcher.Invoke(() =>
+                {
+                    try
+                    {
+                        var main = Container.Resolve<MainView>();
+                        Application.Current.MainWindow = main;
+                        main.Show();
+                    }
+                    catch (Exception ex)
+                    {
+                        System.Diagnostics.Debug.WriteLine($"Failed to create main window: {ex}");
+                    }
+                    finally
+                    {
+                        try { splash.Close(); } catch { }
+                    }
+                });
+            });
+        }
+
+        private async Task PerformStartupInitializationAsync()
+        {
             try
             {
-                var regionManager = Container.Resolve<IRegionManager>();
+                // Ensure DB exists and run any migrations/seeds as needed
+                var ctx = Container.Resolve<Dental_App.Models.DentalContext>();
+                await ctx.Database.EnsureCreatedAsync();
 
-                // This "injects" the Sidebar into the left column immediately
-                regionManager.RegisterViewWithRegion("SidebarRegion", typeof(SidebarView));
+                // Short simulated delay (remove in production)
+                await Task.Delay(800);
 
-                // This "injects" the Toolbar into the top immediately
-                regionManager.RegisterViewWithRegion("ToolbarRegion", typeof(ToolbarView));
+                // Apply theme and register initial regions on UI thread
+                Application.Current.Dispatcher.Invoke(() =>
+                {
+                    try
+                    {
+                        var themeService = Container.Resolve<IThemeService>();
+                        themeService.RestoreDarkTheme();
 
-                // This "injects" the Dashboard into the right column immediately
-                regionManager.RegisterViewWithRegion("ContentRegion", typeof(DashboardView));
-
-                // Always restore dark theme (single-mode app)
-                var themeService = Container.Resolve<IThemeService>();
-                themeService.RestoreDarkTheme();
+                        var regionManager = Container.Resolve<IRegionManager>();
+                        regionManager.RegisterViewWithRegion("SidebarRegion", typeof(SidebarView));
+                        regionManager.RegisterViewWithRegion("ToolbarRegion", typeof(ToolbarView));
+                        regionManager.RegisterViewWithRegion("ContentRegion", typeof(DashboardView));
+                    }
+                    catch (Exception ex)
+                    {
+                        System.Diagnostics.Debug.WriteLine($"During PerformStartupInitializationUI: {ex}");
+                    }
+                });
             }
             catch (Exception ex)
             {
-                System.Diagnostics.Debug.WriteLine($"Error during initialization: {ex}");
-                MessageBox.Show($"Initialization Error: {ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                System.Diagnostics.Debug.WriteLine($"PerformStartupInitializationAsync error: {ex}");
             }
         }
 
@@ -119,5 +169,4 @@ namespace Dental_App
             base.OnStartup(e);
         }
     }
-
 }
