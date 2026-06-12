@@ -109,8 +109,9 @@
         <!-- Logo Section -->
         <Border Background="{DynamicResource PrimaryBackground}" Padding="20">
             <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
-                <Border Width="40" Height="40" Background="{DynamicResource AccentColor}" CornerRadius="10">
-                    <Path Data="{StaticResource IconLogo}" Fill="White" Width="24" Height="24" Stretch="Uniform" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                <Border Width="40" Height="40" Background="White" CornerRadius="10" ClipToBounds="True">
+                    <!-- Use the project's logo image from the output folder (site of origin) so it loads correctly at runtime -->
+                    <Image Source="pack://siteoforigin:,,,/Assets/Images/logo.png" Width="30" Height="30" Stretch="Uniform" VerticalAlignment="Center" HorizontalAlignment="Center"/>
                 </Border>
                 <TextBlock Text="DentaCare Pro" Foreground="{DynamicResource AccentColor}" FontSize="18" FontWeight="Bold" Margin="12,0,0,0" VerticalAlignment="Center"/>
             </StackPanel>
