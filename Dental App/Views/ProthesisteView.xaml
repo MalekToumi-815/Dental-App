@@ -209,8 +209,10 @@
 						<Grid>
 							<Grid.ColumnDefinitions>
 								<ColumnDefinition Width="60"/>
-								<ColumnDefinition Width="*"/>
-								<ColumnDefinition Width="200"/>
+								<!-- NOM: larger than before but smaller than ADRESSE -->
+								<ColumnDefinition Width="2*"/>
+								<!-- ADRESSE: biggest space -->
+								<ColumnDefinition Width="4*"/>
 								<ColumnDefinition Width="150"/>
 								<ColumnDefinition Width="140"/>
 								<ColumnDefinition Width="100"/>
@@ -262,8 +264,10 @@
 										<Grid>
 											<Grid.ColumnDefinitions>
 												<ColumnDefinition Width="60"/>
-												<ColumnDefinition Width="*"/>
-												<ColumnDefinition Width="200"/>
+												<!-- NOM: larger than before but smaller than ADRESSE -->
+												<ColumnDefinition Width="2*"/>
+												<!-- ADRESSE: biggest space -->
+												<ColumnDefinition Width="4*"/>
 												<ColumnDefinition Width="150"/>
 												<ColumnDefinition Width="140"/>
 												<ColumnDefinition Width="100"/>
