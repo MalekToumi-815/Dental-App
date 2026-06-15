@@ -446,12 +446,17 @@ namespace Dental_App.ViewModels
 
                 bool isRevenu = NewType == "Revenu";
                 bool success;
-                if (isRevenu) {
-                    success = await _caisse_service_AddOrUpdateWrapper(NewMontant, true, NewDate);
+
+                // If _selectedTransaction is null, the modal was opened via "Nouvelle Transaction"
+                // -> always use AddOrUpdate (original behavior)
+                if (_selectedTransaction == null)
+                {
+                    success = await _caisse_service_AddOrUpdateWrapper(NewMontant, isRevenu, NewDate);
                 }
                 else
                 {
-                    success = await _caisse_service_AddOrUpdateWrapper(NewMontant, false, NewDate);
+                    // Modal was opened via Edit button on a row -> override the existing montant
+                    success = await _caisse_service_SetAmountWrapper(NewMontant, isRevenu, NewDate);
                 }
 
                 if (success)
@@ -480,6 +485,12 @@ namespace Dental_App.ViewModels
         private async Task<bool> _caisse_service_AddOrUpdateWrapper(decimal montant, bool isRevenu, DateOnly? date)
         {
             return await _caisseService.AddOrUpdateCaisseAsync(montant, isRevenu, date);
+        }
+
+        // wrapper for the new SetCaisseAmountAsync service method (overrides existing montant)
+        private async Task<bool> _caisse_service_SetAmountWrapper(decimal montant, bool isRevenu, DateOnly? date)
+        {
+            return await _caisseService.SetCaisseAmountAsync(montant, isRevenu, date);
         }
 
         private void _notification_service_ShowSuccessWrapper()

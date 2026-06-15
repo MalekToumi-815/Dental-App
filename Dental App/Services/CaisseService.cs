@@ -11,6 +11,8 @@ namespace Dental_App.Services
     {
         // Core operations
         Task<bool> AddOrUpdateCaisseAsync(decimal montant, bool isRevenu, DateOnly? date = null);
+        // New: set (override) montant for a date/type
+        Task<bool> SetCaisseAmountAsync(decimal montant, bool isRevenu, DateOnly? date = null);
         
         // Retrieval operations
         Task<List<Caisse>> GetAllCaisseAsync();
@@ -77,6 +79,48 @@ namespace Dental_App.Services
             catch (Exception ex)
             {
                 System.Diagnostics.Debug.WriteLine($"Error adding or updating caisse: {ex.Message}");
+                return false;
+            }
+        }
+
+        /// <summary>
+        /// Set (override) the montant for a caisse entry for a specific date/type (or today if not specified)
+        /// If an entry doesn't exist, it will be created with the provided montant.
+        /// </summary>
+        public async Task<bool> SetCaisseAmountAsync(decimal montant, bool isRevenu, DateOnly? date = null)
+        {
+            try
+            {
+                if (montant < 0)
+                    throw new ArgumentException("Le montant ne peut pas être négatif.", nameof(montant));
+
+                var targetDate = date ?? DateOnly.FromDateTime(DateTime.Now);
+
+                var existingCaisse = _context.Caisses.FirstOrDefault(c =>
+                    c.DateDuJour == targetDate && c.IsRevenu == isRevenu);
+
+                if (existingCaisse == null)
+                {
+                    var newCaisse = new Caisse
+                    {
+                        DateDuJour = targetDate,
+                        Montant = montant,
+                        IsRevenu = isRevenu
+                    };
+                    _context.Caisses.Add(newCaisse);
+                }
+                else
+                {
+                    existingCaisse.Montant = montant;
+                    _context.Caisses.Update(existingCaisse);
+                }
+
+                await _context.SaveChangesAsync();
+                return true;
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"Error setting caisse montant: {ex.Message}");
                 return false;
             }
         }
