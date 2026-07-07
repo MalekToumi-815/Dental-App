@@ -20,6 +20,31 @@
             <Setter Property="BorderBrush" Value="{DynamicResource GlobalElementBorderBrush}"/>
             <Setter Property="Padding" Value="25"/>
         </Style>
+
+        <!-- Simple ComboBox style to match dashboard cards -->
+        <Style x:Key="DashboardComboBoxStyle" TargetType="ComboBox">
+            <Setter Property="Background" Value="{DynamicResource SecondaryBackground}"/>
+            <Setter Property="Foreground" Value="{DynamicResource TextPrimary}"/>
+            <Setter Property="BorderBrush" Value="{DynamicResource GlobalElementBorderBrush}"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="Padding" Value="6,4"/>
+            <Setter Property="MinWidth" Value="60"/>
+            <Setter Property="Height" Value="30"/>
+            <Setter Property="HorizontalContentAlignment" Value="Left"/>
+            <Setter Property="VerticalContentAlignment" Value="Center"/>
+        </Style>
+
+        <Style x:Key="DashboardTextBoxStyle" TargetType="TextBox">
+            <Setter Property="Background" Value="{DynamicResource SecondaryBackground}"/>
+            <Setter Property="Foreground" Value="{DynamicResource TextPrimary}"/>
+            <Setter Property="BorderBrush" Value="{DynamicResource GlobalElementBorderBrush}"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="Padding" Value="6,4"/>
+            <Setter Property="Height" Value="30"/>
+            <Setter Property="HorizontalContentAlignment" Value="Center"/>
+            <Setter Property="VerticalContentAlignment" Value="Center"/>
+        </Style>
+
     </UserControl.Resources>
     
     <ScrollViewer VerticalScrollBarVisibility="Hidden">
@@ -43,18 +68,39 @@
                         <TextBlock Text="Consultations ce mois" Foreground="{DynamicResource TextSecondary}" Margin="0,5"/>
                     </StackPanel>
                 </Border>
+
+                <!-- Patients per year (replaces Actes Médicaux) -->
                 <Border Style="{StaticResource StatCardStyle}" Margin="0,0,10,0">
                     <StackPanel>
-                        <TextBlock Text="{Binding ActesTotal}" Foreground="{DynamicResource TextPrimary}" FontSize="28" FontWeight="Bold"/>
-                        <TextBlock Text="Actes Médicaux" Foreground="{DynamicResource TextSecondary}" Margin="0,5"/>
+                        <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                            <TextBlock Text="{Binding PatientsPerYear}" Foreground="{DynamicResource TextPrimary}" FontSize="28" FontWeight="Bold"/>
+                            <TextBlock Text=" pts" Foreground="{DynamicResource TextPrimary}" FontSize="18" VerticalAlignment="Bottom" Margin="6,0,0,0"/>
+                        </StackPanel>
+                        <StackPanel Orientation="Horizontal" Margin="0,6,0,0">
+                            <TextBlock Text="Année:" Foreground="{DynamicResource TextSecondary}" VerticalAlignment="Center" Margin="0,0,8,0"/>
+                            <TextBox Style="{StaticResource DashboardTextBoxStyle}" Text="{Binding SelectedYearForAnnualText, UpdateSourceTrigger=PropertyChanged}" Width="100" MaxLength="4" InputScope="Number"/>
+                        </StackPanel>
+                        <TextBlock Text="Patients (par année sélectionnée)" Foreground="{DynamicResource TextSecondary}" Margin="0,8,0,0"/>
                     </StackPanel>
                 </Border>
+
+                <!-- Patients per month (replaces Ordonnances actives) -->
                 <Border Style="{StaticResource StatCardStyle}" Margin="0,0,10,0">
                     <StackPanel>
-                        <TextBlock Text="{Binding OrdosActive}" Foreground="{DynamicResource TextPrimary}" FontSize="28" FontWeight="Bold"/>
-                        <TextBlock Text="Ordonnances actives" Foreground="{DynamicResource TextSecondary}" Margin="0,5"/>
+                        <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                            <TextBlock Text="{Binding PatientsPerMonth}" Foreground="{DynamicResource TextPrimary}" FontSize="28" FontWeight="Bold"/>
+                            <TextBlock Text=" pts" Foreground="{DynamicResource TextPrimary}" FontSize="18" VerticalAlignment="Bottom" Margin="6,0,0,0"/>
+                        </StackPanel>
+
+                        <StackPanel Orientation="Horizontal" Margin="0,6,0,0">
+                            <ComboBox Style="{StaticResource DashboardComboBoxStyle}" ItemsSource="{Binding MonthNames}" SelectedIndex="{Binding SelectedMonthIndex}" Width="140"/>
+                            <TextBox Style="{StaticResource DashboardTextBoxStyle}" Text="{Binding SelectedMonthYearText, UpdateSourceTrigger=PropertyChanged}" Width="80" MaxLength="4" InputScope="Number" Margin="8,0,0,0"/>
+                        </StackPanel>
+
+                        <TextBlock Text="Patients (par mois sélectionné)" Foreground="{DynamicResource TextSecondary}" Margin="0,8,0,0"/>
                     </StackPanel>
                 </Border>
+
                 <Border Style="{StaticResource StatCardStyle}">
                     <StackPanel>
                         <StackPanel Orientation="Horizontal">

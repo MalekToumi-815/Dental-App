@@ -4,6 +4,7 @@ using System;
 using System.Windows;
 using Dental_App.Models;
 using Dental_App.Services;
+using System.Linq;
 
 namespace Dental_App.ViewModels
 {
@@ -11,6 +12,7 @@ namespace Dental_App.ViewModels
     {
         private readonly IPatientService _patientService;
         private readonly IAppNotificationService _notificationService;
+        private readonly IRendezVousService _rendezVousService;
         private string _title = "Dossier Patient";
         private string _buttonText = "Ajouter Paiement";
         private Patient _patient;
@@ -21,11 +23,13 @@ namespace Dental_App.ViewModels
         private decimal _remainingAmount;
         private bool _isPaymentInputVisible;
         private string _paymentAmountInput = string.Empty;
+        private string _uniqueNumber;
 
-        public PatientDetailsDialogViewModel(IPatientService patientService = null, IAppNotificationService notificationService = null, Patient patient = null)
+        public PatientDetailsDialogViewModel(IPatientService patientService = null, IAppNotificationService notificationService = null, Patient patient = null, IRendezVousService rendezVousService = null)
         {
             _patientService = patientService;
             _notificationService = notificationService;
+            _rendezVousService = rendezVousService;
             SaveCommand = new DelegateCommand(ExecuteSave);
             CancelCommand = new DelegateCommand(ExecuteCancel);
 
@@ -95,6 +99,12 @@ namespace Dental_App.ViewModels
             set => SetProperty(ref _paymentAmountInput, value);
         }
 
+        public string UniqueNumber
+        {
+            get => _uniqueNumber;
+            private set => SetProperty(ref _uniqueNumber, value);
+        }
+
         public DelegateCommand SaveCommand { get; }
         public DelegateCommand CancelCommand { get; }
         public Action<bool?> CloseDialog { get; set; }
@@ -110,7 +120,38 @@ namespace Dental_App.ViewModels
                 Initials = $"{patient.Prenom[0]}{patient.Nom[0]}".ToUpper();
             }
 
+            // Compute the unique number asynchronously
+            ComputeUniqueNumberAsync(patient);
+
             System.Diagnostics.Debug.WriteLine($"PatientDetailsDialogViewModel initialized with patient: {FullName}");
+        }
+
+        private async void ComputeUniqueNumberAsync(Patient patient)
+        {
+            try
+            {
+                int year = DateTime.Now.Year;
+
+                if (_rendezVousService != null)
+                {
+                    var rvs = await _rendezVousService.GetByPatientIdAsync(patient.Id);
+                    if (rvs != null && rvs.Count > 0)
+                    {
+                        var first = rvs.OrderBy(r => r.DateDebut).FirstOrDefault();
+                        if (first != null)
+                        {
+                            year = first.DateDebut.Year;
+                        }
+                    }
+                }
+
+                UniqueNumber = $"{patient.Id}/{year}";
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"[ComputeUniqueNumberAsync] Erreur: {ex.Message}");
+                UniqueNumber = $"{patient.Id}/{DateTime.Now.Year}";
+            }
         }
 
         private async void ExecuteSave()

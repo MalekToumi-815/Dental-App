@@ -1,12 +1,12 @@
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Controls.Primitives;
 using System.Windows.Input;
 using System.Windows.Shapes;
 using System.Collections.ObjectModel;
 using System.Windows.Media;
 using Dental_App.Models;
 using Dental_App.ViewModels;
+using System.Windows.Controls.Primitives;
 
 namespace Dental_App.Views
 {
@@ -15,7 +15,7 @@ namespace Dental_App.Views
     /// </summary>
     public partial class RendezVousView : UserControl
     {
-        private ToggleButton _lastSelectedTimeButton;
+        private RadioButton _lastSelectedTimeButton;
 
         public RendezVousView()
         {
@@ -74,32 +74,29 @@ namespace Dental_App.Views
         }
 
         /// <summary>
-        /// Gère la sélection des créneaux horaires avec une sélection exclusive
+        /// Handle RadioButton checked for time selection (exclusive by group)
         /// </summary>
-        private void OnTimeSlotClicked(object sender, RoutedEventArgs e)
+        private void OnTimeSlotChecked(object sender, RoutedEventArgs e)
         {
-            if (sender is ToggleButton button)
+            if (sender is RadioButton rb)
             {
-                // Décocher le bouton précédemment sélectionné
-                if (_lastSelectedTimeButton != null && _lastSelectedTimeButton != button)
+                // uncheck previous (ensures single selection even if grouping issues occur)
+                if (_lastSelectedTimeButton != null && _lastSelectedTimeButton != rb)
                 {
                     _lastSelectedTimeButton.IsChecked = false;
                 }
 
-                if (button.IsChecked == true)
+                if (rb.IsChecked == true)
                 {
-                    _lastSelectedTimeButton = button;
-                    
-                    // Mettre à jour le ViewModel avec l'heure sélectionnée
+                    _lastSelectedTimeButton = rb;
                     if (this.DataContext is RendezVousViewModel vm)
                     {
-                        vm.SelectedTimeSlot = button.Tag?.ToString();
+                        vm.SelectedTimeSlot = rb.Tag?.ToString();
                     }
                 }
                 else
                 {
                     _lastSelectedTimeButton = null;
-                    
                     if (this.DataContext is RendezVousViewModel vm)
                     {
                         vm.SelectedTimeSlot = null;
@@ -113,11 +110,7 @@ namespace Dental_App.Views
         /// </summary>
         private void Calendar_DisplayDateChanged(object sender, CalendarDateChangedEventArgs e)
         {
-            // if (!(this.DataContext is RendezVousViewModel vm))
-            //     return;
-
-            // // Parcourir tous les CalendarDayButtons visibles et mettre à jour les points
-            // UpdateAppointmentIndicators(MainCalendar, vm.DatesWithAppointments);
+            // intentionally left blank for now
         }
 
         /// <summary>
@@ -137,7 +130,7 @@ namespace Dental_App.Views
                     {
                         // Vérifier si cette date a un rendez-vous
                         bool hasAppointment = datesWithAppointments.Any(d => d.Date == buttonDate.Date);
-                        
+
                         // Mettre à jour la visibilité du point indicateur
                         var appointmentDot = FindChild<Ellipse>(button, "AppointmentDot");
                         if (appointmentDot != null)

@@ -23,6 +23,13 @@
                     </Border>
                     <StackPanel VerticalAlignment="Center">
                         <TextBlock Text="{Binding FullName}" FontSize="18" FontWeight="SemiBold" Foreground="{DynamicResource TextPrimary}"/>
+                        <!-- Unique number added -->
+                        <TextBlock FontSize="13" Foreground="{DynamicResource TextSecondary}" Margin="0,4,0,0">
+                            <Run Text="Numero unique: "/>
+                            <!-- bind OneWay explicitly to avoid TwoWay default target on Run/Text -->
+                            <Run Text="{Binding UniqueNumber, Mode=OneWay}"/>
+                        </TextBlock>
+
                         <TextBlock Text="{Binding Patient.Telephone}" FontSize="13" Foreground="{DynamicResource TextSecondary}"/>
                         <TextBlock Text="{Binding Patient.Adresse}" FontSize="13" Foreground="{DynamicResource TextSecondary}"/>
                     </StackPanel>
