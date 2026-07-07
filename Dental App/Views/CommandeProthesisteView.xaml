@@ -394,7 +394,9 @@
                                                        Foreground="{DynamicResource TextPrimary}"
                                                        FontWeight="SemiBold"
                                                        FontSize="14"
-                                                       VerticalAlignment="Center"/>
+                                                       VerticalAlignment="Top"
+                                                       TextWrapping="Wrap"
+                                                       TextTrimming="None"/>
 
                                             <TextBlock Grid.Column="2"
                                                        Text="{Binding Date, StringFormat='dd/MM/yyyy'}"
@@ -406,8 +408,9 @@
                                                        Text="{Binding Achats}"
                                                        Foreground="{DynamicResource TextPrimary}"
                                                        TextWrapping="Wrap"
+                                                       TextTrimming="None"
                                                        FontSize="14"
-                                                       VerticalAlignment="Center"/>
+                                                       VerticalAlignment="Top"/>
 
                                             <TextBlock Grid.Column="4"
                                                        Text="{Binding SommePayee, StringFormat='{}{0} DT'}"

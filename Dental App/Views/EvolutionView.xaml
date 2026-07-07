@@ -1,0 +1,259 @@
+<UserControl x:Class="Dental_App.Views.EvolutionView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:prism="http://prismlibrary.com/"
+             prism:ViewModelLocator.AutoWireViewModel="True"
+             Background="{DynamicResource PrimaryBackground}">
+
+    <UserControl.Resources>
+        <!-- Reuse styles similar to CaisseView for consistent look -->
+        <Style x:Key="InputStyle" TargetType="TextBox">
+            <Setter Property="Background" Value="{DynamicResource SecondaryBackground}"/>
+            <Setter Property="Foreground" Value="{DynamicResource TextPrimary}"/>
+            <Setter Property="BorderBrush" Value="{DynamicResource GlobalElementBorderBrush}"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="FontSize" Value="14"/>
+            <Setter Property="Height" Value="44"/>
+            <Setter Property="CaretBrush" Value="{DynamicResource AccentColor}"/>
+            <Setter Property="Padding" Value="12,0"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="TextBox">
+                        <Border Background="{TemplateBinding Background}"
+                                BorderBrush="{TemplateBinding BorderBrush}"
+                                BorderThickness="{TemplateBinding BorderThickness}"
+                                CornerRadius="8">
+                            <Grid Margin="12,0">
+                                <TextBlock x:Name="Placeholder"
+                                           Text="{TemplateBinding Tag}"
+                                           Foreground="{DynamicResource TextSecondary}"
+                                           FontSize="{TemplateBinding FontSize}"
+                                           VerticalAlignment="Center"
+                                           IsHitTestVisible="False"
+                                           Visibility="Collapsed"/>
+                                <ScrollViewer x:Name="PART_ContentHost"
+                                              VerticalAlignment="Center"/>
+                            </Grid>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="Text" Value="">
+                                <Setter TargetName="Placeholder" Property="Visibility" Value="Visible"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <Style x:Key="TealBtn" TargetType="Button">
+            <Setter Property="Background" Value="{DynamicResource AccentColor}"/>
+            <Setter Property="Foreground" Value="{DynamicResource PrimaryBackground}"/>
+            <Setter Property="FontWeight" Value="SemiBold"/>
+            <Setter Property="FontSize" Value="14"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border x:Name="Bd"
+                                Background="{TemplateBinding Background}"
+                                CornerRadius="8"
+                                Padding="{TemplateBinding Padding}">
+                            <ContentPresenter HorizontalAlignment="Center"
+                                              VerticalAlignment="Center"/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="Bd" Property="Opacity" Value="0.8"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <!-- Small label style consistent with other views -->
+        <Style x:Key="SmallLabel" TargetType="TextBlock">
+            <Setter Property="Foreground" Value="{DynamicResource TextSecondary}"/>
+            <Setter Property="FontSize" Value="12"/>
+        </Style>
+
+        <!-- Remove selection visuals for list-based charts -->
+        <Style x:Key="ChartListItemStyle" TargetType="ListBoxItem">
+            <Setter Property="Padding" Value="0"/>
+            <Setter Property="Margin" Value="0"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="Background" Value="Transparent"/>
+            <Setter Property="Focusable" Value="False"/>
+        </Style>
+    </UserControl.Resources>
+
+    <Grid Margin="20">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+
+        <!-- Inputs: keep only Year input -->
+        <StackPanel Orientation="Horizontal" Grid.Row="0" Margin="0,0,0,12">
+            <StackPanel Margin="0,0,20,0">
+                <TextBlock Text="Annee" Style="{StaticResource SmallLabel}"/>
+                <StackPanel Orientation="Horizontal">
+                    <TextBox Width="120" Style="{StaticResource InputStyle}" Tag="Annee" Text="{Binding Year, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+                    <Button Content="Mettre a jour" Command="{Binding UpdateCommand}" Style="{StaticResource TealBtn}" Margin="12,0,0,0" Padding="12,6" VerticalAlignment="Center"/>
+                </StackPanel>
+            </StackPanel>
+        </StackPanel>
+
+        <StackPanel Grid.Row="1" Orientation="Horizontal" Margin="0,0,0,12">
+            <TextBlock Text="Courbe mensuelle (12 mois)" FontWeight="Bold" Foreground="{DynamicResource TextPrimary}" Margin="0,0,20,0"/>
+            <TextBlock Text="Courbe annuelle (4 ans)" FontWeight="Bold" Foreground="{DynamicResource TextPrimary}"/>
+        </StackPanel>
+
+        <Grid Grid.Row="2">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+
+            <!-- Monthly histogram: grouped bars (revenue vs depense) -->
+            <Border Grid.Column="0" Background="{DynamicResource CardBackground}" BorderBrush="{DynamicResource GlobalElementBorderBrush}" BorderThickness="1" CornerRadius="8" Padding="12" Height="460" MinHeight="360">
+                <StackPanel>
+                    <StackPanel Margin="0,0,0,8">
+                        <TextBlock Text="Evolution mensuelle" FontWeight="SemiBold" Foreground="{DynamicResource TextPrimary}" FontSize="16"/>
+                        <TextBlock Text="Montants par mois (R: Revenu, D: Depense, Net)" Foreground="{DynamicResource TextSecondary}" FontSize="12"/>
+                    </StackPanel>
+
+                    <StackPanel Orientation="Horizontal" Margin="0,8,0,12">
+                        <Border Background="{DynamicResource AccentColor}" Width="12" Height="12" CornerRadius="3" Margin="0,0,6,0"/>
+                        <TextBlock Text="Revenu" Foreground="{DynamicResource TextSecondary}" Margin="0,0,12,0"/>
+                        <Border Background="#FF6B6B" Width="12" Height="12" CornerRadius="3" Margin="0,0,6,0"/>
+                        <TextBlock Text="Depense" Foreground="{DynamicResource TextSecondary}" Margin="0,0,12,0"/>
+                        <Border Background="#FFA500" Width="12" Height="12" CornerRadius="3" Margin="0,0,6,0"/>
+                        <TextBlock Text="Net" Foreground="{DynamicResource TextSecondary}"/>
+                    </StackPanel>
+
+                    <!-- Use ListBox with built-in ScrollViewer so horizontal scrollbar shows reliably -->
+                    <ListBox ItemsSource="{Binding MonthlyData}"
+                             ScrollViewer.HorizontalScrollBarVisibility="Auto"
+                             ScrollViewer.VerticalScrollBarVisibility="Disabled"
+                             ScrollViewer.CanContentScroll="False"
+                             Background="Transparent"
+                             BorderThickness="0"
+                             HorizontalContentAlignment="Left"
+                             ItemContainerStyle="{StaticResource ChartListItemStyle}">
+                        <ListBox.ItemsPanel>
+                            <ItemsPanelTemplate>
+                                <StackPanel Orientation="Horizontal"/>
+                            </ItemsPanelTemplate>
+                        </ListBox.ItemsPanel>
+
+                        <ListBox.ItemTemplate>
+                            <DataTemplate>
+                                <!-- Reorganized template: numeric labels above bars, month name at bottom -->
+                                <StackPanel Margin="8,0" Width="110" VerticalAlignment="Bottom">
+                                    <Grid>
+                                        <Grid.RowDefinitions>
+                                            <RowDefinition Height="Auto"/>
+                                            <RowDefinition Height="*"/>
+                                            <RowDefinition Height="Auto"/>
+                                        </Grid.RowDefinitions>
+
+                                        <!-- Numeric values placed above the bars -->
+                                        <StackPanel Grid.Row="0" Orientation="Vertical" HorizontalAlignment="Center" Margin="0,0,0,6">
+                                            <TextBlock Text="{Binding Revenue, StringFormat='R: {0:N0}'}" Foreground="{DynamicResource AccentColor}" FontSize="12" HorizontalAlignment="Center"/>
+                                            <TextBlock Text="{Binding Expense, StringFormat='D: {0:N0}'}" Foreground="#FF6B6B" FontSize="12" HorizontalAlignment="Center"/>
+                                            <TextBlock Text="{Binding Net, StringFormat='Net: {0:N0}'}" Foreground="#FFA500" FontSize="12" HorizontalAlignment="Center"/>
+                                        </StackPanel>
+
+                                        <!-- bars area -->
+                                        <Grid Grid.Row="1" Height="320" VerticalAlignment="Bottom">
+                                            <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Bottom">
+                                                <!-- Revenue bar -->
+                                                <Border Width="36" Height="{Binding RevenueHeight}" Background="{DynamicResource AccentColor}" CornerRadius="6" ToolTip="{Binding Revenue}"/>
+                                                <!-- Spacer -->
+                                                <Border Width="12" Background="Transparent"/>
+                                                <!-- Expense bar -->
+                                                <Border Width="36" Height="{Binding ExpenseHeight}" Background="#FF6B6B" CornerRadius="6" ToolTip="{Binding Expense}"/>
+                                            </StackPanel>
+                                        </Grid>
+
+                                        <!-- Month label at the bottom -->
+                                        <TextBlock Grid.Row="2" Text="{Binding Label}" HorizontalAlignment="Center" Foreground="{DynamicResource TextSecondary}" Margin="0,6,0,0" TextWrapping="Wrap" TextAlignment="Center"/>
+                                    </Grid>
+                                </StackPanel>
+                            </DataTemplate>
+                        </ListBox.ItemTemplate>
+                    </ListBox>
+                </StackPanel>
+            </Border>
+
+            <!-- Yearly histogram: grouped bars per year -->
+            <Border Grid.Column="1" Background="{DynamicResource CardBackground}" BorderBrush="{DynamicResource GlobalElementBorderBrush}" BorderThickness="1" CornerRadius="8" Padding="12" Height="460" MinHeight="360" Margin="12,0,0,0">
+                <StackPanel>
+                    <StackPanel Margin="0,0,0,8">
+                        <TextBlock Text="Evolution annuelle" FontWeight="SemiBold" Foreground="{DynamicResource TextPrimary}" FontSize="16"/>
+                        <TextBlock Text="Totaux annuels (R: Revenu, D: Depense, Net)" Foreground="{DynamicResource TextSecondary}" FontSize="12"/>
+                    </StackPanel>
+
+                    <StackPanel Orientation="Horizontal" Margin="0,8,0,12">
+                        <Border Background="{DynamicResource AccentColor}" Width="12" Height="12" CornerRadius="3" Margin="0,0,6,0"/>
+                        <TextBlock Text="Revenu" Foreground="{DynamicResource TextSecondary}" Margin="0,0,12,0"/>
+                        <Border Background="#FF6B6B" Width="12" Height="12" CornerRadius="3" Margin="0,0,6,0"/>
+                        <TextBlock Text="Depense" Foreground="{DynamicResource TextSecondary}" Margin="0,0,12,0"/>
+                        <Border Background="#FFA500" Width="12" Height="12" CornerRadius="3" Margin="0,0,6,0"/>
+                        <TextBlock Text="Net" Foreground="{DynamicResource TextSecondary}"/>
+                    </StackPanel>
+
+                    <!-- Yearly chart also uses ListBox for consistent scrolling behavior -->
+                    <ListBox ItemsSource="{Binding YearlyData}"
+                             ScrollViewer.HorizontalScrollBarVisibility="Auto"
+                             ScrollViewer.VerticalScrollBarVisibility="Disabled"
+                             ScrollViewer.CanContentScroll="False"
+                             Background="Transparent"
+                             BorderThickness="0"
+                             HorizontalContentAlignment="Left"
+                             ItemContainerStyle="{StaticResource ChartListItemStyle}">
+                        <ListBox.ItemsPanel>
+                            <ItemsPanelTemplate>
+                                <StackPanel Orientation="Horizontal"/>
+                            </ItemsPanelTemplate>
+                        </ListBox.ItemsPanel>
+
+                        <ListBox.ItemTemplate>
+                            <DataTemplate>
+                                <!-- Year data: numeric labels above bars, year at bottom -->
+                                <StackPanel Margin="14,0" Width="180" VerticalAlignment="Bottom">
+                                    <Grid>
+                                        <Grid.RowDefinitions>
+                                            <RowDefinition Height="Auto"/>
+                                            <RowDefinition Height="*"/>
+                                            <RowDefinition Height="Auto"/>
+                                        </Grid.RowDefinitions>
+
+                                        <StackPanel Grid.Row="0" Orientation="Vertical" HorizontalAlignment="Center" Margin="0,0,0,6">
+                                            <TextBlock Text="{Binding Revenue, StringFormat='R: {0:N0}'}" Foreground="{DynamicResource AccentColor}" FontSize="13" HorizontalAlignment="Center"/>
+                                            <TextBlock Text="{Binding Expense, StringFormat='D: {0:N0}'}" Foreground="#FF6B6B" FontSize="13" HorizontalAlignment="Center"/>
+                                            <TextBlock Text="{Binding Net, StringFormat='Net: {0:N0}'}" Foreground="#FFA500" FontSize="13" HorizontalAlignment="Center"/>
+                                        </StackPanel>
+
+                                        <Grid Grid.Row="1" Height="380" VerticalAlignment="Bottom">
+                                            <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Bottom">
+                                                <Border Width="48" Height="{Binding RevenueHeight}" Background="{DynamicResource AccentColor}" CornerRadius="6" ToolTip="{Binding Revenue}"/>
+                                                <Border Width="16" Background="Transparent"/>
+                                                <Border Width="48" Height="{Binding ExpenseHeight}" Background="#FF6B6B" CornerRadius="6" ToolTip="{Binding Expense}"/>
+                                            </StackPanel>
+                                        </Grid>
+
+                                        <TextBlock Grid.Row="2" Text="{Binding Year}" HorizontalAlignment="Center" Foreground="{DynamicResource TextSecondary}" Margin="0,6,0,0"/>
+                                    </Grid>
+                                </StackPanel>
+                            </DataTemplate>
+                        </ListBox.ItemTemplate>
+                    </ListBox>
+                </StackPanel>
+            </Border>
+        </Grid>
+    </Grid>
+</UserControl>

@@ -284,19 +284,25 @@
                                                        Foreground="{DynamicResource TextPrimary}"
                                                        FontWeight="SemiBold"
                                                        FontSize="14"
-                                                       VerticalAlignment="Center"/>
+                                                       VerticalAlignment="Top"
+                                                       TextWrapping="Wrap"
+                                                       TextTrimming="None"/>
 
 											<TextBlock Grid.Column="2"
                                                        Text="{Binding Adresse}"
                                                        Foreground="{DynamicResource TextSecondary}"
                                                        FontSize="14"
-                                                       VerticalAlignment="Center"/>
+                                                       VerticalAlignment="Top"
+                                                       TextWrapping="Wrap"
+                                                       TextTrimming="None"/>
 
 											<TextBlock Grid.Column="3"
                                                        Text="{Binding Telephone}"
                                                        Foreground="{DynamicResource TextSecondary}"
                                                        FontSize="14"
-                                                       VerticalAlignment="Center"/>
+                                                       VerticalAlignment="Top"
+                                                       TextWrapping="Wrap"
+                                                       TextTrimming="None"/>
 
 											<TextBlock Grid.Column="4"
                                                        Text="{Binding NbCommandes}"

@@ -168,6 +168,9 @@
                 <Button Content="Caisse" Tag="{StaticResource IconCaisse}" 
                         x:Name="CaisseButton"
                         Command="{Binding NavigateCommand}" CommandParameter="CaisseView" Style="{StaticResource NavButtonStyle}"/>
+                <Button Content="Evolution" Tag="{StaticResource IconCaisse}" 
+                        x:Name="EvolutionButton"
+                        Command="{Binding NavigateCommand}" CommandParameter="EvolutionView" Style="{StaticResource NavButtonStyle}"/>
 
                 <!-- PROTHESE Section -->
                 <TextBlock Text="PROTHESE" Style="{StaticResource SectionTitleStyle}"/>

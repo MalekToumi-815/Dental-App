@@ -82,6 +82,9 @@ namespace Dental_App
             containerRegistry.RegisterForNavigation<OrdonnanceTemplateDialogView, OrdonnanceTemplateDialogViewModel>("OrdonnanceTemplateDialogView");
             containerRegistry.RegisterForNavigation<MainView>();
 
+            // Register Evolution view (Caisse evolution charts)
+            containerRegistry.RegisterForNavigation<EvolutionView, EvolutionViewModel>("EvolutionView");
+
             containerRegistry.RegisterDialog<NotificationDialogView, NotificationDialogViewModel>();
         }
 
