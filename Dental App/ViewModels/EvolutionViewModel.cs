@@ -48,6 +48,17 @@ namespace Dental_App.ViewModels
             // Init UpdateCommand so UI can trigger reload
             UpdateCommand = new DelegateCommand(async () => await LoadYearAsync(Year));
 
+            // Allow selecting a year from the yearly chart
+            SelectYearCommand = new DelegateCommand<int?>(y =>
+            {
+                if (y.HasValue)
+                {
+                    Year = y.Value;
+                    // fire-and-forget load (UI remains responsive)
+                    _ = LoadYearAsync(Year);
+                }
+            });
+
             // Load data for the default year
             _ = LoadYearAsync(_year);
         }
@@ -67,6 +78,7 @@ namespace Dental_App.ViewModels
         }
 
         public DelegateCommand UpdateCommand { get; }
+        public DelegateCommand<int?> SelectYearCommand { get; }
 
         public ObservableCollection<MonthData> MonthlyData { get; }
         public ObservableCollection<YearData> YearlyData { get; }
