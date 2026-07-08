@@ -115,7 +115,7 @@
         <!-- Inputs: keep only Year input -->
         <StackPanel Orientation="Horizontal" Grid.Row="0" Margin="0,0,0,12">
             <StackPanel Margin="0,0,20,0">
-                <TextBlock Text="Annee"  FontWeight="Bold" Style="{StaticResource SmallLabel}"/>
+                <TextBlock Text="Annee"  FontWeight="Bold" Style="{StaticResource SmallLabel}" Margin="0,0,0,12" />
                 <StackPanel Orientation="Horizontal">
                     <TextBox Width="120" Style="{StaticResource InputStyle}" Tag="Annee" Text="{Binding Year, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
                     <Button Content="Mettre a jour" Command="{Binding UpdateCommand}" Style="{StaticResource TealBtn}" Margin="12,0,0,0" Padding="12,6" VerticalAlignment="Center"/>
@@ -130,7 +130,7 @@
             </Grid.ColumnDefinitions>
 
             <!-- Monthly histogram: grouped bars (revenue vs depense) -->
-            <Border Grid.Column="0" Background="{DynamicResource CardBackground}" BorderBrush="{DynamicResource GlobalElementBorderBrush}" BorderThickness="1" CornerRadius="8" Padding="12" Height="460" MinHeight="360">
+            <Border Grid.Column="0" Background="{DynamicResource CardBackground}" BorderBrush="{DynamicResource GlobalElementBorderBrush}" BorderThickness="1" CornerRadius="8" Padding="12"  MinHeight="360">
                 <!-- Use Grid so chart area gets constrained height (StackPanel gave infinite height) -->
                 <Grid>
                     <Grid.RowDefinitions>
@@ -194,7 +194,7 @@
             </Border>
 
             <!-- Yearly histogram: grouped bars per year -->
-            <Border Grid.Column="1" Background="{DynamicResource CardBackground}" BorderBrush="{DynamicResource GlobalElementBorderBrush}" BorderThickness="1" CornerRadius="8" Padding="12" Height="460" MinHeight="360" Margin="12,0,0,0">
+            <Border Grid.Column="1" Background="{DynamicResource CardBackground}" BorderBrush="{DynamicResource GlobalElementBorderBrush}" BorderThickness="1" CornerRadius="8" Padding="12"  MinHeight="360" Margin="12,0,0,0">
                 <Grid>
                     <Grid.RowDefinitions>
                         <RowDefinition Height="Auto"/>
