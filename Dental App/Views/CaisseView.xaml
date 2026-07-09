@@ -7,7 +7,7 @@
              Background="{DynamicResource PrimaryBackground}">
     <UserControl.Resources>
         <BooleanToVisibilityConverter x:Key="BoolToVis"/>
-        
+
         <!-- Convertisseur pour afficher le message "aucune transaction" -->
         <converters:EmptyListToVisibilityConverter x:Key="EmptyListToVis"/>
 
@@ -53,6 +53,32 @@
             </Setter>
         </Style>
 
+        <!-- Style TextBox simple sans placeholder (pour le champ Nom et la recherche) -->
+        <Style x:Key="PlainInputStyle" TargetType="TextBox">
+            <Setter Property="Background" Value="{DynamicResource SecondaryBackground}"/>
+            <Setter Property="Foreground" Value="{DynamicResource TextPrimary}"/>
+            <Setter Property="BorderBrush" Value="{DynamicResource GlobalElementBorderBrush}"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="FontSize" Value="14"/>
+            <Setter Property="Height" Value="44"/>
+            <Setter Property="CaretBrush" Value="{DynamicResource AccentColor}"/>
+            <Setter Property="Padding" Value="12,0"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="TextBox">
+                        <Border Background="{TemplateBinding Background}"
+                                BorderBrush="{TemplateBinding BorderBrush}"
+                                BorderThickness="{TemplateBinding BorderThickness}"
+                                CornerRadius="8">
+                            <ScrollViewer x:Name="PART_ContentHost"
+                                          Margin="12,0"
+                                          VerticalAlignment="Center"/>
+                        </Border>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
         <!-- DatePickerTextBox style for consistent date input appearance -->
         <Style TargetType="{x:Type DatePickerTextBox}">
             <Setter Property="Template">
@@ -67,7 +93,7 @@
             </Setter>
         </Style>
 
-        <!-- FormDatePickerStyle copied from ConsultationDialogView for unified styling -->
+        <!-- FormDatePickerStyle copied from RendezVousView for unified styling -->
         <Style x:Key="FormDatePickerStyle" TargetType="DatePicker">
             <Setter Property="Background" Value="Transparent"/>
             <Setter Property="Foreground" Value="{DynamicResource TextPrimary}"/>
@@ -300,7 +326,7 @@
     </UserControl.Resources>
 
     <Grid Background="{DynamicResource PrimaryBackground}">
-        <ScrollViewer VerticalScrollBarVisibility="Hidden" 
+        <ScrollViewer VerticalScrollBarVisibility="Hidden"
                       HorizontalScrollBarVisibility="Disabled"
                       PanningMode="VerticalOnly">
             <StackPanel>
@@ -308,7 +334,7 @@
                 <Border Background="{DynamicResource PrimaryBackground}" Padding="20">
                     <Grid>
                         <TextBlock Text="Caisse" FontSize="28" FontWeight="Bold" Foreground="{DynamicResource TextPrimary}" VerticalAlignment="Center"/>
-                        <Button HorizontalAlignment="Right" 
+                        <Button HorizontalAlignment="Right"
                                 Style="{StaticResource TealBtn}"
                                 Padding="20,0" Height="42"
                                 Command="{Binding OpenModalCommand}">
@@ -384,30 +410,25 @@
                             <RowDefinition Height="Auto"/>
                             <RowDefinition Height="Auto"/>
                             <RowDefinition Height="Auto"/>
-                            <RowDefinition Height="Auto"/><!-- added for pagination footer -->
+                            <RowDefinition Height="Auto"/>
+                            <!-- pagination footer -->
                         </Grid.RowDefinitions>
 
-                        <!-- Search Bar by Date -->
+                        <!-- Search Bar by Nom -->
                         <Border Grid.Row="0"
                                 BorderBrush="{DynamicResource GlobalElementBorderBrush}"
                                 BorderThickness="0,0,0,1"
                                 Padding="20,16"
                                 Background="{DynamicResource PrimaryBackground}">
                             <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
-                                <TextBlock Text="Rechercher par date:"
+                                <TextBlock Text="Rechercher par nom:"
                                            Foreground="{DynamicResource TextPrimary}"
                                            FontSize="14" FontWeight="SemiBold"
                                            VerticalAlignment="Center"
                                            Margin="0,0,12,0"/>
-                                <Border Background="{DynamicResource SecondaryBackground}" 
-                                        BorderBrush="{DynamicResource GlobalElementBorderBrush}" 
-                                        BorderThickness="1" 
-                                        CornerRadius="8">
-                                    <DatePicker Style="{StaticResource FormDatePickerStyle}"
-                                                SelectedDate="{Binding SearchDate, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, Converter={StaticResource DateTimeToDateOnlyConverter}}"
-                                                Width="200"
-                                                ToolTip="Cliquez pour sélectionner une date"/>
-                                </Border>
+                                <TextBox Style="{StaticResource PlainInputStyle}"
+                                         Width="220"
+                                         Text="{Binding SearchNom, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
                                 <Button Content="Réinitialiser"
                                         Style="{StaticResource TealBtn}"
                                         Width="120" Height="44"
@@ -426,21 +447,25 @@
                                 Background="{DynamicResource PrimaryBackground}">
                             <Grid>
                                 <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="120"/>
                                     <ColumnDefinition Width="150"/>
-                                    <ColumnDefinition Width="150"/>
+                                    <ColumnDefinition Width="130"/>
                                     <ColumnDefinition Width="120"/>
                                     <ColumnDefinition Width="100"/>
                                 </Grid.ColumnDefinitions>
                                 <TextBlock Grid.Column="0" Text="DATE"
                                            Foreground="{DynamicResource TextSecondary}"
                                            FontSize="12" FontWeight="SemiBold"/>
-                                <TextBlock Grid.Column="1" Text="TYPE"
+                                <TextBlock Grid.Column="1" Text="NOM"
                                            Foreground="{DynamicResource TextSecondary}"
                                            FontSize="12" FontWeight="SemiBold"/>
-                                <TextBlock Grid.Column="2" Text="MONTANT"
+                                <TextBlock Grid.Column="2" Text="TYPE"
                                            Foreground="{DynamicResource TextSecondary}"
                                            FontSize="12" FontWeight="SemiBold"/>
-                                <TextBlock Grid.Column="3" Text="ACTIONS"
+                                <TextBlock Grid.Column="3" Text="MONTANT"
+                                           Foreground="{DynamicResource TextSecondary}"
+                                           FontSize="12" FontWeight="SemiBold"/>
+                                <TextBlock Grid.Column="4" Text="ACTIONS"
                                            Foreground="{DynamicResource TextSecondary}"
                                            FontSize="12" FontWeight="SemiBold"
                                            HorizontalAlignment="Center"/>
@@ -468,8 +493,9 @@
                                         </Border.Style>
                                         <Grid>
                                             <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="120"/>
                                                 <ColumnDefinition Width="150"/>
-                                                <ColumnDefinition Width="150"/>
+                                                <ColumnDefinition Width="130"/>
                                                 <ColumnDefinition Width="120"/>
                                                 <ColumnDefinition Width="100"/>
                                             </Grid.ColumnDefinitions>
@@ -481,11 +507,19 @@
                                                        FontSize="14"
                                                        VerticalAlignment="Center"/>
 
+                                            <!-- Nom -->
+                                            <TextBlock Grid.Column="1"
+                                                       Text="{Binding Nom}"
+                                                       Foreground="{DynamicResource TextPrimary}"
+                                                       FontSize="14"
+                                                       VerticalAlignment="Center"
+                                                       TextTrimming="CharacterEllipsis"/>
+
                                             <!-- Type -->
-                                            <Border Grid.Column="1"
-                                                    CornerRadius="8" 
-                                                    Padding="12,6" 
-                                                    HorizontalAlignment="Left" 
+                                            <Border Grid.Column="2"
+                                                    CornerRadius="8"
+                                                    Padding="12,6"
+                                                    HorizontalAlignment="Left"
                                                     Margin="0">
                                                 <Border.Style>
                                                     <Style TargetType="Border">
@@ -501,7 +535,7 @@
                                                     </Style>
                                                 </Border.Style>
                                                 <TextBlock Text="{Binding Type}"
-                                                           FontWeight="SemiBold" 
+                                                           FontWeight="SemiBold"
                                                            FontSize="12">
                                                     <TextBlock.Style>
                                                         <Style TargetType="TextBlock">
@@ -520,7 +554,7 @@
                                             </Border>
 
                                             <!-- Montant -->
-                                            <TextBlock Grid.Column="2"
+                                            <TextBlock Grid.Column="3"
                                                        Text="{Binding Montant, StringFormat='0.00 DT'}"
                                                        Foreground="{DynamicResource TextPrimary}"
                                                        FontWeight="SemiBold"
@@ -528,7 +562,7 @@
                                                        VerticalAlignment="Center"/>
 
                                             <!-- Actions -->
-                                            <StackPanel Grid.Column="3"
+                                            <StackPanel Grid.Column="4"
                                                         Orientation="Horizontal"
                                                         HorizontalAlignment="Center"
                                                         VerticalAlignment="Center">
@@ -553,7 +587,7 @@
                                 Visibility="{Binding Transactions, Converter={StaticResource EmptyListToVis}}"
                                 Padding="20,40"
                                 Background="Transparent">
-                            <TextBlock Text="Aucune transaction trouvée pour cette date"
+                            <TextBlock Text="Aucune transaction trouvée"
                                        Foreground="{DynamicResource TextSecondary}"
                                        FontSize="14"
                                        HorizontalAlignment="Center"
@@ -572,8 +606,6 @@
                             </TextBlock>
 
                             <Button Content="Suivant" Command="{Binding NextPageCommand}" Width="110" Height="36" Style="{StaticResource TealBtn}" Margin="8,0,0,0"/>
-
-                         
                         </StackPanel>
 
                     </Grid>
@@ -625,14 +657,28 @@
                                        Foreground="#EF4444"
                                        FontSize="14" FontWeight="SemiBold"/>
                         </StackPanel>
-                        <Border Background="{DynamicResource SecondaryBackground}" 
-                                BorderBrush="{DynamicResource GlobalElementBorderBrush}" 
-                                BorderThickness="1" 
+                        <Border Background="{DynamicResource SecondaryBackground}"
+                                BorderBrush="{DynamicResource GlobalElementBorderBrush}"
+                                BorderThickness="1"
                                 CornerRadius="8">
                             <DatePicker Style="{StaticResource FormDatePickerStyle}"
                                         SelectedDate="{Binding NewDate, UpdateSourceTrigger=PropertyChanged, Converter={StaticResource DateTimeToDateOnlyConverter}}"
                                         ToolTip="Cliquez pour sélectionner une date"/>
                         </Border>
+                    </StackPanel>
+
+                    <!-- Nom -->
+                    <StackPanel Margin="0,0,0,16">
+                        <StackPanel Orientation="Horizontal" Margin="0,0,0,8">
+                            <TextBlock Text="Nom"
+                                       Foreground="{DynamicResource TextPrimary}"
+                                       FontSize="14" FontWeight="SemiBold"/>
+                            <TextBlock Text=" *"
+                                       Foreground="#EF4444"
+                                       FontSize="14" FontWeight="SemiBold"/>
+                        </StackPanel>
+                        <TextBox Style="{StaticResource PlainInputStyle}"
+                                 Text="{Binding NewNom, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
                     </StackPanel>
 
                     <!-- Type -->
@@ -664,7 +710,6 @@
                                        FontSize="14" FontWeight="SemiBold"/>
                         </StackPanel>
                         <TextBox Style="{StaticResource InputStyle}"
-                                 
                                  Text="{Binding NewMontant, Mode=TwoWay, StringFormat='0.00'}"/>
                     </StackPanel>
 

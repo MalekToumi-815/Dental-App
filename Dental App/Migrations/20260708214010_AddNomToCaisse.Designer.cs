@@ -3,6 +3,7 @@ using System;
 using Dental_App.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -10,9 +11,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Dental_App.Migrations
 {
     [DbContext(typeof(DentalContext))]
-    partial class DentalContextModelSnapshot : ModelSnapshot
+    [Migration("20260708214010_AddNomToCaisse")]
+    partial class AddNomToCaisse
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder.HasAnnotation("ProductVersion", "8.0.24");
@@ -73,12 +76,7 @@ namespace Dental_App.Migrations
 
             modelBuilder.Entity("Dental_App.Models.Caisse", b =>
                 {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("INTEGER");
-
                     b.Property<string>("DateDuJour")
-                        .IsRequired()
                         .HasColumnType("TEXT");
 
                     b.Property<bool>("IsRevenu")
@@ -93,7 +91,7 @@ namespace Dental_App.Migrations
                         .IsRequired()
                         .HasColumnType("TEXT");
 
-                    b.HasKey("Id");
+                    b.HasKey("DateDuJour", "IsRevenu");
 
                     b.ToTable("Caisse", (string)null);
                 });

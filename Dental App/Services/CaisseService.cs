@@ -9,17 +9,17 @@ namespace Dental_App.Services
 {
     public interface ICaisseService
     {
-        // Core operations
-        Task<bool> AddOrUpdateCaisseAsync(decimal montant, bool isRevenu, DateOnly? date = null);
-        // New: set (override) montant for a date/type
-        Task<bool> SetCaisseAmountAsync(decimal montant, bool isRevenu, DateOnly? date = null);
-        
+        // Create / Update
+        Task<bool> CreateCaisseAsync(decimal montant, bool isRevenu, string nom, DateOnly? date = null);
+        Task<bool> UpdateCaisseAsync(int id, decimal montant, bool isRevenu, string nom, DateOnly date);
+
         // Retrieval operations
         Task<List<Caisse>> GetAllCaisseAsync();
         Task<List<Caisse>> GetCaisseByDateRangeAsync(DateOnly startDate, DateOnly endDate);
+        Task<List<Caisse>> GetCaisseByNomAsync(string nom);
         Task<(decimal totalRevenu, decimal totalDepense)> GetDailySummaryAsync(DateOnly date);
         Task<(decimal totalRevenu, decimal totalDepense)> GetRangeSummaryAsync(DateOnly startDate, DateOnly endDate);
-        
+
         // Today's operations
         Task<(decimal totalRevenu, decimal totalDepense)> GetTodaySummaryAsync();
 
@@ -38,11 +38,10 @@ namespace Dental_App.Services
         }
 
         /// <summary>
-        /// Add or update caisse entry for a specific date (or today if not specified)
-        /// Each date can have maximum 2 entries: one Revenu (true) and one Dépense (false)
-        /// If an entry already exists for this date and type, the montant is added to it
+        /// Creates a new caisse entry. Each transaction is now its own independent row,
+        /// identified by its Nom - multiple entries per date/type are allowed.
         /// </summary>
-        public async Task<bool> AddOrUpdateCaisseAsync(decimal montant, bool isRevenu, DateOnly? date = null)
+        public async Task<bool> CreateCaisseAsync(decimal montant, bool isRevenu, string nom, DateOnly? date = null)
         {
             try
             {
@@ -50,77 +49,53 @@ namespace Dental_App.Services
                     throw new ArgumentException("Le montant ne peut pas être négatif.", nameof(montant));
 
                 var targetDate = date ?? DateOnly.FromDateTime(DateTime.Now);
-                
-                // Find existing caisse entry for this date with the same type (Revenu or Dépense)
-                var existingCaisse = _context.Caisses.FirstOrDefault(c => 
-                    c.DateDuJour == targetDate && c.IsRevenu == isRevenu);
 
-                if (existingCaisse == null)
+                var newCaisse = new Caisse
                 {
-                    // Create new entry if it doesn't exist
-                    var newCaisse = new Caisse
-                    {
-                        DateDuJour = targetDate,
-                        Montant = montant,
-                        IsRevenu = isRevenu
-                    };
-                    _context.Caisses.Add(newCaisse);
-                }
-                else
-                {
-                    // Add to existing montant
-                    existingCaisse.Montant = (existingCaisse.Montant ?? 0) + montant;
-                    _context.Caisses.Update(existingCaisse);
-                }
+                    DateDuJour = targetDate,
+                    Montant = montant,
+                    IsRevenu = isRevenu,
+                    Nom = nom ?? string.Empty
+                };
 
+                _context.Caisses.Add(newCaisse);
                 await _context.SaveChangesAsync();
                 return true;
             }
             catch (Exception ex)
             {
-                System.Diagnostics.Debug.WriteLine($"Error adding or updating caisse: {ex.Message}");
+                System.Diagnostics.Debug.WriteLine($"Error creating caisse: {ex.Message}");
                 return false;
             }
         }
 
         /// <summary>
-        /// Set (override) the montant for a caisse entry for a specific date/type (or today if not specified)
-        /// If an entry doesn't exist, it will be created with the provided montant.
+        /// Updates an existing caisse entry identified by its Id.
         /// </summary>
-        public async Task<bool> SetCaisseAmountAsync(decimal montant, bool isRevenu, DateOnly? date = null)
+        public async Task<bool> UpdateCaisseAsync(int id, decimal montant, bool isRevenu, string nom, DateOnly date)
         {
             try
             {
                 if (montant < 0)
                     throw new ArgumentException("Le montant ne peut pas être négatif.", nameof(montant));
 
-                var targetDate = date ?? DateOnly.FromDateTime(DateTime.Now);
-
-                var existingCaisse = _context.Caisses.FirstOrDefault(c =>
-                    c.DateDuJour == targetDate && c.IsRevenu == isRevenu);
+                var existingCaisse = await _context.Caisses.FirstOrDefaultAsync(c => c.Id == id);
 
                 if (existingCaisse == null)
-                {
-                    var newCaisse = new Caisse
-                    {
-                        DateDuJour = targetDate,
-                        Montant = montant,
-                        IsRevenu = isRevenu
-                    };
-                    _context.Caisses.Add(newCaisse);
-                }
-                else
-                {
-                    existingCaisse.Montant = montant;
-                    _context.Caisses.Update(existingCaisse);
-                }
+                    return false;
 
+                existingCaisse.DateDuJour = date;
+                existingCaisse.Montant = montant;
+                existingCaisse.IsRevenu = isRevenu;
+                existingCaisse.Nom = nom ?? string.Empty;
+
+                _context.Caisses.Update(existingCaisse);
                 await _context.SaveChangesAsync();
                 return true;
             }
             catch (Exception ex)
             {
-                System.Diagnostics.Debug.WriteLine($"Error setting caisse montant: {ex.Message}");
+                System.Diagnostics.Debug.WriteLine($"Error updating caisse: {ex.Message}");
                 return false;
             }
         }
@@ -143,6 +118,20 @@ namespace Dental_App.Services
             return await _context.Caisses
                     .Where(c => c.DateDuJour >= startDate && c.DateDuJour <= endDate)
                     .OrderBy(c => c.DateDuJour)
+                    .ToListAsync();
+        }
+
+        /// <summary>
+        /// Search caisse entries by Nom (case-insensitive partial match), ordered by date (descending)
+        /// </summary>
+        public async Task<List<Caisse>> GetCaisseByNomAsync(string nom)
+        {
+            if (string.IsNullOrWhiteSpace(nom))
+                return new List<Caisse>();
+
+            return await _context.Caisses
+                    .Where(c => EF.Functions.Like(c.Nom, $"%{nom}%"))
+                    .OrderByDescending(c => c.DateDuJour)
                     .ToListAsync();
         }
 
@@ -172,8 +161,7 @@ namespace Dental_App.Services
 
         /// <summary>
         /// Get daily summary: returns total Revenu and total Dépense for a specific date
-        /// Since design allows max 2 entries per date (1 Revenu, 1 Dépense), 
-        /// this will typically return one of each or empty
+        /// (sums across all named entries for that day)
         /// </summary>
         public async Task<(decimal totalRevenu, decimal totalDepense)> GetDailySummaryAsync(DateOnly date)
         {
@@ -198,15 +186,15 @@ namespace Dental_App.Services
         public async Task<(decimal totalRevenu, decimal totalDepense)> GetRangeSummaryAsync(DateOnly startDate, DateOnly endDate)
         {
             var rangedCaisses = await GetCaisseByDateRangeAsync(startDate, endDate);
-            
+
             var totalRevenu = rangedCaisses
                 .Where(c => c.IsRevenu)
                 .Sum(c => c.Montant ?? 0);
-            
+
             var totalDepense = rangedCaisses
                 .Where(c => !c.IsRevenu)
                 .Sum(c => c.Montant ?? 0);
-            
+
             return (totalRevenu, totalDepense);
         }
 
