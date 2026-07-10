@@ -28,6 +28,8 @@
         <Geometry x:Key="IconCaisse">M3,6H21V18H3V6M12,9A3,3 0 0,1 15,12A3,3 0 0,1 12,15A3,3 0 0,1 9,12A3,3 0 0,1 12,9M7,8A2,2 0 0,1 5,10V14A2,2 0 0,1 7,16H17A2,2 0 0,1 19,14V10A2,2 0 0,1 17,8H7Z</Geometry>
         <Geometry x:Key="IconProthese">M12,2C13.1,2 14,2.9 14,4C14,4.5 13.77,4.95 13.4,5.23C13.81,5.92 14.32,6.73 14.85,7.61L17.6,9.35C18.74,10.08 19.5,11.35 19.5,12.73V14C19.5,14.55 19.05,15 18.5,15H5.5C4.95,15 4.5,14.55 4.5,14V12.73C4.5,11.35 5.26,10.08 6.4,9.35L9.15,7.61C9.68,6.73 10.19,5.92 10.6,5.23C10.23,4.95 10,4.5 10,4C10,2.9 10.9,2 12,2M12,6C11.45,6 11,6.45 11,7C11,7.55 11.45,8 12,8C12.55,8 13,7.55 13,7C13,6.45 12.55,6 12,6Z</Geometry>
         <Geometry x:Key="IconProthesistes">M12,12c2.21,0 4,-1.79 4,-4c0,-2.21 -1.79,-4 -4,-4c-2.21,0 -4,1.79 -4,4c0,2.21 1.79,4 4,4zm0,2c-2.67,0 -8,1.34 -8,4v2h16v-2c0,-2.66 -5.33,-4 -8,-4z</Geometry>
+        <!-- New icon: statistics pillars / evolution -->
+        <Geometry x:Key="IconEvolution">M3,21h4V9H3v12zM9,21h4V5H9v16zM15,21h4V13h-4v8z</Geometry>
 
         <!-- Section Title Style -->
         <Style x:Key="SectionTitleStyle" TargetType="TextBlock">
@@ -168,7 +170,7 @@
                 <Button Content="Caisse" Tag="{StaticResource IconCaisse}" 
                         x:Name="CaisseButton"
                         Command="{Binding NavigateCommand}" CommandParameter="CaisseView" Style="{StaticResource NavButtonStyle}"/>
-                <Button Content="Evolution" Tag="{StaticResource IconCaisse}" 
+                <Button Content="Evolution" Tag="{StaticResource IconEvolution}" 
                         x:Name="EvolutionButton"
                         Command="{Binding NavigateCommand}" CommandParameter="EvolutionView" Style="{StaticResource NavButtonStyle}"/>
 
