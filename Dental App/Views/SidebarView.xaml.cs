@@ -40,6 +40,7 @@ namespace Dental_App.Views
                 { "RadioImagesView", RadioImagesButton },
                 { "OdontogrammeView", OdontogrammeButton },
                 { "CaisseView", CaisseButton },
+                { "EvolutionView", EvolutionButton }, // Added mapping so it highlights
                 { "CommandeProthesisteView", CommandeProthesisteButton },
                 { "ProthesisteView", ProthesistesButton } // Fixed
             };

@@ -130,7 +130,7 @@ namespace Dental_App.Services
                 return new List<Caisse>();
 
             return await _context.Caisses
-                    .Where(c => EF.Functions.Like(c.Nom, $"%{nom}%"))
+                    .Where(c => EF.Functions.Like(c.Nom, $"{nom}%"))
                     .OrderByDescending(c => c.DateDuJour)
                     .ToListAsync();
         }
