@@ -64,7 +64,21 @@ namespace Dental_App.ViewModels
             {
                 if (SetProperty(ref _searchNom, value))
                 {
-                    FilterTransactionsByNom();
+                    _ = FilterTransactionsByCriteriaAsync();
+                }
+            }
+        }
+
+        // --- Search (by Date) ---
+        private DateOnly? _searchDate;
+        public DateOnly? SearchDate
+        {
+            get => _searchDate;
+            set
+            {
+                if (SetProperty(ref _searchDate, value))
+                {
+                    _ = FilterTransactionsByCriteriaAsync();
                 }
             }
         }
@@ -221,7 +235,7 @@ namespace Dental_App.ViewModels
         }
 
         /// <summary>
-        /// Loads paginated data (or delegated to Nom filter if SearchNom is set)
+        /// Loads paginated data (or delegated to Nom/date filter if set)
         /// </summary>
         private async Task LoadDataAsync()
         {
@@ -230,9 +244,9 @@ namespace Dental_App.ViewModels
                 IsLoading = true;
                 Debug.WriteLine("[CaisseViewModel] Chargement des transactions");
 
-                if (!string.IsNullOrWhiteSpace(SearchNom))
+                if (!string.IsNullOrWhiteSpace(SearchNom) || SearchDate.HasValue)
                 {
-                    await FilterTransactionsByNomAsync();
+                    await FilterTransactionsByCriteriaAsync();
                 }
                 else
                 {
@@ -544,12 +558,97 @@ namespace Dental_App.ViewModels
         }
 
         /// <summary>
+        /// Filters transactions by date, name, or both
+        /// </summary>
+        private async Task FilterTransactionsByCriteriaAsync()
+        {
+            try
+            {
+                Debug.WriteLine($"[FilterTransactionsByCriteria] SearchNom: {SearchNom}, SearchDate: {SearchDate}");
+
+                Transactions.Clear();
+
+                // If no filters, load paginated
+                if (string.IsNullOrWhiteSpace(SearchNom) && !SearchDate.HasValue)
+                {
+                    await LoadPageAsync();
+                    return;
+                }
+
+                // If both filters provided: get by date then filter by name
+                if (SearchDate.HasValue && !string.IsNullOrWhiteSpace(SearchNom))
+                {
+                    var caisses = await _caisseService.GetCaisseByDateRangeAsync(SearchDate.Value, SearchDate.Value);
+                    var filtered = caisses.Where(c => !string.IsNullOrWhiteSpace(c.Nom) && c.Nom.IndexOf(SearchNom, StringComparison.InvariantCultureIgnoreCase) >= 0)
+                                          .OrderByDescending(c => c.DateDuJour)
+                                          .ToList();
+
+                    foreach (var caisse in filtered)
+                    {
+                        Transactions.Add(new TransactionDisplayItem
+                        {
+                            Id = caisse.Id,
+                            Date = caisse.DateDuJour,
+                            Nom = caisse.Nom,
+                            Type = caisse.IsRevenu ? "Revenu" : "Depense",
+                            Montant = caisse.Montant ?? 0
+                        });
+                    }
+
+                    CurrentPage = 1;
+                    TotalItems = Transactions.Count;
+                    TotalPages = 1;
+                    NextPageCommand.RaiseCanExecuteChanged();
+                    PreviousPageCommand.RaiseCanExecuteChanged();
+                    return;
+                }
+
+                // If only date provided
+                if (SearchDate.HasValue)
+                {
+                    var caisses = await _caisseService.GetCaisseByDateRangeAsync(SearchDate.Value, SearchDate.Value);
+
+                    foreach (var caisse in caisses.OrderByDescending(c => c.DateDuJour))
+                    {
+                        Transactions.Add(new TransactionDisplayItem
+                        {
+                            Id = caisse.Id,
+                            Date = caisse.DateDuJour,
+                            Nom = caisse.Nom,
+                            Type = caisse.IsRevenu ? "Revenu" : "Depense",
+                            Montant = caisse.Montant ?? 0
+                        });
+                    }
+
+                    CurrentPage = 1;
+                    TotalItems = Transactions.Count;
+                    TotalPages = 1;
+                    NextPageCommand.RaiseCanExecuteChanged();
+                    PreviousPageCommand.RaiseCanExecuteChanged();
+                    return;
+                }
+
+                // If only name provided
+                if (!string.IsNullOrWhiteSpace(SearchNom))
+                {
+                    await FilterTransactionsByNomAsync();
+                    return;
+                }
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine($"[FilterTransactionsByCriteria] ERREUR: {ex.Message}\n{ex.StackTrace}");
+            }
+        }
+
+        /// <summary>
         /// Clears the search Nom and shows all transactions (paginated)
         /// </summary>
         private void ClearSearch()
         {
             Debug.WriteLine("[ClearSearch] Réinitialisation de la recherche");
             SearchNom = string.Empty;
+            SearchDate = null;
             CurrentPage = 1;
             _ = LoadPageAsync();
         }
