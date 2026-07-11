@@ -433,14 +433,20 @@
 
                                 <StackPanel Orientation="Horizontal" VerticalAlignment="Center" Margin="16,0,0,0">
                                     <TextBlock Text="Rechercher par date:"
-                                               Foreground="{DynamicResource TextPrimary}"
-                                               FontSize="14" FontWeight="SemiBold"
-                                               VerticalAlignment="Center"
-                                               Margin="0,0,12,0"/>
-                                    <DatePicker Style="{StaticResource FormDatePickerStyle}"
-                                                SelectedDate="{Binding SearchDate, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, Converter={StaticResource DateTimeToDateOnlyConverter}}"
-                                                Width="220"
-                                                ToolTip="Sélectionnez une date"/>
+               Foreground="{DynamicResource TextPrimary}"
+               FontSize="14" FontWeight="SemiBold"
+               VerticalAlignment="Center"
+               Margin="0,0,12,0"/>
+                                    <Border Background="{DynamicResource SecondaryBackground}"
+            BorderBrush="{DynamicResource GlobalElementBorderBrush}"
+            BorderThickness="1"
+            CornerRadius="8"
+            Width="220"
+            Height="44">
+                                        <DatePicker Style="{StaticResource FormDatePickerStyle}"
+                    SelectedDate="{Binding SearchDate, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, Converter={StaticResource DateTimeToDateOnlyConverter}}"
+                    ToolTip="Sélectionnez une date"/>
+                                    </Border>
                                 </StackPanel>
 
                                 <Button Content="Réinitialiser"
