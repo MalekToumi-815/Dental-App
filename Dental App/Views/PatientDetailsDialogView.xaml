@@ -73,6 +73,32 @@
                     <TextBlock Grid.Column="1" Text="{Binding Patient.Profession}" Foreground="{DynamicResource TextPrimary}" FontSize="13" TextAlignment="Right"/>
                 </Grid>
 
+                <!-- ANTECEDENTS: show medical antecedents assigned to the patient -->
+                <TextBlock Text="ANTECEDENTS" FontSize="12" FontWeight="SemiBold" Foreground="{DynamicResource TextSecondary}" Margin="0,24,0,12"/>
+
+                <Border Margin="0,8,0,8">
+                    <ItemsControl ItemsSource="{Binding Antecedents}">
+                        <ItemsControl.ItemTemplate>
+                            <DataTemplate>
+                                <TextBlock Text="{Binding}" Foreground="{DynamicResource TextPrimary}" FontSize="13" TextWrapping="Wrap" Margin="0,6,0,6"/>
+                            </DataTemplate>
+                        </ItemsControl.ItemTemplate>
+                    </ItemsControl>
+                </Border>
+
+                <TextBlock Text="Aucun antecedent enregistre" Foreground="{DynamicResource TextSecondary}" FontSize="13" Margin="0,4,0,0">
+                    <TextBlock.Style>
+                        <Style TargetType="TextBlock">
+                            <Setter Property="Visibility" Value="Collapsed"/>
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding Antecedents.Count}" Value="0">
+                                    <Setter Property="Visibility" Value="Visible"/>
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </TextBlock.Style>
+                </TextBlock>
+
                 <TextBlock Text="FINANCES" FontSize="12" FontWeight="SemiBold" Foreground="{DynamicResource TextSecondary}" Margin="0,24,0,12"/>
 
                 <Grid Margin="0,8,0,8">

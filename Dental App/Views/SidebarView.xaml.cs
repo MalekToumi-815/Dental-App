@@ -34,7 +34,6 @@ namespace Dental_App.Views
                 { "RendezVousView", RendezVousButton },
                 { "ConsultationView", ConsultationButton },
                 { "PatientsView", PatientsButton },
-                { "AntecedentView", AntecedentsButton }, // Fixed
                 { "OrdonnanceView", OrdonnancesButton }, // Fixed
                 { "ActesMedicauxView", ActesMedicauxButton },
                 { "RadioImagesView", RadioImagesButton },
@@ -79,11 +78,6 @@ namespace Dental_App.Views
             {
                 activeButton.Style = (Style)this.Resources["NavButtonActiveStyle"];
             }
-        }
-
-        private void AntecedentsButton_Click(object sender, RoutedEventArgs e)
-        {
-
         }
     }
 }

@@ -5,6 +5,7 @@ using Prism.Commands;
 using System;
 using System.Collections.ObjectModel;
 using System.Windows;
+using System.Threading.Tasks;
 
 namespace Dental_App.ViewModels
 {
@@ -27,6 +28,7 @@ namespace Dental_App.ViewModels
         private Patient _patientBeingEdited;
         private string _newAntecedent;
         private bool _isEditMode;
+        private int? _existingAntecedentId; // store id of loaded antecedent
 
         // Constructor accepts patientService and notificationService; existing call sites may pass a Patient as third arg.
         // We keep backward compatibility by making patientToEdit the third parameter and antecedentService optional fourth.
@@ -62,6 +64,12 @@ namespace Dental_App.ViewModels
                 Profession = patientToEdit.Profession;
 
                 ValidateForm();
+
+                // Load existing antecedent (if any) into the editable field
+                if (_antecedentService != null)
+                {
+                    _ = LoadExistingAntecedentAsync(patientToEdit.Id);
+                }
             }
             else
             {
@@ -70,6 +78,30 @@ namespace Dental_App.ViewModels
                 Title = "Ajouter un nouveau patient";
                 ButtonText = "Ajouter";
                 _patientBeingEdited = null;
+            }
+        }
+
+        private async Task LoadExistingAntecedentAsync(int patientId)
+        {
+            try
+            {
+                var list = await _antecedentService.GetByPatientIdAsync(patientId);
+                if (list != null && list.Count > 0)
+                {
+                    // For simplicity, show the first antecedent's name in the dialog field and remember its id
+                    var first = list[0];
+                    _existingAntecedentId = first.Id;
+                    NewAntecedent = first.Nom;
+                }
+                else
+                {
+                    _existingAntecedentId = null;
+                    NewAntecedent = string.Empty;
+                }
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"[LoadExistingAntecedentAsync] Erreur: {ex.Message}");
             }
         }
 
@@ -133,7 +165,7 @@ namespace Dental_App.ViewModels
             set => SetProperty(ref _profession, value);
         }
 
-        // New property for antecedent text entered when creating a patient
+        // New property for antecedent text entered when creating or editing a patient
         public string NewAntecedent
         {
             get => _newAntecedent;
@@ -193,6 +225,54 @@ namespace Dental_App.ViewModels
                     await _patientService.UpdateAsync(_patientBeingEdited);
                     System.Diagnostics.Debug.WriteLine($"Patient {_patientBeingEdited.Id} updated successfully");
                     _notificationService.ShowSuccess("Le patient a ete modifie avec succes.", "Modification reussie");
+
+                    // Handle antecedent for edit mode: update the specific existing antecedent or create/delete accordingly
+                    if (_antecedentService != null)
+                    {
+                        try
+                        {
+                            if (!string.IsNullOrWhiteSpace(NewAntecedent))
+                            {
+                                if (_existingAntecedentId.HasValue && _existingAntecedentId.Value > 0)
+                                {
+                                    var toUpdate = new Antecedant
+                                    {
+                                        Id = _existingAntecedentId.Value,
+                                        Nom = NewAntecedent,
+                                        Description = null,
+                                        PatientId = _patientBeingEdited.Id
+                                    };
+
+                                    await _antecedentService.UpdateAsync(toUpdate);
+                                    System.Diagnostics.Debug.WriteLine($"Antecedent {_existingAntecedentId.Value} updated for patient {_patientBeingEdited.Id}");
+                                }
+                                else
+                                {
+                                    // create new antecedent record
+                                    await _antecedentService.CreateAsync(new Antecedant
+                                    {
+                                        Nom = NewAntecedent,
+                                        Description = null,
+                                        PatientId = _patientBeingEdited.Id
+                                    });
+                                    System.Diagnostics.Debug.WriteLine($"Antecedent created for patient {_patientBeingEdited.Id}");
+                                }
+                            }
+                            else
+                            {
+                                // If NewAntecedent is empty and there was an existing antecedent, delete it
+                                if (_existingAntecedentId.HasValue && _existingAntecedentId.Value > 0)
+                                {
+                                    await _antecedentService.DeleteAsync(_existingAntecedentId.Value);
+                                    System.Diagnostics.Debug.WriteLine($"Deleted antecedent {_existingAntecedentId.Value} for patient {_patientBeingEdited.Id} because field was cleared");
+                                }
+                            }
+                        }
+                        catch (Exception aex)
+                        {
+                            System.Diagnostics.Debug.WriteLine($"Error handling antecedent update: {aex.Message}");
+                        }
+                    }
                 }
                 else
                 {

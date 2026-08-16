@@ -144,10 +144,6 @@
                         x:Name="PatientsButton"
                         Command="{Binding NavigateCommand}" CommandParameter="PatientsView" Style="{StaticResource NavButtonStyle}"/>
                 
-                <Button Content="Antecedents" Tag="{StaticResource IconAntecedents}" 
-                        x:Name="AntecedentsButton"
-                        Command="{Binding NavigateCommand}" CommandParameter="AntecedentView" Style="{StaticResource NavButtonStyle}" Click="AntecedentsButton_Click"/>
-                
                 <Button Content="Ordonnances" Tag="{StaticResource IconOrdonnances}" 
                         x:Name="OrdonnancesButton"
                         Command="{Binding NavigateCommand}" CommandParameter="OrdonnanceView" Style="{StaticResource NavButtonStyle}"/>
