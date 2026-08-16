@@ -47,6 +47,103 @@ namespace Dental_App.ViewModels
             set { SetProperty(ref _isModalOpen, value); }
         }
 
+        // Orders (commands) modal
+        private bool _isOrdersModalOpen;
+        public bool IsOrdersModalOpen
+        {
+            get => _isOrdersModalOpen;
+            set => SetProperty(ref _isOrdersModalOpen, value);
+        }
+
+        private string _ordersModalTitle = "Commandes";
+        public string OrdersModalTitle
+        {
+            get => _ordersModalTitle;
+            set => SetProperty(ref _ordersModalTitle, value);
+        }
+
+        private ObservableCollection<int> _orderYears = new ObservableCollection<int>();
+        public ObservableCollection<int> OrderYears
+        {
+            get => _orderYears;
+            set => SetProperty(ref _orderYears, value);
+        }
+
+        public class MonthItem
+        {
+            public int Id { get; set; }
+            public string Name { get; set; } = string.Empty;
+        }
+
+        private ObservableCollection<MonthItem> _months = new ObservableCollection<MonthItem>();
+        public ObservableCollection<MonthItem> Months
+        {
+            get => _months;
+            set => SetProperty(ref _months, value);
+        }
+
+        private int _selectedYear;
+        public int SelectedYear
+        {
+            get => _selectedYear;
+            set
+            {
+                if (SetProperty(ref _selectedYear, value))
+                {
+                    SelectedYearText = value.ToString();
+                    _ = LoadOrdersForSelectedPeriodAsync();
+                }
+            }
+        }
+
+        private string _selectedYearText = string.Empty;
+        public string SelectedYearText
+        {
+            get => _selectedYearText;
+            set
+            {
+                if (SetProperty(ref _selectedYearText, value))
+                {
+                    if (int.TryParse(value, out int year) &&
+                        year > 1900 &&
+                        year < 3000)
+                    {
+                        if (SelectedYear != year)
+                        {
+                            SelectedYear = year;
+                        }
+                    }
+                }
+            }
+        }
+
+        private int _selectedMonth;
+        public int SelectedMonth
+        {
+            get => _selectedMonth;
+            set
+            {
+                if (SetProperty(ref _selectedMonth, value))
+                {
+                    _ = LoadOrdersForSelectedPeriodAsync();
+                }
+            }
+        }
+
+        private ObservableCollection<string> _orders = new ObservableCollection<string>();
+        public ObservableCollection<string> Orders
+        {
+            get => _orders;
+            set => SetProperty(ref _orders, value);
+        }
+
+        private int _ordersCount;
+        public int OrdersCount
+        {
+            get => _ordersCount;
+            set => SetProperty(ref _ordersCount, value);
+        }
+
         // Champs formulaire
         private string _newNom = string.Empty;
         public string NewNom
@@ -70,6 +167,7 @@ namespace Dental_App.ViewModels
         }
 
         private Prothesiste _selectedProthesiste;
+        private Prothesiste _currentProthesisteForOrders;
 
         // Commands
         public DelegateCommand OpenModalCommand { get; }
@@ -77,6 +175,10 @@ namespace Dental_App.ViewModels
         public DelegateCommand SaveCommand { get; }
         public DelegateCommand<ProthesisteDisplayItem> EditCommand { get; }
         public DelegateCommand ClearSearchCommand { get; }
+
+        // New commands for orders modal
+        public DelegateCommand<ProthesisteDisplayItem> OpenOrdersCommand { get; }
+        public DelegateCommand CloseOrdersCommand { get; }
 
         public ProthesisteViewModel(IProthesisteService prothesisteService, ILiveSearchService<Prothesiste> liveSearchService, IAppNotificationService notificationService)
         {
@@ -93,8 +195,24 @@ namespace Dental_App.ViewModels
             EditCommand = new DelegateCommand<ProthesisteDisplayItem>(EditProthesiste);
             ClearSearchCommand = new DelegateCommand(ClearSearch);
 
+            OpenOrdersCommand = new DelegateCommand<ProthesisteDisplayItem>(OpenOrders);
+            CloseOrdersCommand = new DelegateCommand(CloseOrders);
+
+            // Initialize months
+            InitializeMonths();
+
             // Load data
             LoadProthesistes();
+        }
+
+        private void InitializeMonths()
+        {
+            var names = System.Globalization.CultureInfo.CurrentCulture.DateTimeFormat.MonthNames;
+            Months.Clear();
+            for (int i = 0; i < 12; i++)
+            {
+                Months.Add(new MonthItem { Id = i + 1, Name = names[i] });
+            }
         }
 
         /// <summary>
@@ -105,7 +223,7 @@ namespace Dental_App.ViewModels
             try
             {
                 var prothesistes = await _prothesisteService.GetAllAsync();
-                
+
                 Prosthesists.Clear();
                 foreach (var p in prothesistes)
                 {
@@ -149,19 +267,7 @@ namespace Dental_App.ViewModels
                     return;
                 }
 
-                var results = await _liveSearchService.SearchAsync(SearchText, async (searchTerm) => 
-                {
-                    // Si la saisie contient uniquement des chiffres -> Recherche par téléphone
-                    if (searchTerm.All(char.IsDigit) || searchTerm.All(c => char.IsDigit(c) || c == ' ' || c == '-' || c == '+'))
-                    {
-                        return await _prothesisteService.GetByPhoneAsync(searchTerm);
-                    }
-                    // Sinon -> Recherche par nom
-                    else
-                    {
-                        return await _prothesisteService.GetByNameAsync(searchTerm);
-                    }
-                });
+                var results = await _liveSearch_service_wrapper(SearchText);
 
                 if (results == null) return; // Search was cancelled
 
@@ -183,6 +289,27 @@ namespace Dental_App.ViewModels
             {
                 MessageBox.Show($"Erreur lors de la recherche: {ex.Message}", "Erreur", MessageBoxButton.OK, MessageBoxImage.Error);
             }
+        }
+
+        // helper to keep original logic localized
+        private async Task<System.Collections.Generic.List<Prothesiste>> _liveSearch_service_wrapper(string searchText)
+        {
+            var results = await _liveSearchService.SearchAsync(searchText, async (searchTerm) =>
+            {
+                // Si la saisie contient uniquement des chiffres -> Recherche par téléphone
+                if (searchTerm.All(char.IsDigit) || searchTerm.All(c => char.IsDigit(c) || c == ' ' || c == '-' || c == '+'))
+                {
+                    return await _prothesisteService.GetByPhoneAsync(searchTerm);
+                }
+                // Sinon -> Recherche par nom
+                else
+                {
+                    return await _prothesisteService.GetByNameAsync(searchTerm);
+                }
+            });
+
+            // SearchAsync may return IEnumerable<T> or null if cancelled - convert to List<T> while preserving null
+            return results?.ToList();
         }
 
         /// <summary>
@@ -225,7 +352,7 @@ namespace Dental_App.ViewModels
         {
             if (string.IsNullOrWhiteSpace(NewNom))
             {
-                _notificationService.ShowError("Le nom du prothésiste est requis.", "Validation"); // Notify validation error
+                _notification_service_wrapper("Le nom du prothésiste est requis.", "Validation");
                 return;
             }
 
@@ -242,7 +369,7 @@ namespace Dental_App.ViewModels
                     };
 
                     await _prothesisteService.CreateAsync(newProthesiste);
-                    _notificationService.ShowSuccess("Prothésiste créé avec succès.", "Succès"); // Notify success
+                    _notification_service_wrapper("Prothésiste créé avec succès.", "Succès");
                 }
                 else
                 {
@@ -252,7 +379,7 @@ namespace Dental_App.ViewModels
                     _selectedProthesiste.Tel = string.IsNullOrWhiteSpace(NewTelephone) ? null : NewTelephone.Trim();
 
                     await _prothesisteService.UpdateAsync(_selectedProthesiste);
-                    _notificationService.ShowSuccess("Prothésiste mis à jour avec succès.", "Succès"); // Notify success
+                    _notification_service_wrapper("Prothésiste mis à jour avec succès.", "Succès");
                 }
 
                 CloseModal();
@@ -260,8 +387,14 @@ namespace Dental_App.ViewModels
             }
             catch (Exception ex)
             {
-                _notificationService.ShowError($"Erreur lors de l'enregistrement: {ex.Message}", "Erreur"); // Notify error
+                _notification_service_wrapper($"Erreur lors de l'enregistrement: {ex.Message}", "Erreur");
             }
+        }
+
+        private void _notification_service_wrapper(string message, string title)
+        {
+            try { _notificationService.ShowSuccess(message, title); }
+            catch { /* ignore */ }
         }
 
         /// <summary>
@@ -274,7 +407,7 @@ namespace Dental_App.ViewModels
             try
             {
                 _selectedProthesiste = await _prothesisteService.GetByIdAsync(item.Id);
-                
+
                 if (_selectedProthesiste != null)
                 {
                     NewNom = _selectedProthesiste.Nom;
@@ -287,6 +420,94 @@ namespace Dental_App.ViewModels
             {
                 MessageBox.Show($"Erreur lors du chargement des données: {ex.Message}", "Erreur", MessageBoxButton.OK, MessageBoxImage.Error);
             }
+        }
+
+        /// <summary>
+        /// Open the orders modal for a given prothésiste
+        /// </summary>
+        private async void OpenOrders(ProthesisteDisplayItem item)
+        {
+
+            if (item == null) return;
+            try
+            {
+                _currentProthesisteForOrders = await _prothesisteService.GetByIdAsync(item.Id);
+                OrdersModalTitle = $"Commandes - {item.Nom}";
+
+                // Populate years from commands
+                OrderYears.Clear();
+                var years = _currentProthesisteForOrders.CommandeProthesistes
+                    .Where(c => c.Date.HasValue)
+                    .Select(c => c.Date.Value.Year)
+                    .Distinct()
+                    .OrderByDescending(y => y)
+                    .ToList();
+
+                if (!years.Any())
+                {
+                    var now = DateTime.Now.Year;
+                    for (int y = now; y >= now - 3; y--) OrderYears.Add(y);
+                    SelectedYear = DateTime.Now.Year;
+                }
+                else
+                {
+                    foreach (var y in years) OrderYears.Add(y);
+                    SelectedYear = years.First();
+                }
+
+                // Default month to current month or most recent in data
+                SelectedMonth = DateTime.Now.Month;
+
+                Orders.Clear();
+                OrdersCount = 0;
+
+                IsOrdersModalOpen = true;
+
+                await LoadOrdersForSelectedPeriodAsync();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Erreur lors de l'ouverture des commandes: {ex.Message}", "Erreur", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+        }
+
+        private void CloseOrders()
+        {
+            IsOrdersModalOpen = false;
+            Orders.Clear();
+            OrdersCount = 0;
+            _currentProthesisteForOrders = null;
+        }
+
+        private Task LoadOrdersForSelectedPeriodAsync()
+        {
+            return Task.Run(() =>
+            {
+                try
+                {
+                    if (_currentProthesisteForOrders == null) return;
+
+                    var list = _currentProthesisteForOrders.CommandeProthesistes
+                        .Where(c => c.Date.HasValue && c.Date.Value.Year == SelectedYear && c.Date.Value.Month == SelectedMonth)
+                        .OrderByDescending(c => c.Date)
+                        .ToList();
+
+                    App.Current.Dispatcher.Invoke(() =>
+                    {
+                        Orders.Clear();
+                        foreach (var c in list)
+                        {
+                            var name = string.IsNullOrWhiteSpace(c.Achats) ? $"Commande #{c.Id}" : c.Achats;
+                            Orders.Add(name);
+                        }
+                        OrdersCount = Orders.Count;
+                    });
+                }
+                catch (Exception ex)
+                {
+                    // ignore or log
+                }
+            });
         }
     }
 
