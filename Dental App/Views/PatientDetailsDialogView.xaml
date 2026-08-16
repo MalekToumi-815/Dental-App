@@ -3,199 +3,203 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              Background="Transparent">
 
-    <Grid HorizontalAlignment="Center" VerticalAlignment="Center">
-        <Border Background="{DynamicResource CardBackground}" CornerRadius="12" BorderBrush="{DynamicResource GlobalElementBorderBrush}" BorderThickness="2" Padding="30">
-            <StackPanel>
-                <Grid Margin="0,0,0,20">
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="*"/>
-                        <ColumnDefinition Width="Auto"/>
-                    </Grid.ColumnDefinitions>
-                    <TextBlock Text="{Binding Title}" FontSize="20" FontWeight="SemiBold" Foreground="{DynamicResource TextPrimary}"/>
-                    <Button Grid.Column="1" Background="Transparent" BorderThickness="0" Cursor="Hand" Padding="8" Command="{Binding CancelCommand}">
-                        <Path Data="M19 6.41L17.59 5L12 10.59L6.41 5L5 6.41L10.59 12L5 17.59L6.41 19L12 13.41L17.59 19L19 17.59L13.41 12L19 6.41Z" Fill="{DynamicResource TextPrimary}" Width="20" Height="20"/>
-                    </Button>
-                </Grid>
+    <!-- FIX: taille fixe pour la fenetre du dossier patient -->
+    <Grid Width="520" Height="700" HorizontalAlignment="Center" VerticalAlignment="Center">
+        <!-- FIX: padding droit retire du Border pour laisser la scrollbar coller au bord extreme droit -->
+        <Border Background="{DynamicResource CardBackground}" CornerRadius="12" BorderBrush="{DynamicResource GlobalElementBorderBrush}" BorderThickness="2" Padding="30,30,0,30">
 
-                <StackPanel Orientation="Horizontal" Margin="0,0,0,24">
-                    <Border Width="80" Height="80" CornerRadius="40" Background="{DynamicResource AccentColor}" Margin="0,0,20,0">
-                        <TextBlock Text="{Binding Initials}" FontSize="28" FontWeight="SemiBold" Foreground="White" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                    </Border>
-                    <StackPanel VerticalAlignment="Center">
-                        <TextBlock Text="{Binding FullName}" FontSize="18" FontWeight="SemiBold" Foreground="{DynamicResource TextPrimary}"/>
-                        <!-- Unique number added -->
-                        <TextBlock FontSize="13" Foreground="{DynamicResource TextSecondary}" Margin="0,4,0,0">
-                            <Run Text="Numero unique: "/>
-                            <!-- bind OneWay explicitly to avoid TwoWay default target on Run/Text -->
-                            <Run Text="{Binding UniqueNumber, Mode=OneWay}"/>
-                        </TextBlock>
+            <!-- FIX: tout le contenu defile dans un seul ScrollViewer, le conteneur parent garde une taille fixe -->
+            <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
+                <!-- FIX: le padding droit est reporte ici, sur le contenu, pas sur le ScrollViewer -->
+                <StackPanel Margin="0,0,30,0">
+                    <Grid Margin="0,0,0,20">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="Auto"/>
+                        </Grid.ColumnDefinitions>
+                        <TextBlock Text="{Binding Title}" FontSize="20" FontWeight="SemiBold" Foreground="{DynamicResource TextPrimary}"/>
+                        <Button Grid.Column="1" Background="Transparent" BorderThickness="0" Cursor="Hand" Padding="8" Command="{Binding CancelCommand}">
+                            <Path Data="M19 6.41L17.59 5L12 10.59L6.41 5L5 6.41L10.59 12L5 17.59L6.41 19L12 13.41L17.59 19L19 17.59L13.41 12L19 6.41Z" Fill="{DynamicResource TextPrimary}" Width="20" Height="20"/>
+                        </Button>
+                    </Grid>
 
-                        <TextBlock Text="{Binding Patient.Telephone}" FontSize="13" Foreground="{DynamicResource TextSecondary}"/>
-                        <TextBlock Text="{Binding Patient.Adresse}" FontSize="13" Foreground="{DynamicResource TextSecondary}"/>
+                    <StackPanel Orientation="Horizontal" Margin="0,0,0,24">
+                        <Border Width="80" Height="80" CornerRadius="40" Background="{DynamicResource AccentColor}" Margin="0,0,20,0">
+                            <TextBlock Text="{Binding Initials}" FontSize="28" FontWeight="SemiBold" Foreground="White" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Border>
+                        <StackPanel VerticalAlignment="Center">
+                            <TextBlock Text="{Binding FullName}" FontSize="18" FontWeight="SemiBold" Foreground="{DynamicResource TextPrimary}"/>
+                            <TextBlock FontSize="13" Foreground="{DynamicResource TextSecondary}" Margin="0,4,0,0">
+                                <Run Text="Numero unique: "/>
+                                <Run Text="{Binding UniqueNumber, Mode=OneWay}"/>
+                            </TextBlock>
+
+                            <TextBlock Text="{Binding Patient.Telephone}" FontSize="13" Foreground="{DynamicResource TextSecondary}"/>
+                            <TextBlock Text="{Binding Patient.Adresse}" FontSize="13" Foreground="{DynamicResource TextSecondary}"/>
+                        </StackPanel>
                     </StackPanel>
-                </StackPanel>
 
-                <TextBlock Text="INFORMATIONS" FontSize="12" FontWeight="SemiBold" Foreground="{DynamicResource TextSecondary}"/>
+                    <TextBlock Text="INFORMATIONS" FontSize="12" FontWeight="SemiBold" Foreground="{DynamicResource TextSecondary}"/>
 
-                <Grid Margin="0,8,0,8">
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="*"/>
-                        <ColumnDefinition Width="200"/>
-                    </Grid.ColumnDefinitions>
-                    <TextBlock Text="Date de naissance" Foreground="{DynamicResource TextSecondary}" FontSize="13"/>
-                    <TextBlock Grid.Column="1" Text="{Binding Patient.DateNaissance, StringFormat='dd/MM/yyyy'}" Foreground="{DynamicResource TextPrimary}" FontSize="13" TextAlignment="Right"/>
-                </Grid>
+                    <Grid Margin="0,8,0,8">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="200"/>
+                        </Grid.ColumnDefinitions>
+                        <TextBlock Text="Date de naissance" Foreground="{DynamicResource TextSecondary}" FontSize="13"/>
+                        <TextBlock Grid.Column="1" Text="{Binding Patient.DateNaissance, StringFormat='dd/MM/yyyy'}" Foreground="{DynamicResource TextPrimary}" FontSize="13" TextAlignment="Right"/>
+                    </Grid>
 
-                <Grid Margin="0,8,0,8">
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="*"/>
-                        <ColumnDefinition Width="200"/>
-                    </Grid.ColumnDefinitions>
-                    <TextBlock Text="Sexe" Foreground="{DynamicResource TextSecondary}" FontSize="13"/>
-                    <TextBlock Grid.Column="1" Text="{Binding Patient.Sexe}" Foreground="{DynamicResource TextPrimary}" FontSize="13" TextAlignment="Right"/>
-                </Grid>
+                    <Grid Margin="0,8,0,8">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="200"/>
+                        </Grid.ColumnDefinitions>
+                        <TextBlock Text="Sexe" Foreground="{DynamicResource TextSecondary}" FontSize="13"/>
+                        <TextBlock Grid.Column="1" Text="{Binding Patient.Sexe}" Foreground="{DynamicResource TextPrimary}" FontSize="13" TextAlignment="Right"/>
+                    </Grid>
 
-                <Grid Margin="0,8,0,8">
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="*"/>
-                        <ColumnDefinition Width="200"/>
-                    </Grid.ColumnDefinitions>
-                    <TextBlock Text="Profession" Foreground="{DynamicResource TextSecondary}" FontSize="13"/>
-                    <TextBlock Grid.Column="1" Text="{Binding Patient.Profession}" Foreground="{DynamicResource TextPrimary}" FontSize="13" TextAlignment="Right"/>
-                </Grid>
+                    <Grid Margin="0,8,0,8">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="200"/>
+                        </Grid.ColumnDefinitions>
+                        <TextBlock Text="Profession" Foreground="{DynamicResource TextSecondary}" FontSize="13"/>
+                        <TextBlock Grid.Column="1" Text="{Binding Patient.Profession}" Foreground="{DynamicResource TextPrimary}" FontSize="13" TextAlignment="Right"/>
+                    </Grid>
 
-                <!-- ANTECEDENTS: show medical antecedents assigned to the patient -->
-                <TextBlock Text="ANTECEDENTS" FontSize="12" FontWeight="SemiBold" Foreground="{DynamicResource TextSecondary}" Margin="0,24,0,12"/>
+                    <!-- ANTECEDENTS -->
+                    <TextBlock Text="ANTECEDENTS" FontSize="12" FontWeight="SemiBold" Foreground="{DynamicResource TextSecondary}" Margin="0,24,0,12"/>
 
-                <Border Margin="0,8,0,8">
-                    <ItemsControl ItemsSource="{Binding Antecedents}">
-                        <ItemsControl.ItemTemplate>
-                            <DataTemplate>
-                                <TextBlock Text="{Binding}" Foreground="{DynamicResource TextPrimary}" FontSize="13" TextWrapping="Wrap" Margin="0,6,0,6"/>
-                            </DataTemplate>
-                        </ItemsControl.ItemTemplate>
-                    </ItemsControl>
-                </Border>
+                    <Border Margin="0,8,0,8">
+                        <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled" MaxHeight="140">
+                            <ItemsControl ItemsSource="{Binding Antecedents}">
+                                <ItemsControl.ItemTemplate>
+                                    <DataTemplate>
+                                        <TextBlock Text="{Binding}" Foreground="{DynamicResource TextPrimary}" FontSize="13" TextWrapping="Wrap" Margin="0,6,0,6"/>
+                                    </DataTemplate>
+                                </ItemsControl.ItemTemplate>
+                            </ItemsControl>
+                        </ScrollViewer>
+                    </Border>
 
-                <TextBlock Text="Aucun antecedent enregistre" Foreground="{DynamicResource TextSecondary}" FontSize="13" Margin="0,4,0,0">
-                    <TextBlock.Style>
-                        <Style TargetType="TextBlock">
-                            <Setter Property="Visibility" Value="Collapsed"/>
-                            <Style.Triggers>
-                                <DataTrigger Binding="{Binding Antecedents.Count}" Value="0">
-                                    <Setter Property="Visibility" Value="Visible"/>
-                                </DataTrigger>
-                            </Style.Triggers>
-                        </Style>
-                    </TextBlock.Style>
-                </TextBlock>
+                    <TextBlock Text="Aucun antecedent enregistre" Foreground="{DynamicResource TextSecondary}" FontSize="13" Margin="0,4,0,0">
+                        <TextBlock.Style>
+                            <Style TargetType="TextBlock">
+                                <Setter Property="Visibility" Value="Collapsed"/>
+                                <Style.Triggers>
+                                    <DataTrigger Binding="{Binding Antecedents.Count}" Value="0">
+                                        <Setter Property="Visibility" Value="Visible"/>
+                                    </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </TextBlock.Style>
+                    </TextBlock>
 
-                <!-- ACTES MEDICAUX: show performed acts with the tooth/teeth info coming from odontogram -->
-                <TextBlock Text="ACTES MEDICAUX" FontSize="12" FontWeight="SemiBold" Foreground="{DynamicResource TextSecondary}" Margin="0,24,0,12"/>
+                    <!-- ACTES MEDICAUX -->
+                    <TextBlock Text="ACTES MEDICAUX" FontSize="12" FontWeight="SemiBold" Foreground="{DynamicResource TextSecondary}" Margin="0,24,0,12"/>
 
-                <!-- Make the acts list scrollable by wrapping in a ScrollViewer with a MaxHeight -->
-                <Border Margin="0,8,0,8">
-                    <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled" MaxHeight="260">
-                        <ItemsControl ItemsSource="{Binding Acts}">
-                            <ItemsControl.ItemTemplate>
-                                <DataTemplate>
-                                    <Border Padding="8" Background="{DynamicResource SecondaryBackground}" CornerRadius="6" Margin="0,6,0,6">
-                                        <StackPanel>
-                                            <StackPanel Orientation="Horizontal" VerticalAlignment="Center" HorizontalAlignment="Stretch">
-                                                <TextBlock Text="{Binding DateFormatted}" FontSize="13" Foreground="{DynamicResource TextPrimary}" />
-                                                <TextBlock Text=" - " FontSize="13" Foreground="{DynamicResource TextSecondary}" Margin="6,0"/>
+                    <Border Margin="0,8,0,8">
+                        <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled" MaxHeight="220">
+                            <ItemsControl ItemsSource="{Binding Acts}">
+                                <ItemsControl.ItemTemplate>
+                                    <DataTemplate>
+                                        <Border Padding="8" Background="{DynamicResource SecondaryBackground}" CornerRadius="6" Margin="0,6,0,6">
+                                            <StackPanel>
+                                                <StackPanel Orientation="Horizontal" VerticalAlignment="Center" HorizontalAlignment="Stretch">
+                                                    <TextBlock Text="{Binding DateFormatted}" FontSize="13" Foreground="{DynamicResource TextPrimary}" />
+                                                    <TextBlock Text=" - " FontSize="13" Foreground="{DynamicResource TextSecondary}" Margin="6,0"/>
 
-                                                <!-- Act names: display each as inline items -->
-                                                <ItemsControl ItemsSource="{Binding ActNames}">
-                                                    <ItemsControl.ItemsPanel>
-                                                        <ItemsPanelTemplate>
-                                                            <StackPanel Orientation="Horizontal"/>
-                                                        </ItemsPanelTemplate>
-                                                    </ItemsControl.ItemsPanel>
-                                                    <ItemsControl.ItemTemplate>
-                                                        <DataTemplate>
-                                                            <TextBlock Text="{Binding}" FontSize="13" Foreground="{DynamicResource TextPrimary}" Margin="0,0,6,0"/>
-                                                        </DataTemplate>
-                                                    </ItemsControl.ItemTemplate>
-                                                </ItemsControl>
+                                                    <ItemsControl ItemsSource="{Binding ActNames}">
+                                                        <ItemsControl.ItemsPanel>
+                                                            <ItemsPanelTemplate>
+                                                                <StackPanel Orientation="Horizontal"/>
+                                                            </ItemsPanelTemplate>
+                                                        </ItemsControl.ItemsPanel>
+                                                        <ItemsControl.ItemTemplate>
+                                                            <DataTemplate>
+                                                                <TextBlock Text="{Binding}" FontSize="13" Foreground="{DynamicResource TextPrimary}" Margin="0,0,6,0"/>
+                                                            </DataTemplate>
+                                                        </ItemsControl.ItemTemplate>
+                                                    </ItemsControl>
+                                                </StackPanel>
+
+                                                <TextBlock FontSize="12" Foreground="{DynamicResource TextSecondary}" Margin="0,6,0,0">
+                                                    <Run Text="Dent(s) : "/>
+                                                    <Run Text="{Binding ToothFdi, TargetNullValue='-'}"/>
+                                                </TextBlock>
+
+                                                <TextBlock Text="{Binding Notes}" FontSize="12" Foreground="{DynamicResource TextSecondary}" TextWrapping="Wrap" Margin="0,4,0,0"/>
                                             </StackPanel>
+                                        </Border>
+                                    </DataTemplate>
+                                </ItemsControl.ItemTemplate>
+                            </ItemsControl>
+                        </ScrollViewer>
+                    </Border>
 
-                                            <TextBlock FontSize="12" Foreground="{DynamicResource TextSecondary}" Margin="0,6,0,0">
-                                                <Run Text="Dent(s) : "/>
-                                                <Run Text="{Binding ToothFdi, TargetNullValue='-'}"/>
-                                            </TextBlock>
+                    <TextBlock Text="Aucun acte enregistre" Foreground="{DynamicResource TextSecondary}" FontSize="13" Margin="0,4,0,0">
+                        <TextBlock.Style>
+                            <Style TargetType="TextBlock">
+                                <Setter Property="Visibility" Value="Collapsed"/>
+                                <Style.Triggers>
+                                    <DataTrigger Binding="{Binding Acts.Count}" Value="0">
+                                        <Setter Property="Visibility" Value="Visible"/>
+                                    </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </TextBlock.Style>
+                    </TextBlock>
 
-                                            <TextBlock Text="{Binding Notes}" FontSize="12" Foreground="{DynamicResource TextSecondary}" TextWrapping="Wrap" Margin="0,4,0,0"/>
-                                        </StackPanel>
-                                    </Border>
-                                </DataTemplate>
-                            </ItemsControl.ItemTemplate>
-                        </ItemsControl>
-                    </ScrollViewer>
-                </Border>
+                    <TextBlock Text="FINANCES" FontSize="12" FontWeight="SemiBold" Foreground="{DynamicResource TextSecondary}" Margin="0,24,0,12"/>
 
-                <TextBlock Text="Aucun acte enregistre" Foreground="{DynamicResource TextSecondary}" FontSize="13" Margin="0,4,0,0">
-                    <TextBlock.Style>
-                        <Style TargetType="TextBlock">
-                            <Setter Property="Visibility" Value="Collapsed"/>
-                            <Style.Triggers>
-                                <DataTrigger Binding="{Binding Acts.Count}" Value="0">
-                                    <Setter Property="Visibility" Value="Visible"/>
-                                </DataTrigger>
-                            </Style.Triggers>
-                        </Style>
-                    </TextBlock.Style>
-                </TextBlock>
+                    <Grid Margin="0,8,0,8">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="200"/>
+                        </Grid.ColumnDefinitions>
+                        <TextBlock Text="Montant Total" Foreground="{DynamicResource TextSecondary}" FontSize="13"/>
+                        <TextBlock Grid.Column="1" Text="{Binding TotalAmount}" Foreground="{DynamicResource TextPrimary}" FontSize="13" TextAlignment="Right"/>
+                    </Grid>
 
-                <TextBlock Text="FINANCES" FontSize="12" FontWeight="SemiBold" Foreground="{DynamicResource TextSecondary}" Margin="0,24,0,12"/>
+                    <Grid Margin="0,8,0,8">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="200"/>
+                        </Grid.ColumnDefinitions>
+                        <TextBlock Text="Montant Paye" Foreground="{DynamicResource TextSecondary}" FontSize="13"/>
+                        <TextBlock Grid.Column="1" Text="{Binding PaidAmount}" Foreground="{DynamicResource TextPrimary}" FontSize="13" TextAlignment="Right"/>
+                    </Grid>
 
-                <Grid Margin="0,8,0,8">
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="*"/>
-                        <ColumnDefinition Width="200"/>
-                    </Grid.ColumnDefinitions>
-                    <TextBlock Text="Montant Total" Foreground="{DynamicResource TextSecondary}" FontSize="13"/>
-                    <TextBlock Grid.Column="1" Text="{Binding TotalAmount}" Foreground="{DynamicResource TextPrimary}" FontSize="13" TextAlignment="Right"/>
-                </Grid>
+                    <Grid Margin="0,8,0,8">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="200"/>
+                        </Grid.ColumnDefinitions>
+                        <TextBlock Text="Restant" Foreground="{DynamicResource TextSecondary}" FontSize="13"/>
+                        <TextBlock Grid.Column="1" Text="{Binding RemainingAmount}" Foreground="#FF5555" FontSize="13" TextAlignment="Right"/>
+                    </Grid>
 
-                <Grid Margin="0,8,0,8">
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="*"/>
-                        <ColumnDefinition Width="200"/>
-                    </Grid.ColumnDefinitions>
-                    <TextBlock Text="Montant Paye" Foreground="{DynamicResource TextSecondary}" FontSize="13"/>
-                    <TextBlock Grid.Column="1" Text="{Binding PaidAmount}" Foreground="{DynamicResource TextPrimary}" FontSize="13" TextAlignment="Right"/>
-                </Grid>
+                    <Grid Margin="0,20,0,12" Visibility="{Binding IsPaymentInputVisible, Converter={StaticResource BooleanToVisibilityConverter}}">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="200"/>
+                        </Grid.ColumnDefinitions>
+                        <TextBlock Text="Montant Paiement" Foreground="{DynamicResource TextSecondary}" FontSize="13" VerticalAlignment="Center"/>
+                        <TextBox Grid.Column="1" Text="{Binding PaymentAmountInput, UpdateSourceTrigger=PropertyChanged}" 
+                                 Background="{DynamicResource SecondaryBackground}" 
+                                 Foreground="{DynamicResource TextPrimary}" 
+                                 BorderBrush="{DynamicResource BorderColor}" 
+                                 BorderThickness="1" 
+                                 Padding="12,8" 
+                                 FontSize="13"
+                                 Margin="12,0,0,0"/>
+                    </Grid>
 
-                <Grid Margin="0,8,0,8">
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="*"/>
-                        <ColumnDefinition Width="200"/>
-                    </Grid.ColumnDefinitions>
-                    <TextBlock Text="Restant" Foreground="{DynamicResource TextSecondary}" FontSize="13"/>
-                    <TextBlock Grid.Column="1" Text="{Binding RemainingAmount}" Foreground="#FF5555" FontSize="13" TextAlignment="Right"/>
-                </Grid>
+                    <Button Content="{Binding ButtonText}" Command="{Binding SaveCommand}" Background="{DynamicResource AccentColor}" Foreground="White" BorderThickness="0" Padding="20,12" FontSize="14" FontWeight="Medium" Height="48" Margin="0,24,0,0"/>
 
-                <!-- Payment Input Field - Visible only when IsPaymentInputVisible is true -->
-                <Grid Margin="0,20,0,12" Visibility="{Binding IsPaymentInputVisible, Converter={StaticResource BooleanToVisibilityConverter}}">
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="*"/>
-                        <ColumnDefinition Width="200"/>
-                    </Grid.ColumnDefinitions>
-                    <TextBlock Text="Montant Paiement" Foreground="{DynamicResource TextSecondary}" FontSize="13" VerticalAlignment="Center"/>
-                    <TextBox Grid.Column="1" Text="{Binding PaymentAmountInput, UpdateSourceTrigger=PropertyChanged}" 
-                             Background="{DynamicResource SecondaryBackground}" 
-                             Foreground="{DynamicResource TextPrimary}" 
-                             BorderBrush="{DynamicResource BorderColor}" 
-                             BorderThickness="1" 
-                             Padding="12,8" 
-                             FontSize="13"
-                             Margin="12,0,0,0"/>
-                </Grid>
-
-                <Button Content="{Binding ButtonText}" Command="{Binding SaveCommand}" Background="{DynamicResource AccentColor}" Foreground="White" BorderThickness="0" Padding="20,12" FontSize="14" FontWeight="Medium" Height="48" Margin="0,24,0,0"/>
-
-            </StackPanel>
+                </StackPanel>
+            </ScrollViewer>
         </Border>
     </Grid>
 </UserControl>
