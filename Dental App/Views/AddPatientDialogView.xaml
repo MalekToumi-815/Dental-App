@@ -367,7 +367,14 @@
                     <!-- New: Antecedent input (optional) -->
                     <StackPanel Grid.Row="5" Grid.Column="0" Grid.ColumnSpan="3" Margin="0,0,0,24">
                         <TextBlock Text="Antecedent (optionnel)" Style="{StaticResource FormFieldLabelStyle}"/>
-                        <TextBox Text="{Binding NewAntecedent, UpdateSourceTrigger=PropertyChanged}" Style="{StaticResource FormInputStyle}" ToolTip="Ex: Diabete, Allergie..." />
+                        <!-- Multiline TextBox: AcceptsReturn so Enter creates a new line instead of submitting -->
+                        <TextBox Text="{Binding NewAntecedent, UpdateSourceTrigger=PropertyChanged}" 
+                                 Style="{StaticResource FormInputStyle}" 
+                                 ToolTip="Ex: Diabete, Allergie..." 
+                                 AcceptsReturn="True" 
+                                 TextWrapping="Wrap" 
+                                 VerticalScrollBarVisibility="Auto" 
+                                 Height="100"/>
                     </StackPanel>
                 </Grid>
 
