@@ -60,15 +60,6 @@
                         <ColumnDefinition Width="*"/>
                         <ColumnDefinition Width="200"/>
                     </Grid.ColumnDefinitions>
-                    <TextBlock Text="CIN" Foreground="{DynamicResource TextSecondary}" FontSize="13"/>
-                    <TextBlock Grid.Column="1" Text="{Binding Patient.Cin}" Foreground="{DynamicResource TextPrimary}" FontSize="13" TextAlignment="Right"/>
-                </Grid>
-
-                <Grid Margin="0,8,0,8">
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="*"/>
-                        <ColumnDefinition Width="200"/>
-                    </Grid.ColumnDefinitions>
                     <TextBlock Text="Profession" Foreground="{DynamicResource TextSecondary}" FontSize="13"/>
                     <TextBlock Grid.Column="1" Text="{Binding Patient.Profession}" Foreground="{DynamicResource TextPrimary}" FontSize="13" TextAlignment="Right"/>
                 </Grid>
@@ -92,6 +83,63 @@
                             <Setter Property="Visibility" Value="Collapsed"/>
                             <Style.Triggers>
                                 <DataTrigger Binding="{Binding Antecedents.Count}" Value="0">
+                                    <Setter Property="Visibility" Value="Visible"/>
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </TextBlock.Style>
+                </TextBlock>
+
+                <!-- ACTES MEDICAUX: show performed acts with the tooth/teeth info coming from odontogram -->
+                <TextBlock Text="ACTES MEDICAUX" FontSize="12" FontWeight="SemiBold" Foreground="{DynamicResource TextSecondary}" Margin="0,24,0,12"/>
+
+                <!-- Make the acts list scrollable by wrapping in a ScrollViewer with a MaxHeight -->
+                <Border Margin="0,8,0,8">
+                    <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled" MaxHeight="260">
+                        <ItemsControl ItemsSource="{Binding Acts}">
+                            <ItemsControl.ItemTemplate>
+                                <DataTemplate>
+                                    <Border Padding="8" Background="{DynamicResource SecondaryBackground}" CornerRadius="6" Margin="0,6,0,6">
+                                        <StackPanel>
+                                            <StackPanel Orientation="Horizontal" VerticalAlignment="Center" HorizontalAlignment="Stretch">
+                                                <TextBlock Text="{Binding DateFormatted}" FontSize="13" Foreground="{DynamicResource TextPrimary}" />
+                                                <TextBlock Text=" - " FontSize="13" Foreground="{DynamicResource TextSecondary}" Margin="6,0"/>
+
+                                                <!-- Act names: display each as inline items -->
+                                                <ItemsControl ItemsSource="{Binding ActNames}">
+                                                    <ItemsControl.ItemsPanel>
+                                                        <ItemsPanelTemplate>
+                                                            <StackPanel Orientation="Horizontal"/>
+                                                        </ItemsPanelTemplate>
+                                                    </ItemsControl.ItemsPanel>
+                                                    <ItemsControl.ItemTemplate>
+                                                        <DataTemplate>
+                                                            <TextBlock Text="{Binding}" FontSize="13" Foreground="{DynamicResource TextPrimary}" Margin="0,0,6,0"/>
+                                                        </DataTemplate>
+                                                    </ItemsControl.ItemTemplate>
+                                                </ItemsControl>
+                                            </StackPanel>
+
+                                            <TextBlock FontSize="12" Foreground="{DynamicResource TextSecondary}" Margin="0,6,0,0">
+                                                <Run Text="Dent(s) : "/>
+                                                <Run Text="{Binding ToothFdi, TargetNullValue='-'}"/>
+                                            </TextBlock>
+
+                                            <TextBlock Text="{Binding Notes}" FontSize="12" Foreground="{DynamicResource TextSecondary}" TextWrapping="Wrap" Margin="0,4,0,0"/>
+                                        </StackPanel>
+                                    </Border>
+                                </DataTemplate>
+                            </ItemsControl.ItemTemplate>
+                        </ItemsControl>
+                    </ScrollViewer>
+                </Border>
+
+                <TextBlock Text="Aucun acte enregistre" Foreground="{DynamicResource TextSecondary}" FontSize="13" Margin="0,4,0,0">
+                    <TextBlock.Style>
+                        <Style TargetType="TextBlock">
+                            <Setter Property="Visibility" Value="Collapsed"/>
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding Acts.Count}" Value="0">
                                     <Setter Property="Visibility" Value="Visible"/>
                                 </DataTrigger>
                             </Style.Triggers>

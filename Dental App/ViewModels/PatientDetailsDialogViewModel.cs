@@ -28,12 +28,13 @@ namespace Dental_App.ViewModels
         private string _paymentAmountInput = string.Empty;
         private string _uniqueNumber;
         private ObservableCollection<string> _antecedents = new ObservableCollection<string>();
+        private ObservableCollection<ActDisplayItem> _acts = new ObservableCollection<ActDisplayItem>();
 
-        public PatientDetailsDialogViewModel(IPatientService patientService = null, IAppNotificationService notificationService = null, Patient patient = null, IRendezVousService rendezVousService = null, IAntecedentService antecedentService = null)
+        public PatientDetailsDialogViewModel(IPatientService patientService = null, IAppNotificationService notificationService = null, Patient patient = null, IRendezVousService rendezvousService = null, IAntecedentService antecedentService = null)
         {
             _patientService = patientService;
             _notificationService = notificationService;
-            _rendezVousService = rendezVousService;
+            _rendezVousService = rendezvousService;
             _antecedentService = antecedentService;
             SaveCommand = new DelegateCommand(ExecuteSave);
             CancelCommand = new DelegateCommand(ExecuteCancel);
@@ -117,6 +118,13 @@ namespace Dental_App.ViewModels
             set => SetProperty(ref _antecedents, value);
         }
 
+        // New: Acts collection for display (consultations + acts + tooth fdi)
+        public ObservableCollection<ActDisplayItem> Acts
+        {
+            get => _acts;
+            set => SetProperty(ref _acts, value);
+        }
+
         public DelegateCommand SaveCommand { get; }
         public DelegateCommand CancelCommand { get; }
         public Action<bool?> CloseDialog { get; set; }
@@ -137,6 +145,9 @@ namespace Dental_App.ViewModels
 
             // Load antecedents if service available
             _ = LoadAntecedentsAsync(patient.Id);
+
+            // Load acts/consultations for this patient
+            _ = LoadActsAsync(patient.Id);
 
             System.Diagnostics.Debug.WriteLine($"PatientDetailsDialogViewModel initialized with patient: {FullName}");
         }
@@ -160,6 +171,42 @@ namespace Dental_App.ViewModels
             catch (Exception ex)
             {
                 System.Diagnostics.Debug.WriteLine($"[LoadAntecedentsAsync] Erreur: {ex.Message}");
+            }
+        }
+
+        // New: load consultations and acts for patient
+        private async Task LoadActsAsync(int patientId)
+        {
+            try
+            {
+                Acts.Clear();
+                if (_patientService == null) return;
+
+                var patientWithConsultations = await _patientService.GetByIdWithConsultationsAsync(patientId);
+                if (patientWithConsultations?.Consultations == null) return;
+
+                var consultations = patientWithConsultations.Consultations
+                    .OrderByDescending(c => c.DateConsultation)
+                    .ToList();
+
+                foreach (var c in consultations)
+                {
+                    var actes = c.IdActes?.Select(a => a.Libelle).ToList() ?? new System.Collections.Generic.List<string>();
+                    int? fdi = c.IdDentNavigation?.CodeFdi;
+                    Acts.Add(new ActDisplayItem
+                    {
+                        ConsultationId = c.Id,
+                        Date = c.DateConsultation ?? DateTime.Now,
+                        DateFormatted = (c.DateConsultation ?? DateTime.Now).ToString("dd/MM/yyyy"),
+                        ToothFdi = fdi,
+                        ActNames = actes,
+                        Notes = c.Note
+                    });
+                }
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"[LoadActsAsync] Erreur: {ex.Message}");
             }
         }
 
@@ -264,5 +311,15 @@ namespace Dental_App.ViewModels
                 CloseDialog?.Invoke(false);
             }
         }
+    }
+
+    public class ActDisplayItem
+    {
+        public int ConsultationId { get; set; }
+        public DateTime Date { get; set; }
+        public string DateFormatted { get; set; } = "";
+        public int? ToothFdi { get; set; }
+        public List<string> ActNames { get; set; } = new List<string>();
+        public string Notes { get; set; } = "";
     }
 }
