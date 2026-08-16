@@ -301,6 +301,7 @@
                         <RowDefinition Height="Auto"/>
                         <RowDefinition Height="Auto"/>
                         <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/> <!-- for antecedent row -->
                     </Grid.RowDefinitions>
 
                     <StackPanel Grid.Row="0" Grid.Column="0" Margin="0,0,0,16">
@@ -350,11 +351,6 @@
                         <TextBox Text="{Binding Telephone, UpdateSourceTrigger=PropertyChanged}" Style="{StaticResource FormInputStyle}"/>
                     </StackPanel>
 
-                    <StackPanel Grid.Row="2" Grid.Column="2" Margin="0,0,0,16">
-                        <TextBlock Text="CIN" Style="{StaticResource FormFieldLabelStyle}"/>
-                        <TextBox Text="{Binding Cin, UpdateSourceTrigger=PropertyChanged}" Style="{StaticResource FormInputStyle}"/>
-                    </StackPanel>
-
                     <StackPanel Grid.Row="3" Grid.Column="0" Grid.ColumnSpan="3" Margin="0,0,0,24">
                         <StackPanel Orientation="Horizontal" Margin="0,0,0,8">
                             <TextBlock Text="Adresse" Style="{StaticResource FormFieldLabelStyle}"/>
@@ -366,6 +362,12 @@
                     <StackPanel Grid.Row="4" Grid.Column="0" Grid.ColumnSpan="3" Margin="0,0,0,24">
                         <TextBlock Text="Profession" Style="{StaticResource FormFieldLabelStyle}"/>
                         <TextBox Text="{Binding Profession, UpdateSourceTrigger=PropertyChanged}" Style="{StaticResource FormInputStyle}"/>
+                    </StackPanel>
+
+                    <!-- New: Antecedent input (optional) -->
+                    <StackPanel Grid.Row="5" Grid.Column="0" Grid.ColumnSpan="3" Margin="0,0,0,24">
+                        <TextBlock Text="Antecedent (optionnel)" Style="{StaticResource FormFieldLabelStyle}"/>
+                        <TextBox Text="{Binding NewAntecedent, UpdateSourceTrigger=PropertyChanged}" Style="{StaticResource FormInputStyle}" ToolTip="Ex: Diabete, Allergie..." />
                     </StackPanel>
                 </Grid>
 

@@ -19,6 +19,7 @@ namespace Dental_App.ViewModels
         private readonly ILiveSearchService<Patient> _searchService;
         private readonly IAppNotificationService _notificationService;
         private readonly IRendezVousService _rendezVousService;
+        private readonly IAntecedentService _antecedentService;
 
         private ObservableCollection<PatientDisplayRow> _patients;
         private string _searchText = string.Empty;
@@ -34,12 +35,13 @@ namespace Dental_App.ViewModels
         private DelegateCommand _nextPageCommand;
         private DelegateCommand _previousPageCommand;
 
-        public PatientsViewModel(IPatientService patientService, ILiveSearchService<Patient> searchService, IAppNotificationService notificationService, IRendezVousService rendezVousService)
+        public PatientsViewModel(IPatientService patientService, ILiveSearchService<Patient> searchService, IAppNotificationService notificationService, IRendezVousService rendezVousService, IAntecedentService antecedentService)
         {
             _patientService = patientService ?? throw new ArgumentNullException(nameof(patientService));
             _searchService = searchService ?? throw new ArgumentNullException(nameof(searchService));
             _notificationService = notificationService ?? throw new ArgumentNullException(nameof(notificationService));
             _rendezVousService = rendezVousService ?? throw new ArgumentNullException(nameof(rendezVousService));
+            _antecedentService = antecedentService ?? throw new ArgumentNullException(nameof(antecedentService));
 
             Patients = new ObservableCollection<PatientDisplayRow>();
             AddPatientCommand = new DelegateCommand(AddPatient);
@@ -164,7 +166,8 @@ namespace Dental_App.ViewModels
             
             try
             {
-                var dialogViewModel = new AddPatientDialogViewModel(_patientService, _notificationService);
+                // Pass antecedent service so dialog can create antecedent when adding patient
+                var dialogViewModel = new AddPatientDialogViewModel(_patientService, _notificationService, null, _antecedentService);
                 var dialogView = new AddPatientDialogView { DataContext = dialogViewModel };
 
                 var window = new Window
@@ -207,7 +210,7 @@ namespace Dental_App.ViewModels
             
             try
             {
-                var dialogViewModel = new PatientDetailsDialogViewModel(_patientService, _notificationService, patient.Patient, _rendezVousService);
+                var dialogViewModel = new PatientDetailsDialogViewModel(_patientService, _notificationService, patient.Patient, _rendezVousService, _antecedentService);
                 // Set the financial data
                 dialogViewModel.TotalAmount = patient.RemainingAmountValue + (patient.Patient.SommePaye ?? 0);
                 dialogViewModel.PaidAmount = patient.Patient.SommePaye ?? 0;

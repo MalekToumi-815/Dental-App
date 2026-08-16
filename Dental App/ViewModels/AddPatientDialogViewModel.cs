@@ -12,6 +12,7 @@ namespace Dental_App.ViewModels
     {
         private readonly IPatientService _patientService;
         private readonly IAppNotificationService _notificationService;
+        private readonly IAntecedentService _antecedentService;
         private string _title = "Nouveau Patient";
         private string _buttonText = "Ajouter";
         private string _nom;
@@ -24,11 +25,18 @@ namespace Dental_App.ViewModels
         private string _profession;
         private bool _isFormValid;
         private Patient _patientBeingEdited;
+        private string _newAntecedent;
+        private bool _isEditMode;
 
-        public AddPatientDialogViewModel(IPatientService patientService, IAppNotificationService notificationService, Patient patientToEdit = null)
+        // Constructor accepts patientService and notificationService; existing call sites may pass a Patient as third arg.
+        // We keep backward compatibility by making patientToEdit the third parameter and antecedentService optional fourth.
+        public AddPatientDialogViewModel(IPatientService patientService, IAppNotificationService notificationService, Patient patientToEdit = null, IAntecedentService antecedentService = null)
         {
             _patientService = patientService ?? throw new ArgumentNullException(nameof(patientService));
             _notificationService = notificationService ?? throw new ArgumentNullException(nameof(notificationService));
+
+            // Note: antecedentService is optional; if provided we will create an antecedent when adding a new patient
+            _antecedentService = antecedentService;
 
             SexeOptions = new ObservableCollection<string> { "Masculin", "Feminin" };
 
@@ -40,6 +48,7 @@ namespace Dental_App.ViewModels
             {
                 // Edit mode
                 _patientBeingEdited = patientToEdit;
+                IsEditMode = true;
                 Title = "Modifier Patient";
                 ButtonText = "Sauvegarder Patient";
 
@@ -57,6 +66,7 @@ namespace Dental_App.ViewModels
             else
             {
                 // Add mode
+                IsEditMode = false;
                 Title = "Ajouter un nouveau patient";
                 ButtonText = "Ajouter";
                 _patientBeingEdited = null;
@@ -123,10 +133,24 @@ namespace Dental_App.ViewModels
             set => SetProperty(ref _profession, value);
         }
 
+        // New property for antecedent text entered when creating a patient
+        public string NewAntecedent
+        {
+            get => _newAntecedent;
+            set => SetProperty(ref _newAntecedent, value);
+        }
+
         public bool IsFormValid
         {
             get => _isFormValid;
             set => SetProperty(ref _isFormValid, value);
+        }
+
+        // Indicates whether dialog is in edit mode (true) or add mode (false)
+        public bool IsEditMode
+        {
+            get => _isEditMode;
+            private set => SetProperty(ref _isEditMode, value);
         }
 
         public ObservableCollection<string> SexeOptions { get; }
@@ -186,9 +210,29 @@ namespace Dental_App.ViewModels
                         SommePaye = 0m
                     };
 
-                    await _patientService.CreateAsync(newPatient);
+                    var created = await _patientService.CreateAsync(newPatient);
                     System.Diagnostics.Debug.WriteLine("Patient created successfully");
                     _notificationService.ShowSuccess("Le nouveau patient a ete ajoute avec succes.", "Ajout reussi");
+
+                    // If an antecedent text was provided and the antecedent service is available, create it for the new patient
+                    if (!string.IsNullOrWhiteSpace(NewAntecedent) && _antecedentService != null)
+                    {
+                        try
+                        {
+                            await _antecedentService.CreateAsync(new Antecedant
+                            {
+                                Nom = NewAntecedent,
+                                Description = null,
+                                PatientId = created.Id
+                            });
+
+                            System.Diagnostics.Debug.WriteLine($"Antecedent created for patient {created.Id}");
+                        }
+                        catch (Exception aex)
+                        {
+                            System.Diagnostics.Debug.WriteLine($"Error creating antecedent: {aex.Message}");
+                        }
+                    }
                 }
 
                 CloseDialog?.Invoke(true);

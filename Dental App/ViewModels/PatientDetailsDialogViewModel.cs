@@ -5,6 +5,8 @@ using System.Windows;
 using Dental_App.Models;
 using Dental_App.Services;
 using System.Linq;
+using System.Collections.ObjectModel;
+using System.Threading.Tasks;
 
 namespace Dental_App.ViewModels
 {
@@ -13,6 +15,7 @@ namespace Dental_App.ViewModels
         private readonly IPatientService _patientService;
         private readonly IAppNotificationService _notificationService;
         private readonly IRendezVousService _rendezVousService;
+        private readonly IAntecedentService _antecedentService;
         private string _title = "Dossier Patient";
         private string _buttonText = "Ajouter Paiement";
         private Patient _patient;
@@ -24,12 +27,14 @@ namespace Dental_App.ViewModels
         private bool _isPaymentInputVisible;
         private string _paymentAmountInput = string.Empty;
         private string _uniqueNumber;
+        private ObservableCollection<string> _antecedents = new ObservableCollection<string>();
 
-        public PatientDetailsDialogViewModel(IPatientService patientService = null, IAppNotificationService notificationService = null, Patient patient = null, IRendezVousService rendezVousService = null)
+        public PatientDetailsDialogViewModel(IPatientService patientService = null, IAppNotificationService notificationService = null, Patient patient = null, IRendezVousService rendezVousService = null, IAntecedentService antecedentService = null)
         {
             _patientService = patientService;
             _notificationService = notificationService;
             _rendezVousService = rendezVousService;
+            _antecedentService = antecedentService;
             SaveCommand = new DelegateCommand(ExecuteSave);
             CancelCommand = new DelegateCommand(ExecuteCancel);
 
@@ -105,6 +110,13 @@ namespace Dental_App.ViewModels
             private set => SetProperty(ref _uniqueNumber, value);
         }
 
+        // New: Antecedents collection exposed to view
+        public ObservableCollection<string> Antecedents
+        {
+            get => _antecedents;
+            set => SetProperty(ref _antecedents, value);
+        }
+
         public DelegateCommand SaveCommand { get; }
         public DelegateCommand CancelCommand { get; }
         public Action<bool?> CloseDialog { get; set; }
@@ -113,7 +125,7 @@ namespace Dental_App.ViewModels
         {
             Patient = patient;
             FullName = $"{patient.Prenom} {patient.Nom}";
-            
+
             // Generate initials (first letter of first name + first letter of last name)
             if (!string.IsNullOrEmpty(patient.Prenom) && !string.IsNullOrEmpty(patient.Nom))
             {
@@ -123,7 +135,32 @@ namespace Dental_App.ViewModels
             // Compute the unique number asynchronously
             ComputeUniqueNumberAsync(patient);
 
+            // Load antecedents if service available
+            _ = LoadAntecedentsAsync(patient.Id);
+
             System.Diagnostics.Debug.WriteLine($"PatientDetailsDialogViewModel initialized with patient: {FullName}");
+        }
+
+        private async Task LoadAntecedentsAsync(int patientId)
+        {
+            try
+            {
+                Antecedents.Clear();
+                if (_antecedentService == null) return;
+
+                var list = await _antecedentService.GetByPatientIdAsync(patientId);
+                if (list != null)
+                {
+                    foreach (var a in list)
+                    {
+                        Antecedents.Add(string.IsNullOrWhiteSpace(a.Nom) ? a.Description ?? "(sans titre)" : a.Nom + (string.IsNullOrWhiteSpace(a.Description) ? string.Empty : $": {a.Description}"));
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"[LoadAntecedentsAsync] Erreur: {ex.Message}");
+            }
         }
 
         private async void ComputeUniqueNumberAsync(Patient patient)
