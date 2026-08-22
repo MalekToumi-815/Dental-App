@@ -87,13 +87,14 @@
                                     BorderThickness="{TemplateBinding BorderThickness}"
                                     CornerRadius="8"/>
 
-                            <ContentPresenter Grid.Column="0"
-                                               Margin="{TemplateBinding Padding}"
-                                               VerticalAlignment="Center"
-                                               HorizontalAlignment="Left"
-                                               Content="{TemplateBinding SelectionBoxItem}"
-                                               ContentTemplate="{TemplateBinding SelectionBoxItemTemplate}"
-                                               IsHitTestVisible="False"/>
+                            <TextBlock Grid.Column="0"
+           Margin="{TemplateBinding Padding}"
+           VerticalAlignment="Center"
+           HorizontalAlignment="Left"
+           Foreground="{TemplateBinding Foreground}"
+           FontSize="{TemplateBinding FontSize}"
+           IsHitTestVisible="False"
+           Text="{Binding SelectedItem.Name, RelativeSource={RelativeSource TemplatedParent}}"/>
 
                             <Path Grid.Column="1" Data="M 0,0 L 4,4 L 8,0"
                                   Stroke="{DynamicResource AccentColor}"
@@ -629,11 +630,16 @@
                                  Text="{Binding SelectedYearText, UpdateSourceTrigger=PropertyChanged}"/>
 
                         <ComboBox Grid.Row="1" Grid.Column="2"
-                                  ItemsSource="{Binding Months}"
-                                  SelectedValuePath="Id"
-                                  DisplayMemberPath="Name"
-                                SelectedValue="{Binding SelectedMonth, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
-                                  Style="{StaticResource StyledMonthComboBox}"/>
+          ItemsSource="{Binding Months}"
+          SelectedValuePath="Id"
+          SelectedValue="{Binding SelectedMonth, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+          Style="{StaticResource StyledMonthComboBox}">
+                            <ComboBox.ItemTemplate>
+                                <DataTemplate>
+                                    <TextBlock Text="{Binding Name}"/>
+                                </DataTemplate>
+                            </ComboBox.ItemTemplate>
+                        </ComboBox>
 
                         <TextBlock Grid.Row="1" Grid.Column="4"
                                    Text="{Binding OrdersCount}"
