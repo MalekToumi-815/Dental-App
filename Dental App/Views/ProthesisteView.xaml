@@ -650,8 +650,10 @@
                     </Grid>
 
                     <TextBlock Text="Liste des commandes" FontSize="14" FontWeight="SemiBold" Foreground="{DynamicResource TextPrimary}" Margin="0,0,0,8"/>
-                    <Border Background="{DynamicResource SecondaryBackground}" BorderBrush="{DynamicResource GlobalElementBorderBrush}" BorderThickness="1" CornerRadius="8" Padding="12" MaxHeight="240">
-                        <ScrollViewer VerticalScrollBarVisibility="Auto">
+                    <Border Background="{DynamicResource SecondaryBackground}" BorderBrush="{DynamicResource GlobalElementBorderBrush}" BorderThickness="1" CornerRadius="8" Padding="12" Height="240">
+                        <ScrollViewer VerticalScrollBarVisibility="Auto"
+                  HorizontalScrollBarVisibility="Disabled"
+                  CanContentScroll="False">
                             <ItemsControl ItemsSource="{Binding Orders}">
                                 <ItemsControl.ItemTemplate>
                                     <DataTemplate>
