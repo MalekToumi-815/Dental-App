@@ -1,0 +1,964 @@
+{
+  "titre": "NOMENCLATURE DES ACTES DENTAIRES",
+  "consultation": {
+    "acte": "Consultation du médecin dentiste",
+    "code": "CD",
+    "honoraire": "30,000 DT"
+  },
+  "acte_realise_par_medecin": {
+    "description": "Acte réalisé par un médecin dentiste",
+    "code": "D",
+    "honoraire": "3,000 DT"
+  },
+  "actes_isoles": [
+    {
+      "code": "DCH000010",
+      "designation": "Anesthésie locale isolée (sans acte associé)",
+      "cotation": "06",
+      "honoraire": "18.000"
+    },
+    {
+      "code": "DCH000020",
+      "designation": "Anesthésie loco-régionale (sans acte associé)",
+      "cotation": "D10",
+      "honoraire": "30.000"
+    },
+    {
+      "code": "DCH000030",
+      "designation": "Dent par technique intra buccale, film occlusal ou rétro-alveolaire",
+      "cotation": "28",
+      "honoraire": "15.000"
+    },
+    {
+      "code": "DCH000040",
+      "designation": "Bilan radiologique complet par technique intrabucale (Status) quel que soit le nombre de clichets, minimum OG clichets",
+      "cotation": "225",
+      "honoraire": "45.000"
+    }
+  ],
+  "chapitres": [
+    {
+      "chapitre": "CHAPITRE: DENTS ET GENCIVES",
+      "sections": [
+        {
+          "section": "SECTION 1: SOINS CONSERVATEUR, OBTURATIONS DENTAIRES DEFINITIVES",
+          "remarque": "L'anesthésie locale ou régionale par infiltration pratiquée pour des actes de cette section ne donne pas lieu à cotation",
+          "actes": [
+            {
+              "code": "DCH010010",
+              "designation": "Traitement global (l'obturation de plusieurs cavités simples sur la même face ne peut être comptée que pour une seule obturation composée intéressant deux faces)",
+              "cotation": "015",
+              "honoraire": "45.000"
+            },
+            {
+              "code": "DCH010020",
+              "designation": "Traitement global (l'obturation de plusieurs cavités simples sur la même face ne peut être comptée que pour une seule obturation composée intéressant deux faces), si dent permanente d'un enfant de moins de 14 ans",
+              "cotation": "018",
+              "honoraire": "54.000"
+            },
+            {
+              "code": "DCH010030",
+              "designation": "Supplément pour technique adhésive quel que soit le nombre de faces traitées",
+              "cotation": "010",
+              "honoraire": "30.000"
+            },
+            {
+              "code": "DCH010040",
+              "designation": "Traitement global intéressant deux faces",
+              "cotation": "023",
+              "honoraire": "69.000"
+            },
+            {
+              "code": "DCH010050",
+              "designation": "Traitement global intéressant deux faces, dent permanente d'un enfant de moins de 14 ans",
+              "cotation": "D26",
+              "honoraire": "78.000"
+            },
+            {
+              "code": "DCH010060",
+              "designation": "Traitement global intéressant trois faces et plus",
+              "cotation": "D30",
+              "honoraire": "90.000"
+            },
+            {
+              "code": "DCH010070",
+              "designation": "Traitement global intéressant trois faces et plus, si dent permanente d'un enfant de moins de 14 ans",
+              "cotation": "036",
+              "honoraire": "108.000"
+            },
+            {
+              "code": "DCH010080",
+              "designation": "Coiffage pulpaire pulpectomie coronaire simple et à l'exclusion de l'obturation définitive",
+              "cotation": "D10",
+              "honoraire": "30.000"
+            },
+            {
+              "code": "DCH010090",
+              "designation": "Groupe incisivo-canin (Pulpectomie coronaire et radiculaire avec obturation des canaux et soins consécutifs à une gangrène pulpaire)",
+              "cotation": "018",
+              "honoraire": "54.000"
+            },
+            {
+              "code": "DCH010100",
+              "designation": "Groupe prémolaire (Pulpectomie coronaire et radiculaire avec obturation des canaux et soins consécutifs à une gangrène pulpaire)",
+              "cotation": "D23",
+              "honoraire": "69.000"
+            },
+            {
+              "code": "DCH010110",
+              "designation": "Groupe molaire (Pulpectomie coronaire et radiculaire avec obturation des canaux et soins consécutifs à une gangrène pulpaire)",
+              "cotation": "030",
+              "honoraire": "90,000"
+            },
+            {
+              "code": "DCH010120",
+              "designation": "Restauration d'une perte de substance intéressant deux faces et plus d'une dent par matériaux insérés en phase plastique avec ancrage radiculaire",
+              "cotation": "050",
+              "honoraire": "150.000"
+            }
+          ]
+        },
+        {
+          "section": "SECTION II: SOINS CHIRURGICAUX",
+          "remarque": "L'anesthésie locale ou régionale par infiltration pratiquée pour des actes de cette section ne donne pas lieu à cotation",
+          "articles": [
+            {
+              "article": "Article 1: Extraction et traitement des lésions osseuses et gingivales",
+              "actes": [
+                {
+                  "code": "DCH020010",
+                  "designation": "Resection de capuchon muqueux d'une dent de sagesse",
+                  "cotation": "D10",
+                  "honoraire": "30.000"
+                },
+                {
+                  "code": "DCH020020",
+                  "designation": "Incision d'abcès et drainage",
+                  "cotation": "D10",
+                  "honoraire": "30.000"
+                },
+                {
+                  "code": "DCH020030",
+                  "designation": "Extraction dentaire simple y compris le curetage alveolaire, la régularisation immédiate des bords alvéolaires et le tamponnement immediat de l'hémorragie",
+                  "cotation": "D15",
+                  "honoraire": "45.000"
+                },
+                {
+                  "code": "DCH020040",
+                  "designation": "Extraction de plusieurs dents au cours d'une même séance chaque dent suivante",
+                  "cotation": "DS",
+                  "honoraire": "15.000"
+                },
+                {
+                  "code": "DCH020050",
+                  "designation": "Extraction au cours d'accidents inflammatoires ou osseux aigus (y compris éventuellement l'incision de l'abcès) - Majoration pour la première",
+                  "cotation": "D6",
+                  "honoraire": "18.000"
+                },
+                {
+                  "code": "DCH020060",
+                  "designation": "Majoration pour chacune des suivantes",
+                  "cotation": "03",
+                  "honoraire": "9.000"
+                },
+                {
+                  "code": "DCH020070",
+                  "designation": "Extraction de la ou des racines d'une dent par alvéolectomie",
+                  "cotation": "020",
+                  "honoraire": "60.000"
+                },
+                {
+                  "code": "DCH020080",
+                  "designation": "Extraction d'une dent en malposition",
+                  "cotation": "020",
+                  "honoraire": "60.000"
+                },
+                {
+                  "code": "DCH020090",
+                  "designation": "Tamponnement alveolaire pour hémorragie post-opératoire dans une séance autre que celle de l'extraction",
+                  "cotation": "D10",
+                  "honoraire": "30.000"
+                },
+                {
+                  "code": "DCH020100",
+                  "designation": "Extraction chirurgicale - D'une dent enclavée",
+                  "cotation": "040",
+                  "honoraire": "120.000"
+                },
+                {
+                  "code": "DCH020110",
+                  "designation": "Extraction chirurgicale - D'une dent incluse",
+                  "cotation": "060",
+                  "honoraire": "180.000"
+                },
+                {
+                  "code": "DCH020120",
+                  "designation": "Extraction chirurgicale - D'un odontalde",
+                  "cotation": "050",
+                  "honoraire": "150.000"
+                },
+                {
+                  "code": "DCH020130",
+                  "designation": "Extraction chirurgicale - D'une dent en désinclusion, non enclavée dont la couronne est partiellement ou entièrement sous muqueuse",
+                  "cotation": "025",
+                  "honoraire": "75.000"
+                },
+                {
+                  "code": "DCH020140",
+                  "designation": "Extraction chirurgicale - D'une dent en désinclusion dont la couronne est sous muqueuse en position palatine ou linguale",
+                  "cotation": "040",
+                  "honoraire": "120.000"
+                },
+                {
+                  "code": "DCH020150",
+                  "designation": "Extraction chirurgicale - D'une dent ectopique et incluse (corone, gonion, branche montante, bord basilaire de la branche et du manton sinus)",
+                  "cotation": "080",
+                  "honoraire": "240.000"
+                },
+                {
+                  "code": "DCH020160",
+                  "designation": "Germectomie",
+                  "cotation": "030",
+                  "honoraire": "90.000"
+                },
+                {
+                  "code": "DC11020170",
+                  "designation": "Germectumie d'une dent de sagesse",
+                  "cotation": "050",
+                  "honoraire": "150.000"
+                },
+                {
+                  "code": "DCH020180",
+                  "designation": "Extraction chirurgicale d'une dent permanente, incluse, traitement radiculaire, reimplantation, contention - Une dent",
+                  "cotation": "0100",
+                  "honoraire": "300.000"
+                },
+                {
+                  "code": "DCH020190",
+                  "designation": "Extraction chirurgicale d'une dent permanente, incluse, traitement radiculaire, reimplantation, contention - Deux dents",
+                  "cotation": "0150",
+                  "honoraire": "450.000"
+                },
+                {
+                  "code": "DCH020200",
+                  "designation": "Dégagement chirurgical de la couronne d'une dent permanente incluse",
+                  "cotation": "D40",
+                  "honoraire": "120.000"
+                },
+                {
+                  "code": "DCH020210",
+                  "designation": "Régularisation localisée d'une crête alvéolaire",
+                  "cotation": "015",
+                  "honoraire": "45.000"
+                },
+                {
+                  "code": "DCH020220",
+                  "designation": "Régularisation étendue de la crête alvéolaire y compris suture",
+                  "cotation": "020",
+                  "honoraire": "60.000"
+                },
+                {
+                  "code": "DCH020230",
+                  "designation": "Régularisation de crête concernant un hémimanillaire ou de canine à canine",
+                  "cotation": "030",
+                  "honoraire": "90.000"
+                },
+                {
+                  "code": "EXCH020240",
+                  "designation": "Curetage periapical per trepanation vestibulaire avec ou sans résection apicale (traitement du canal compris)",
+                  "cotation": "040",
+                  "honoraire": "120.000"
+                },
+                {
+                  "code": "DCH020250",
+                  "designation": "Exérèse chirurgicale d'un kyste de petit volume par voie alveolaire élargie",
+                  "cotation": "020",
+                  "honoraire": "60.000"
+                },
+                {
+                  "code": "DCH029260",
+                  "designation": "Exérèse chirurgicale d'un kyste étendu aux apex de deux dents nécessitant une tréparation osseuse",
+                  "cotation": "030",
+                  "honoraire": "90.000"
+                },
+                {
+                  "code": "DCH020270",
+                  "designation": "Exérèse chirurgicale d'un kyste étendu à un segment important du maxillaire",
+                  "cotation": "050",
+                  "honoraire": "180.000"
+                },
+                {
+                  "code": "DCH020280",
+                  "designation": "Exérèse chirurgicale d'un kyste corono-dentaire",
+                  "cotation": "040",
+                  "honoraire": "120.000"
+                },
+                {
+                  "code": "DCH020290",
+                  "designation": "Curetage d'un kyste par marsupialisation",
+                  "cotation": "025",
+                  "honoraire": "75.000"
+                }
+              ]
+            },
+            {
+              "article": "Article 2: Chirurgie Pré-prothétique",
+              "actes": [
+                {
+                  "code": "DCH020300",
+                  "designation": "Désinsertion musculaire vestibulaire partielle",
+                  "cotation": "D50",
+                  "honoraire": "150.000"
+                },
+                {
+                  "code": "DCH020310",
+                  "designation": "Désinsertion musculaire étendue à tout le vestibule",
+                  "cotation": "060",
+                  "honoraire": "180.000"
+                },
+                {
+                  "code": "DCH020320",
+                  "designation": "Désinsertion musculaire du plancher de la bouche avec section des mylo-hyoidiens",
+                  "cotation": "080",
+                  "honoraire": "240.000"
+                },
+                {
+                  "code": "DCH020330",
+                  "designation": "Approfondissement d'un vestibule par greffe cutanée",
+                  "cotation": "050",
+                  "honoraire": "150.000"
+                },
+                {
+                  "code": "DCH020340",
+                  "designation": "Désépaississement d'une crête flottante ou d'une hyperplasie localisée",
+                  "cotation": "D30",
+                  "honoraire": "90.000"
+                },
+                {
+                  "code": "DCH020350",
+                  "designation": "Désépaississement d'une crête flottante ou d'une hyperplasie étendue",
+                  "cotation": "040",
+                  "honoraire": "120.000"
+                }
+              ]
+            },
+            {
+              "article": "Article 3: Parties molles, glandes, maxillaires, articulations et tumeurs, langue",
+              "actes": [
+                {
+                  "code": "DCH020360",
+                  "designation": "Incision d'un abcés de la langue ou du plancher de la bouche par voie buccale",
+                  "cotation": "D20",
+                  "honoraire": "60.000"
+                },
+                {
+                  "code": "DCH020370",
+                  "designation": "Excision et suture d'une bride fibreuse ou du frein hypertrophié",
+                  "cotation": "D20",
+                  "honoraire": "60.000"
+                },
+                {
+                  "code": "DCH020380",
+                  "designation": "Incision d'un abcès ou phlegmon de la base de la langue ou du plancher de la bouche par voie sous-hyoidienne",
+                  "cotation": "040",
+                  "honoraire": "120.000"
+                },
+                {
+                  "code": "DCH020390",
+                  "designation": "Excision par voie buccale d'un kyste du plancher de la bouche",
+                  "cotation": "030",
+                  "honoraire": "90.000"
+                },
+                {
+                  "code": "DCH020400",
+                  "designation": "Injection de substance de contraste dans les glandes salivaires (cliché non compris)",
+                  "cotation": "D15",
+                  "honoraire": "45.000"
+                },
+                {
+                  "code": "DCH020410",
+                  "designation": "Traitement chirurgical par voie buccale d'une lithiase salivaire - Ablation d'un calcul antérieur par incision muqueuse simple",
+                  "cotation": "020",
+                  "honoraire": "60.000"
+                },
+                {
+                  "code": "DCH020420",
+                  "designation": "Traitement chirurgical par voie buccale d'une lithiase salivaire - Ablation d'un calcul postérieur par dissection complète du canal excréteur",
+                  "cotation": "030",
+                  "honoraire": "90.000"
+                },
+                {
+                  "code": "DCH020430",
+                  "designation": "Traitement chirurgical d'une lésion benigne d'une glande salivaire autre que la parotide",
+                  "cotation": "050",
+                  "honoraire": "150.000"
+                },
+                {
+                  "code": "DCH020440",
+                  "designation": "Traitement des fractures des procés alvéolaires avec conservation des dents mobiles et déplacées, traitement radiculaire non compris",
+                  "cotation": "D50",
+                  "honoraire": "150.000"
+                },
+                {
+                  "code": "DCH020450",
+                  "designation": "Traitement orthopédique d'une fracture complète sans déplacement (appareillage compris)",
+                  "cotation": "D60",
+                  "honoraire": "180.000"
+                },
+                {
+                  "code": "DCH020460",
+                  "designation": "Curetage et ablation des séquestres pour osteites et nécroses des maxillaires circonscrites à la région alvéolaire",
+                  "cotation": "D25",
+                  "honoraire": "75.000"
+                },
+                {
+                  "code": "DCH020470",
+                  "designation": "Traitement orthopédique de luxation uni ou bilatérale récente de la mandibule",
+                  "cotation": "D20",
+                  "honoraire": "60.000"
+                },
+                {
+                  "code": "DCH020480",
+                  "designation": "Prélèvement en vue d'un examen de laboratoire d'une lésion intrabuccale de l'oropharynx",
+                  "cotation": "015",
+                  "honoraire": "45.000"
+                },
+                {
+                  "code": "DCH020490",
+                  "designation": "Exérèse d'une tumeur bénigne de la muqueuse buccale (épulis)",
+                  "cotation": "025",
+                  "honoraire": "75.000"
+                },
+                {
+                  "code": "DCH020500",
+                  "designation": "Diathermo-coagulation d'une leucoplasie, d'un lupus ou d'une tumeur benigne",
+                  "cotation": "D15",
+                  "honoraire": "45.000"
+                }
+              ]
+            },
+            {
+              "article": "Article 4: Traumatismes",
+              "actes": [
+                {
+                  "code": "DCH020510",
+                  "designation": "Contention sur arc d'une dent subluxée, après réduction",
+                  "cotation": "D00",
+                  "honoraire": "240.000"
+                },
+                {
+                  "code": "DCH020520",
+                  "designation": "Contention sur arc de deux dents subluxées ou plus, après réduction",
+                  "cotation": "D100",
+                  "honoraire": "300.000"
+                },
+                {
+                  "code": "DCH020530",
+                  "designation": "Contention d'une fracture alvéolodentaire du groupe incisivo-canin, après réduction",
+                  "cotation": "0120",
+                  "honoraire": "360.000"
+                },
+                {
+                  "code": "DCH020540",
+                  "designation": "Traitement orthopédique d'une fracture mandibulaire non déplacée (par arc mandibulaire)",
+                  "cotation": "0150",
+                  "honoraire": "450.000"
+                },
+                {
+                  "code": "DCH020550",
+                  "designation": "Blocage bimaxillaire sur arcs maxillaire et mandibulaire d'une fracture mandibulaire non déplacée",
+                  "cotation": "0200",
+                  "honoraire": "600.000"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "section": "SECTION III: HYGIENE BUCCO-DENTAIRE ET TRAITEMENT DES PARODONTOPATHIES",
+          "actes": [
+            {
+              "code": "DCH030010",
+              "designation": "Détartrage complet sus gingival (quel que soit le nombre de séances)",
+              "cotation": "D20",
+              "honoraire": "60.000"
+            },
+            {
+              "code": "DCH030020",
+              "designation": "Traitement des gingivites détartrage sus et sous gingival, curetage et surfaçage radiculaire (quatres séances maximum)",
+              "cotation": "D25",
+              "honoraire": "75.000"
+            },
+            {
+              "code": "DCH030030",
+              "designation": "Gingivectomie quelle que soit la technique - Partielle",
+              "cotation": "D25",
+              "honoraire": "75.000"
+            },
+            {
+              "code": "DCH030040",
+              "designation": "Gingivectomie quelle que soit la technique - Etendue à une hémi arcade ou de canine à canine",
+              "cotation": "D50",
+              "honoraire": "150.000"
+            },
+            {
+              "code": "DCH030050",
+              "designation": "Intervention à lambeaux quelle que soit la technique avec curetage, surfaçage radiculaire et suture - De une à trois dents",
+              "cotation": "D50",
+              "honoraire": "150.000"
+            },
+            {
+              "code": "DCH030060",
+              "designation": "Intervention à lambeaux - Par dent supplémentaire",
+              "cotation": "D20",
+              "honoraire": "60.000"
+            },
+            {
+              "code": "DCH030070",
+              "designation": "Intervention à lambeau et traitement d'une lésion osseuse par comblement et suture",
+              "cotation": "0150",
+              "honoraire": "450.000"
+            },
+            {
+              "code": "DCH030080",
+              "designation": "Greffe gingivale libre, quel que soit le nombre de dents interessees, avec prélèvement du greffon et suture",
+              "cotation": "0150",
+              "honoraire": "450.000"
+            },
+            {
+              "code": "DCH030090",
+              "designation": "Hémi-section d'une molaire inférieure ou amputation radiculaire d'une molaire supérieure avec régularisation",
+              "cotation": "035",
+              "honoraire": "105.000"
+            },
+            {
+              "code": "DCH030100",
+              "designation": "Ligature métallique dans les parodontopathies",
+              "cotation": "D25",
+              "honoraire": "75.000"
+            },
+            {
+              "code": "DCH030110",
+              "designation": "Attelle métallique dans les parodontopathies",
+              "cotation": "040",
+              "honoraire": "120.000"
+            },
+            {
+              "code": "DCH030120",
+              "designation": "Prothèse attelle de contention quel que soit le nombre de dents ou de crochets",
+              "cotation": "D70",
+              "honoraire": "210.000"
+            },
+            {
+              "code": "DCH030130",
+              "designation": "Modification de l'articulé par meulage sélectif",
+              "cotation": "075",
+              "honoraire": "225.000"
+            },
+            {
+              "code": "DCH030140",
+              "designation": "Frenectomie (excision du frein labial)",
+              "cotation": "050",
+              "honoraire": "150.000"
+            }
+          ]
+        },
+        {
+          "section": "SECTION IV: PEDODONTIE PREVENTION",
+          "actes": [
+            {
+              "code": "DCH040010",
+              "designation": "Couronne pedodontique préformée",
+              "cotation": "D30",
+              "honoraire": "90.000"
+            },
+            {
+              "code": "DCH040020",
+              "designation": "Résine de scellement des puits et fissures (sealents)",
+              "cotation": "015",
+              "honoraire": "45.000"
+            },
+            {
+              "code": "DCH040030",
+              "designation": "Application topique de fluor par gouttière préfabriquée (5 séances maximum) par séance",
+              "cotation": "010",
+              "honoraire": "30.000"
+            },
+            {
+              "code": "DCH040040",
+              "designation": "Application topique de fluor par gouttière thermoformée",
+              "cotation": "D35",
+              "honoraire": "105.000"
+            },
+            {
+              "code": "DCH040050",
+              "designation": "Mainteneur d'espace fixe",
+              "cotation": "035",
+              "honoraire": "105.000"
+            },
+            {
+              "code": "DCH040060",
+              "designation": "Appareillage fixe pour blocage d'éruption",
+              "cotation": "D50",
+              "honoraire": "150.000"
+            },
+            {
+              "code": "DCH040070",
+              "designation": "Guide d'éruption",
+              "cotation": "050",
+              "honoraire": "150.000"
+            },
+            {
+              "code": "DCH040080",
+              "designation": "Appareil d'interception mobile (appareillage et suivi max 12 mois)",
+              "cotation": "0200",
+              "honoraire": "600.000"
+            }
+          ]
+        },
+        {
+          "section": "SECTION V: ORTHOPEDIE DENTO-FACIALE",
+          "actes": [
+            {
+              "code": "DCH050010",
+              "designation": "Examen, avec prise d'empreintes diagnostic et durée probable du traitement (radio et photos cotees en sus)",
+              "cotation": "D20",
+              "honoraire": "60.000"
+            },
+            {
+              "code": "DCH050020",
+              "designation": "Analyse céphalométrique (en supplément)",
+              "cotation": "015",
+              "honoraire": "45.000"
+            },
+            {
+              "code": "DCH050030",
+              "designation": "Traitement précoce de dysmorphose squelettique (appareillage et suivi maximum 15 mois) (exemple: masque de délaire, monobloc, etc.)",
+              "cotation": "0250",
+              "honoraire": "750.000"
+            },
+            {
+              "code": "DCH050040",
+              "designation": "Rééducation du comportement musculaire neuro-musculaire et physiologique par série de 12 séances éventuellement renouvelables chaque séance",
+              "cotation": "08",
+              "honoraire": "24.000"
+            },
+            {
+              "code": "DCH050050",
+              "designation": "Traitement orthodontique - Ne dépassant pas 6 mois",
+              "cotation": "0200",
+              "honoraire": "600.000"
+            },
+            {
+              "code": "DCH050060",
+              "designation": "Traitement orthodontique - Ne dépassant pas 12 mois",
+              "cotation": "D300",
+              "honoraire": "900.000"
+            },
+            {
+              "code": "DCH050070",
+              "designation": "Traitement des dysmorphoses importantes - Première année",
+              "cotation": "0350",
+              "honoraire": "1050.000"
+            },
+            {
+              "code": "DCH050080",
+              "designation": "Traitement des dysmorphoses importantes - Deuxième année",
+              "cotation": "0350",
+              "honoraire": "1050.000"
+            },
+            {
+              "code": "DCH050090",
+              "designation": "Traitement des dysmorphoses importantes - Troisième année",
+              "cotation": "0350",
+              "honoraire": "1050.000"
+            },
+            {
+              "code": "DCH050100",
+              "designation": "Contention après traitement orthodontique - La première année",
+              "cotation": "D100",
+              "honoraire": "300.000"
+            },
+            {
+              "code": "DCH050110",
+              "designation": "Contention après traitement orthodontique - La deuxième année",
+              "cotation": "D50",
+              "honoraire": "150.000"
+            },
+            {
+              "code": "DCH050120",
+              "designation": "Disjonction intermaxillaire rapide pour dysmorphose maxillaire en cas d'insuffisance respiratoire confirmée",
+              "cotation": "D180",
+              "honoraire": "540.000"
+            },
+            {
+              "code": "DCH050130",
+              "designation": "Mise en place sur l'arcade d'une dent permanente incluse - Une dent",
+              "cotation": "0150",
+              "honoraire": "450.000"
+            },
+            {
+              "code": "DCH050140",
+              "designation": "Mise en place sur l'arcade d'une dent permanente incluse - Deux dents",
+              "cotation": "D200",
+              "honoraire": "600.000"
+            },
+            {
+              "code": "DCH050150",
+              "designation": "Orthopédie des malformations consécutives à la fente labiopalatine ou à la division palatine - Forfait annuel par année",
+              "cotation": "0250",
+              "honoraire": "750.000"
+            },
+            {
+              "code": "DCH050160",
+              "designation": "Orthopédie des malformations consécutives à la fente labiopalatine - En période d'attente",
+              "cotation": "D60",
+              "honoraire": "180.000"
+            },
+            {
+              "code": "DCH050170",
+              "designation": "Préparation orthodontique à la chirurgie orthognatique au-delà du 17ème anniversaire par an, maximum 02 ans",
+              "cotation": "0350",
+              "honoraire": "1050.000"
+            }
+          ]
+        },
+        {
+          "section": "SECTION VI: PROTHESE DENTAIRE",
+          "remarque": "Dispositifs médicaux intrabuccaux surmesure (Les prothèses adjointes et complètes ne peuvent être remplacées qu'après un délai de 3 ans)",
+          "sous_sections": [
+            {
+              "titre": "Prothèses dentaires adjointes",
+              "actes": [
+                {
+                  "code": "DCH060010",
+                  "designation": "Appareillage (appareil compris) - De 1 à 3 dents",
+                  "cotation": "D60",
+                  "honoraire": "180.000"
+                },
+                {
+                  "code": "DCH060020",
+                  "designation": "Appareillage - de 4 à 7 (par dent supplémentaire)",
+                  "cotation": "05",
+                  "honoraire": "15.000"
+                },
+                {
+                  "code": "DCH060030",
+                  "designation": "Appareillage - De 8 dents",
+                  "cotation": "0100",
+                  "honoraire": "300.000"
+                },
+                {
+                  "code": "DCH060040",
+                  "designation": "Appareillage - de 9 à 11 (par dent supplémentaire)",
+                  "cotation": "05",
+                  "honoraire": "15.000"
+                },
+                {
+                  "code": "DCH060050",
+                  "designation": "Appareillage - De 12 à 14 dents",
+                  "cotation": "0150",
+                  "honoraire": "450.000"
+                },
+                {
+                  "code": "DCH060060",
+                  "designation": "Appareillage complet haut et bas",
+                  "cotation": "0300",
+                  "honoraire": "900.000"
+                },
+                {
+                  "code": "DCH060070",
+                  "designation": "Dent prothétique contre-plaquée sur plaque base en matière plastique, supplément",
+                  "cotation": "015",
+                  "honoraire": "45.000"
+                },
+                {
+                  "code": "DCH060080",
+                  "designation": "Plaque base métallique coulée, supplément",
+                  "cotation": "0100",
+                  "honoraire": "300.000"
+                },
+                {
+                  "code": "DCH060090",
+                  "designation": "Dent prothétique contreplaquée ou massive soudée sur plaque base metallique, supplement",
+                  "cotation": "020",
+                  "honoraire": "60.000"
+                },
+                {
+                  "code": "DCH060100",
+                  "designation": "Réparation de fracture sur la plaque base en matière plastique",
+                  "cotation": "015",
+                  "honoraire": "45.000"
+                },
+                {
+                  "code": "DCH060110",
+                  "designation": "Dents ou crochets ajoutés ou remplacés sur appareil en matière plastique - Premier élément",
+                  "cotation": "D15",
+                  "honoraire": "45.000"
+                },
+                {
+                  "code": "DCH060120",
+                  "designation": "Dents ou crochets ajoutés ou remplacés sur appareil en matière plastique - Element suivant sur l'appareil",
+                  "cotation": "DS",
+                  "honoraire": "15.000"
+                },
+                {
+                  "code": "DCH060130",
+                  "designation": "Dents ou crochets soudes, ajoutes ou remplacés sur un appareil metallique, par élément",
+                  "cotation": "020",
+                  "honoraire": "60.000"
+                },
+                {
+                  "code": "DCH060140",
+                  "designation": "Réparation de fracture de la plaque base metallique, non compris, s'il y a lieu le remontage des dents sur matière plastique",
+                  "cotation": "D20",
+                  "honoraire": "60.000"
+                },
+                {
+                  "code": "DCH060150",
+                  "designation": "Dents ou crochets remontés sur matière plastique, après réparation de la plaque base métallique par élément",
+                  "cotation": "05",
+                  "honoraire": "15.000"
+                },
+                {
+                  "code": "DCH060160",
+                  "designation": "Rebasage",
+                  "cotation": "025",
+                  "honoraire": "75.000"
+                },
+                {
+                  "code": "DCH060170",
+                  "designation": "Attachement pour prothese par element",
+                  "cotation": "0140",
+                  "honoraire": "420.000"
+                },
+                {
+                  "code": "DCH060180",
+                  "designation": "Remplacement de facette ou dent à tube",
+                  "cotation": "015",
+                  "honoraire": "45.000"
+                },
+                {
+                  "code": "DCH060190",
+                  "designation": "Preparation dentaire pre prothetique pour plaque métallique",
+                  "cotation": "050",
+                  "honoraire": "150.000"
+                }
+              ]
+            },
+            {
+              "titre": "Prothèses dentaires conjointes",
+              "actes": [
+                {
+                  "code": "DCH060200",
+                  "designation": "Couronne dentaire et élément de bridge",
+                  "cotation": "055",
+                  "honoraire": "165.000"
+                },
+                {
+                  "code": "DCH060210",
+                  "designation": "Dent à tenon ne faisant pas intervenir une technique de coulée",
+                  "cotation": "040",
+                  "honoraire": "120.000"
+                },
+                {
+                  "code": "DCH060220",
+                  "designation": "Dent à tenon radiculaire faisant intervenir une technique de coulée",
+                  "cotation": "DSC",
+                  "honoraire": "150.000"
+                },
+                {
+                  "code": "DCH060230",
+                  "designation": "Reconstitution coulée de moignon",
+                  "cotation": "DSD",
+                  "honoraire": "150.000"
+                },
+                {
+                  "code": "DCH060240",
+                  "designation": "Dépose et/ou repose d'une prothèse fixe par element pilier",
+                  "cotation": "015",
+                  "honoraire": "45.000"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "section": "SECTION VII: OCCLUSODONTIE",
+          "actes": [
+            {
+              "code": "DXCH070010",
+              "designation": "Analyse occlusale",
+              "cotation": "0120",
+              "honoraire": "360.000"
+            },
+            {
+              "code": "DCH070020",
+              "designation": "Equilibration occlusale - Per-soustraction",
+              "cotation": "070",
+              "honoraire": "210.000"
+            },
+            {
+              "code": "DCH070030",
+              "designation": "Equilibration occlusale - Par addition (résine composite)",
+              "cotation": "0100",
+              "honoraire": "300.000"
+            },
+            {
+              "code": "DCH070040",
+              "designation": "Gouttière occlusale (traitement, mise en placa et suivi)",
+              "cotation": "0200",
+              "honoraire": "600.000"
+            },
+            {
+              "code": "DCH070050",
+              "designation": "Réduction des subluxations et des luxations discales temporomandibulaires",
+              "cotation": "050",
+              "honoraire": "150.000"
+            }
+          ]
+        },
+        {
+          "section": "SECTION VIII: ECLAIRCISSEMENT-BLANCHIMENT",
+          "actes": [
+            {
+              "code": "DCH080010",
+              "designation": "Blanchiment par voie externe (max de 5 séances) par séance",
+              "cotation": "040",
+              "honoraire": "120.000"
+            },
+            {
+              "code": "DCH080020",
+              "designation": "Blanchiment par voie interne (max de 3 séances) par dent et par séance",
+              "cotation": "030",
+              "honoraire": "90.000"
+            }
+          ]
+        },
+        {
+          "section": "SECTION IX: IMPLANTOLOGIE",
+          "actes": [
+            {
+              "code": "DCH090010",
+              "designation": "Chirurgie de mise en place d'un implant (implant non compris)",
+              "cotation": "0200",
+              "honoraire": "600.000"
+            },
+            {
+              "code": "DCH090020",
+              "designation": "Par implant supplémentaire",
+              "cotation": "070",
+              "honoraire": "210.000"
+            },
+            {
+              "code": "DCH090030",
+              "designation": "Réalisation d'une prothèse implanto-portée (pièces prothétiques non comprises) par élément",
+              "cotation": "0100",
+              "honoraire": "300.000"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
