@@ -45,6 +45,7 @@ public partial class DentalContext : DbContext
     public virtual DbSet<RendezVou> RendezVous { get; set; }
 
     public virtual DbSet<Utilisateur> Utilisateurs { get; set; }
+    public virtual DbSet<ActeCnam> ActesCnam { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -259,6 +260,10 @@ public partial class DentalContext : DbContext
         modelBuilder.Entity<Utilisateur>(entity =>
         {
             entity.ToTable("Utilisateur");
+        });
+        modelBuilder.Entity<ActeCnam>(entity =>
+        {
+            entity.ToTable("ActeCnam");
         });
 
         OnModelCreatingPartial(modelBuilder);

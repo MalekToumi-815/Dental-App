@@ -6,6 +6,7 @@ using System.IO;
 using System.Windows;
 using Prism.Ioc;
 using System.Threading.Tasks;
+using Dental_App.Models;
 
 using System;
 
@@ -80,6 +81,7 @@ namespace Dental_App
             containerRegistry.RegisterForNavigation<RendezVousView, RendezVousViewModel>();
             containerRegistry.RegisterForNavigation<OrdonnanceView, OrdonnanceViewModel>("OrdonnanceView");
             containerRegistry.RegisterForNavigation<OrdonnanceTemplateDialogView, OrdonnanceTemplateDialogViewModel>("OrdonnanceTemplateDialogView");
+            containerRegistry.RegisterForNavigation<FicheCnamView, FicheCnamViewModel>("FicheCnamView");
             containerRegistry.RegisterForNavigation<MainView>();
 
             // Register Evolution view (Caisse evolution charts)
@@ -100,6 +102,7 @@ namespace Dental_App
                 try
                 {
                     await PerformStartupInitializationAsync();
+
                 }
                 catch (Exception ex)
                 {
@@ -111,8 +114,9 @@ namespace Dental_App
                 {
                     try
                     {
+                        System.Diagnostics.Debug.WriteLine(">>> Création MainView...");
                         var main = Container.Resolve<MainView>();
-
+                        System.Diagnostics.Debug.WriteLine(">>> MainView créée");
                         // Ensure the Prism RegionManager is attached to the shell so regions/navigation work
                         try
                         {
@@ -123,12 +127,15 @@ namespace Dental_App
                         {
                             System.Diagnostics.Debug.WriteLine($"Failed to attach RegionManager: {rex}");
                         }
-
+                       
                         Application.Current.MainWindow = main;
                         main.Show();
+                        System.Diagnostics.Debug.WriteLine(">>> MainView affichée");
                     }
                     catch (Exception ex)
                     {
+                        System.Diagnostics.Debug.WriteLine($">>> ERREUR: {ex.Message}");
+        System.Diagnostics.Debug.WriteLine($">>> INNER: {ex.InnerException?.Message}");
                         System.Diagnostics.Debug.WriteLine($"Failed to create main window: {ex}");
                     }
                     finally
@@ -145,29 +152,60 @@ namespace Dental_App
             {
                 // Ensure DB exists and run any migrations/seeds as needed
                 var ctx = Container.Resolve<Dental_App.Models.DentalContext>();
-                await ctx.Database.EnsureCreatedAsync();
-
-                // Short simulated delay (remove in production)
-                await Task.Delay(800);
-
-                // Apply theme and register initial regions on UI thread
-                Application.Current.Dispatcher.Invoke(() =>
+                await ctx.Database.MigrateAsync();
+                // Seed CNAM
+                if (!ctx.ActesCnam.Any())
                 {
-                    try
+                    var jsonPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Data", "actes_cnam.json");
+                    if (!ctx.ActesCnam.Any())
                     {
-                        var themeService = Container.Resolve<IThemeService>();
-                        themeService.RestoreDarkTheme();
+                        System.Diagnostics.Debug.WriteLine($">>> JSON path: {jsonPath}");
+                        System.Diagnostics.Debug.WriteLine($">>> File exists: {File.Exists(jsonPath)}");
+                        if (File.Exists(jsonPath))
+                        {
+                            var json = await File.ReadAllTextAsync(jsonPath, System.Text.Encoding.UTF8);
+                            var root = System.Text.Json.JsonSerializer.Deserialize<CnamRoot>(json);
 
-                        var regionManager = Container.Resolve<IRegionManager>();
-                        regionManager.RegisterViewWithRegion("SidebarRegion", typeof(SidebarView));
-                        regionManager.RegisterViewWithRegion("ToolbarRegion", typeof(ToolbarView));
-                        regionManager.RegisterViewWithRegion("ContentRegion", typeof(DashboardView));
+                            var actes = new List<Dental_App.Models.ActeCnam>();
+                            foreach (var famille in root.Familles)
+                                foreach (var sousFamille in famille.SousFamilles)
+                                    foreach (var acte in sousFamille.Actes)
+                                        actes.Add(new Dental_App.Models.ActeCnam
+                                        {
+                                            Famille = famille.Famille,
+                                            SousFamille = sousFamille.SousFamille,
+                                            Code = acte.Code,
+                                            Cotation = acte.Cotation,
+                                            Designation = acte.Designation
+                                        });
+
+                            ctx.ActesCnam.AddRange(actes);
+                            await ctx.SaveChangesAsync();
+                        }
                     }
-                    catch (Exception ex)
+
+                    // Short simulated delay (remove in production)
+                    await Task.Delay(800);
+
+                    // Apply theme and register initial regions on UI thread
+                    Application.Current.Dispatcher.Invoke(() =>
                     {
-                        System.Diagnostics.Debug.WriteLine($"During PerformStartupInitializationUI: {ex}");
-                    }
-                });
+                        try
+                        {
+                            var themeService = Container.Resolve<IThemeService>();
+                            themeService.RestoreDarkTheme();
+
+                            var regionManager = Container.Resolve<IRegionManager>();
+                            regionManager.RegisterViewWithRegion("SidebarRegion", typeof(SidebarView));
+                            regionManager.RegisterViewWithRegion("ToolbarRegion", typeof(ToolbarView));
+                            regionManager.RegisterViewWithRegion("ContentRegion", typeof(DashboardView));
+                        }
+                        catch (Exception ex)
+                        {
+                            System.Diagnostics.Debug.WriteLine($"During PerformStartupInitializationUI: {ex}");
+                        }
+                    });
+                }
             }
             catch (Exception ex)
             {
@@ -185,4 +223,4 @@ namespace Dental_App
             base.OnStartup(e);
         }
     }
-}
+   }

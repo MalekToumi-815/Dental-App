@@ -36,7 +36,11 @@
     <None Include="Assets\xaml_chart\**\*">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
+    <None Remove="Data\actes_cnam.json" />
     <Content Include="Assets\Images\applogo.ico" />
+    <Content Include="Data\actes_cnam.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <!-- Ensure the main logo is copied to output -->
     <None Include="Assets\Images\logo.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>

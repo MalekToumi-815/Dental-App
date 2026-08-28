@@ -180,6 +180,12 @@
                 <Button Content="Protesistes" Tag="{StaticResource IconProthesistes}" 
                         x:Name="ProthesistesButton"
                         Command="{Binding NavigateCommand}" CommandParameter="ProthesisteView" Style="{StaticResource NavButtonStyle}"/>
+                <!-- CNAM Section -->
+                <TextBlock Text="CNAM" Style="{StaticResource SectionTitleStyle}"/>
+
+                <Button Content="Fiche CNAM" Tag="{StaticResource IconActes}" 
+        x:Name="FicheCnamButton"
+        Command="{Binding NavigateCommand}" CommandParameter="FicheCnamView" Style="{StaticResource NavButtonStyle}"/>
             </StackPanel>
         </ScrollViewer>
     </Grid>
