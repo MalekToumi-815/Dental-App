@@ -1,30 +1,30 @@
 {
   "familles": [
     {
-      "famille": "Actes Isolés",
+      "famille": "Actes Isoles",
       "sousFamilles": [
         {
-          "sousFamille": "Actes Isolés",
+          "sousFamille": "Actes Isoles",
           "actes": [
             {
               "code": "DCH000010",
               "cotation": "D6",
-              "designation": "Anesthésie locale isolée (sans acte associé)"
+              "designation": "Anesthesie locale isolee (sans acte associe)"
             },
             {
               "code": "DCH000020",
               "cotation": "D10",
-              "designation": "Anesthésie loco-régionale (sans acte associé)"
+              "designation": "Anesthesie loco-regionale (sans acte associe)"
             },
             {
               "code": "DCH000030",
               "cotation": "Z8",
-              "designation": "Dent par technique intra buccale, film occlusal ou rétro-alvéolaire"
+              "designation": "Dent par technique intra buccale, film occlusal ou retro-alveolaire"
             },
             {
               "code": "DCH000040",
               "cotation": "Z25",
-              "designation": "Bilan radiologique complet par technique intrabuccale (Status) quel que soit le nombre de clichés, minimum 06 clichés"
+              "designation": "Bilan radiologique complet par technique intrabuccale (Status) quel que soit le nombre de cliches, minimum 06 cliches"
             }
           ]
         }
@@ -39,42 +39,42 @@
             {
               "code": "DCH010010",
               "cotation": "D15",
-              "designation": "Traitement global (l'obturation de plusieurs cavités simples sur la même face ne peut être comptée que pour une seule obturation composée intéressant deux faces)"
+              "designation": "Traitement global (l'obturation de plusieurs cavites simples sur la meme face ne peut etre comptee que pour une seule obturation composee interessant deux faces)"
             },
             {
               "code": "DCH010020",
               "cotation": "D18",
-              "designation": "Traitement global (l'obturation de plusieurs cavités simples sur la même face ne peut être comptée que pour une seule obturation composée intéressant deux faces), si dent permanente d'un enfant de moins de 14 ans"
+              "designation": "Traitement global (l'obturation de plusieurs cavites simples sur la meme face ne peut etre comptee que pour une seule obturation composee interessant deux faces), si dent permanente d'un enfant de moins de 14 ans"
             },
             {
               "code": "DCH010030",
               "cotation": "D10",
-              "designation": "Supplément pour technique adhésive quel que soit le nombre de faces traitées"
+              "designation": "Supplement pour technique adhesive quel que soit le nombre de faces traitees"
             },
             {
               "code": "DCH010040",
               "cotation": "D23",
-              "designation": "Traitement global intéressant deux faces"
+              "designation": "Traitement global interessant deux faces"
             },
             {
               "code": "DCH010050",
               "cotation": "D26",
-              "designation": "Traitement global intéressant deux faces, si dent permanente d'un enfant de moins de 14 ans"
+              "designation": "Traitement global interessant deux faces, si dent permanente d'un enfant de moins de 14 ans"
             },
             {
               "code": "DCH010060",
               "cotation": "D30",
-              "designation": "Traitement global intéressant trois faces et plus"
+              "designation": "Traitement global interessant trois faces et plus"
             },
             {
               "code": "DCH010070",
               "cotation": "D36",
-              "designation": "Traitement global intéressant trois faces et plus, si dent permanente d'un enfant de moins de 14 ans"
+              "designation": "Traitement global interessant trois faces et plus, si dent permanente d'un enfant de moins de 14 ans"
             },
             {
               "code": "DCH010080",
               "cotation": "D10",
-              "designation": "Coiffage pulpaire pulpectomie coronaire simple et à l'exclusion de l'obturation définitive"
+              "designation": "Coiffage pulpaire pulpectomie coronaire simple et a l'exclusion de l'obturation definitive"
             },
             {
               "code": "DCH010090",
@@ -84,7 +84,7 @@
             {
               "code": "DCH010100",
               "cotation": "D23",
-              "designation": "Groupe prémolaire"
+              "designation": "Groupe premolaire"
             },
             {
               "code": "DCH010110",
@@ -94,7 +94,7 @@
             {
               "code": "DCH010120",
               "cotation": "D50",
-              "designation": "Restauration d'une perte de substance intéressant deux faces et plus d'une dent par matériaux insérés en phase plastique avec ancrage radiculaire"
+              "designation": "Restauration d'une perte de substance interessant deux faces et plus d'une dent par materiaux inseres en phase plastique avec ancrage radiculaire"
             }
           ]
         },
@@ -109,22 +109,22 @@
             {
               "code": "DCH020020",
               "cotation": "D10",
-              "designation": "Incision d'abcès et drainage"
+              "designation": "Incision d'abces et drainage"
             },
             {
               "code": "DCH020030",
               "cotation": "D15",
-              "designation": "Extraction dentaire simple y compris le curetage alvéolaire, la régularisation immédiate des bords alvéolaires et le tamponnement immédiat de l'hémorragie"
+              "designation": "Extraction dentaire simple y compris le curetage alveolaire, la regularisation immediate des bords alveolaires et le tamponnement immediat de l'hemorragie"
             },
             {
               "code": "DCH020040",
               "cotation": "D5",
-              "designation": "Extraction de plusieurs dents au cours d'une même séance : chaque dent suivante"
+              "designation": "Extraction de plusieurs dents au cours d'une meme seance : chaque dent suivante"
             },
             {
               "code": "DCH020050",
               "cotation": "D6",
-              "designation": "Majoration pour la première"
+              "designation": "Majoration pour la premiere"
             },
             {
               "code": "DCH020060",
@@ -134,7 +134,7 @@
             {
               "code": "DCH020070",
               "cotation": "D20",
-              "designation": "Extraction de la ou des racines d'une dent par alvéolectomie"
+              "designation": "Extraction de la ou des racines d'une dent par alveolectomie"
             },
             {
               "code": "DCH020080",
@@ -144,12 +144,12 @@
             {
               "code": "DCH020090",
               "cotation": "D10",
-              "designation": "Tamponnement alvéolaire pour hémorragie post-opératoire dans une séance autre que celle de l'extraction"
+              "designation": "Tamponnement alveolaire pour hemorragie post-operatoire dans une seance autre que celle de l'extraction"
             },
             {
               "code": "DCH020100",
               "cotation": "D40",
-              "designation": "D'une dent enclavée"
+              "designation": "D'une dent enclavee"
             },
             {
               "code": "DCH020110",
@@ -159,22 +159,22 @@
             {
               "code": "DCH020120",
               "cotation": "D50",
-              "designation": "D'un odontoïde"
+              "designation": "D'un odontoide"
             },
             {
               "code": "DCH020130",
               "cotation": "D25",
-              "designation": "D'une dent en désinclusion, non enclavée dont la couronne est partiellement ou entièrement sous muqueuse"
+              "designation": "D'une dent en desinclusion, non enclavee dont la couronne est partiellement ou entierement sous muqueuse"
             },
             {
               "code": "DCH020140",
               "cotation": "D40",
-              "designation": "D'une dent en désinclusion dont la couronne est sous-muqueuse en position palatine ou linguale"
+              "designation": "D'une dent en desinclusion dont la couronne est sous-muqueuse en position palatine ou linguale"
             },
             {
               "code": "DCH020150",
               "cotation": "D80",
-              "designation": "D'une dent ectopique et incluse (coroné, gonion, branche montante, bord basilaire de la branche et du monton sinus)"
+              "designation": "D'une dent ectopique et incluse (corone, gonion, branche montante, bord basilaire de la branche et du monton sinus)"
             },
             {
               "code": "DCH020160",
@@ -199,42 +199,42 @@
             {
               "code": "DCH020200",
               "cotation": "D40",
-              "designation": "Dégagement chirurgical de la couronne d'une dent permanente incluse"
+              "designation": "Degagement chirurgical de la couronne d'une dent permanente incluse"
             },
             {
               "code": "DCH020210",
               "cotation": "D15",
-              "designation": "Régularisation localisée d'une crête alvéolaire"
+              "designation": "Regularisation localisee d'une crete alveolaire"
             },
             {
               "code": "DCH020220",
               "cotation": "D20",
-              "designation": "Régularisation étendue de la crête alvéolaire (y compris suture)"
+              "designation": "Regularisation etendue de la crete alveolaire (y compris suture)"
             },
             {
               "code": "DCH020230",
               "cotation": "D30",
-              "designation": "Régularisation de crête concernant un hémimaxillaire ou de canine à canine"
+              "designation": "Regularisation de crete concernant un hemimaxillaire ou de canine a canine"
             },
             {
               "code": "DCH020240",
               "cotation": "D40",
-              "designation": "Curetage périapical par trépanation vestibulaire avec ou sans résection apicale (traitement du canal compris)"
+              "designation": "Curetage periapical par trepanation vestibulaire avec ou sans resection apicale (traitement du canal compris)"
             },
             {
               "code": "DCH020250",
               "cotation": "D20",
-              "designation": "kyste de petit volume par voie alvéolaire élargie"
+              "designation": "kyste de petit volume par voie alveolaire elargie"
             },
             {
               "code": "DCH020260",
               "cotation": "D30",
-              "designation": "kyste étendu aux apex de deux dents nécessitant une trépanation osseuse"
+              "designation": "kyste etendu aux apex de deux dents necessitant une trepanation osseuse"
             },
             {
               "code": "DCH020270",
               "cotation": "D60",
-              "designation": "kyste étendu à un segment important du maxillaire"
+              "designation": "kyste etendu a un segment important du maxillaire"
             },
             {
               "code": "DCH020280",
@@ -249,47 +249,47 @@
             {
               "code": "DCH020300",
               "cotation": "D50",
-              "designation": "Désinsertion musculaire vestibulaire partielle"
+              "designation": "Desinsertion musculaire vestibulaire partielle"
             },
             {
               "code": "DCH020310",
               "cotation": "D60",
-              "designation": "Désinsertion musculaire étendue à tout le vestibule"
+              "designation": "Desinsertion musculaire etendue a tout le vestibule"
             },
             {
               "code": "DCH020320",
               "cotation": "D80",
-              "designation": "Désinsertion musculaire du plancher de la bouche avec section des myo-hyoïdiens"
+              "designation": "Desinsertion musculaire du plancher de la bouche avec section des myo-hyoidiens"
             },
             {
               "code": "DCH020330",
               "cotation": "D50",
-              "designation": "Approfondissement d'un vestibule par greffe cutanée"
+              "designation": "Approfondissement d'un vestibule par greffe cutanee"
             },
             {
               "code": "DCH020340",
               "cotation": "D30",
-              "designation": "désépaississement d'une crête flotante ou d'une hyperplasie localisée"
+              "designation": "desepaississement d'une crete flotante ou d'une hyperplasie localisee"
             },
             {
               "code": "DCH020350",
               "cotation": "D40",
-              "designation": "désépaississement d'une crête flotante ou d'une hyperplasie étendue"
+              "designation": "desepaississement d'une crete flotante ou d'une hyperplasie etendue"
             },
             {
               "code": "DCH020360",
               "cotation": "D20",
-              "designation": "Incision d'un abcès de la langue ou du plancher de la bouche par voie buccale"
+              "designation": "Incision d'un abces de la langue ou du plancher de la bouche par voie buccale"
             },
             {
               "code": "DCH020370",
               "cotation": "D20",
-              "designation": "Excision et suture d'une bride fibreuse ou du frein hypertrophié"
+              "designation": "Excision et suture d'une bride fibreuse ou du frein hypertrophie"
             },
             {
               "code": "DCH020380",
               "cotation": "D40",
-              "designation": "Incision d'un abcès ou phlegmon de la base de la langue ou du plancher de la bouche via sous-hyoidienne"
+              "designation": "Incision d'un abces ou phlegmon de la base de la langue ou du plancher de la bouche via sous-hyoidienne"
             },
             {
               "code": "DCH020390",
@@ -299,82 +299,82 @@
             {
               "code": "DCH020400",
               "cotation": "D15",
-              "designation": "Injection de substance de contraste dans les glandes salivaires (cliché non compris)"
+              "designation": "Injection de substance de contraste dans les glandes salivaires (cliche non compris)"
             },
             {
               "code": "DCH020410",
               "cotation": "D20",
-              "designation": "- Ablation d'un calcul antérieur par incision muqueuse simple"
+              "designation": "Ablation d'un calcul anterieur par incision muqueuse simple"
             },
             {
               "code": "DCH020420",
               "cotation": "D30",
-              "designation": "- Ablation d'un calcul postérieur par dissection complète du canal excréteur"
+              "designation": "Ablation d'un calcul posterieur par dissection complete du canal excreteur"
             },
             {
               "code": "DCH020430",
               "cotation": "D50",
-              "designation": "Traitement chirurgical d'une lésion bénigne d'une glande salivaire autre que la parotide"
+              "designation": "Traitement chirurgical d'une lesion benigne d'une glande salivaire autre que la parotide"
             },
             {
               "code": "DCH020440",
               "cotation": "D50",
-              "designation": "Traitement des fractures des procès alvéolaires avec conservation des dents mobiles et déplacées, traitement radiculaire non compris"
+              "designation": "Traitement des fractures des proces alveolaires avec conservation des dents mobiles et deplacees, traitement radiculaire non compris"
             },
             {
               "code": "DCH020450",
               "cotation": "D60",
-              "designation": "Traitement orthopédique d'une fracture complète sans déplacement (appareillage compris)"
+              "designation": "Traitement orthopedique d'une fracture complete sans deplacement (appareillage compris)"
             },
             {
               "code": "DCH020460",
               "cotation": "D25",
-              "designation": "Curetage et ablation des séquestres pour ostéites et nécroses des maxillaires circonscrites à la région alvéolaire"
+              "designation": "Curetage et ablation des sequestres pour osteites et necroses des maxillaires circonscrites a la region alveolaire"
             },
             {
               "code": "DCH020470",
               "cotation": "D20",
-              "designation": "Traitement orthopédique de luxation uni ou bilatérale récente de la mandibule"
+              "designation": "Traitement orthopedique de luxation uni ou bilaterale recente de la mandibule"
             },
             {
               "code": "DCH020480",
               "cotation": "D15",
-              "designation": "Prélèvement en vue d'un examen de laboratoire d'une lésion intrabuccale de l'oropharynx"
+              "designation": "Prelevement en vue d'un examen de laboratoire d'une lesion intrabuccale de l'oropharynx"
             },
             {
               "code": "DCH020490",
               "cotation": "D25",
-              "designation": "Exérèse d'une tumeur bénigne de la muqueuse buccale (épulis)"
+              "designation": "Exerese d'une tumeur benigne de la muqueuse buccale (epulis)"
             },
             {
               "code": "DCH020500",
               "cotation": "D15",
-              "designation": "Diathermo-coagulation d'une leucoplasie, d'un lupus ou d'une tumeur bénigne"
+              "designation": "Diathermo-coagulation d'une leucoplasie, d'un lupus ou d'une tumeur benigne"
             },
             {
               "code": "DCH020510",
               "cotation": "D80",
-              "designation": "Contention sur arc d'une dent subluxée, après réduction"
+              "designation": "Contention sur arc d'une dent subluxee, apres reduction"
             },
             {
               "code": "DCH020520",
               "cotation": "D100",
-              "designation": "Contention sur arc de deux dents subluxées ou plus, après réduction"
+              "designation": "Contention sur arc de deux dents subluxees ou plus, apres reduction"
             },
             {
               "code": "DCH020530",
               "cotation": "D120",
-              "designation": "Contention d'une fracture alvéolodentaire du groupe incisivo-canin, après réduction"
+              "designation": "Contention d'une fracture alveolodentaire du groupe incisivo-canin, apres reduction"
             },
             {
               "code": "DCH020540",
               "cotation": "D150",
-              "designation": "Traitement orthopédique d'une fracture mandibulaire non déplacée (par arc mandibulaire)"
+              "designation": "Traitement orthopedique d'une fracture mandibulaire non deplacee (par arc mandibulaire)"
             },
             {
               "code": "DCH020550",
               "cotation": "D200",
-              "designation": "Blocage bimaxillaire sur arcs maxillaire et mandibulaire d'une fracture mandibulaire non déplacée"
+              "designation": "Blocage bimaxillaire sur arcs maxillaire et mandibulaire d'une fracture mandibulaire non deplacee"
             }
           ]
         },
@@ -384,12 +384,12 @@
             {
               "code": "DCH030010",
               "cotation": "D20",
-              "designation": "Détartrage complet sus gingival (quel que soit le nombre de séances)"
+              "designation": "Detartrage complet sus gingival (quel que soit le nombre de seances)"
             },
             {
               "code": "DCH030020",
               "cotation": "D25",
-              "designation": "Traitement des gingivites : détartrage sus et sous gingival, curetage et surfaçage radiculaire (quatres séances maximum)"
+              "designation": "Traitement des gingivites : detartrage sus et sous gingival, curetage et surfacage radiculaire (quatres seances maximum)"
             },
             {
               "code": "DCH030030",
@@ -399,57 +399,57 @@
             {
               "code": "DCH030040",
               "cotation": "D50",
-              "designation": "Etendue à une hémi arcade ou de canine à canine"
+              "designation": "Etendue a une hemi arcade ou de canine a canine"
             },
             {
               "code": "DCH030050",
               "cotation": "D50",
-              "designation": "De une à trois dents"
+              "designation": "De une a trois dents"
             },
             {
               "code": "DCH030060",
               "cotation": "D20",
-              "designation": "Par dent supplémentaire"
+              "designation": "Par dent supplementaire"
             },
             {
               "code": "DCH030070",
               "cotation": "D150",
-              "designation": "Intervention à lambeau et traitement d'une lésion osseuse par comblement et suture"
+              "designation": "Intervention a lambeau et traitement d'une lesion osseuse par comblement et suture"
             },
             {
               "code": "DCH030080",
               "cotation": "D150",
-              "designation": "Greffe gingivale libre, quel que soit le nombre de dents intéressées, avec prélèvement du greffon et suture"
+              "designation": "Greffe gingivale libre, quel que soit le nombre de dents interessees, avec prelevement du greffon et suture"
             },
             {
               "code": "DCH030090",
               "cotation": "D35",
-              "designation": "Hémi-section d'une molaire inférieure ou amputation radiculaire d'une molaire supérieure avec régularisation"
+              "designation": "Hemi-section d'une molaire inferieure ou amputation radiculaire d'une molaire superieure avec regularisation"
             },
             {
               "code": "DCH030100",
               "cotation": "D25",
-              "designation": "Ligature métallique dans les parodontopathies"
+              "designation": "Ligature metallique dans les parodontopathies"
             },
             {
               "code": "DCH030110",
               "cotation": "D40",
-              "designation": "Attelle métallique dans les parodontopathies"
+              "designation": "Attelle metallique dans les parodontopathies"
             },
             {
               "code": "DCH030120",
               "cotation": "D70",
-              "designation": "Prothèse attelle de contention quel soit le nombre de dents ou de crochets"
+              "designation": "Prothese attelle de contention quel soit le nombre de dents ou de crochets"
             },
             {
               "code": "DCH030130",
               "cotation": "D75",
-              "designation": "Modification de l'articulé par meulage sélectif"
+              "designation": "Modification de l'articule par meulage selectif"
             },
             {
               "code": "DCH030140",
               "cotation": "D50",
-              "designation": "Frénectomie (excision du frein labial)"
+              "designation": "Frenectomie (excision du frein labial)"
             }
           ]
         },
@@ -459,22 +459,22 @@
             {
               "code": "DCH040010",
               "cotation": "D30",
-              "designation": "Couronne pédodontique préformée"
+              "designation": "Couronne pedodontique preformee"
             },
             {
               "code": "DCH040020",
               "cotation": "D15",
-              "designation": "Résine de scellement des puits et fissures (séalents)"
+              "designation": "Resine de scellement des puits et fissures (sealents)"
             },
             {
               "code": "DCH040030",
               "cotation": "D10",
-              "designation": "Application topique de fluor par gouttière préfabriquée (5 séances maximum) par séance"
+              "designation": "Application topique de fluor par gouttiere prefabriquee (5 seances maximum) par seance"
             },
             {
               "code": "DCH040040",
               "cotation": "D35",
-              "designation": "Application topique de fluor par gouttière thermoformée"
+              "designation": "Application topique de fluor par gouttiere thermoformee"
             },
             {
               "code": "DCH040050",
@@ -484,12 +484,12 @@
             {
               "code": "DCH040060",
               "cotation": "D50",
-              "designation": "Appareillage fixe pour blocage d'éruption"
+              "designation": "Appareillage fixe pour blocage d'eruption"
             },
             {
               "code": "DCH040070",
               "cotation": "D50",
-              "designation": "Guide d'éruption"
+              "designation": "Guide d'eruption"
             },
             {
               "code": "DCH040080",
@@ -504,62 +504,62 @@
             {
               "code": "DCH050010",
               "cotation": "D20",
-              "designation": "Examen avec prise d'empreintes diagnostic et durée probable du traitement (radio et photos cotees en sus)"
+              "designation": "Examen avec prise d'empreintes diagnostic et duree probable du traitement (radio et photos cotees en sus)"
             },
             {
               "code": "DCH050020",
               "cotation": "D15",
-              "designation": "Analyse céphalométrique (en supplément)"
+              "designation": "Analyse cephalometrique (en supplement)"
             },
             {
               "code": "DCH050030",
               "cotation": "D250",
-              "designation": "Traitement précoce de dysmorphose squelettique (appareillage et suivi maximum 15 mois) (exemple : masque de délaire, monobloc, etc...)"
+              "designation": "Traitement precoce de dysmorphose squelettique (appareillage et suivi maximum 15 mois) (exemple : masque de delaire, monobloc, etc...)"
             },
             {
               "code": "DCH050040",
               "cotation": "D8",
-              "designation": "Rééducation du comportement musculaire neuro-musculaire et physiologique par série de 12 séances éventuellement renouvelables chaque séance"
+              "designation": "Reeducation du comportement musculaire neuro-musculaire et physiologique par serie de 12 seances eventuellement renouvelables chaque seance"
             },
             {
               "code": "DCH050050",
               "cotation": "D200",
-              "designation": "Ne dépassant pas 6 mois"
+              "designation": "Ne depassant pas 6 mois"
             },
             {
               "code": "DCH050060",
               "cotation": "D300",
-              "designation": "Ne dépassant pas 12 mois"
+              "designation": "Ne depassant pas 12 mois"
             },
             {
               "code": "DCH050070",
               "cotation": "D350",
-              "designation": "Première année"
+              "designation": "Premiere annee"
             },
             {
               "code": "DCH050080",
               "cotation": "D350",
-              "designation": "Deuxième année"
+              "designation": "Deuxieme annee"
             },
             {
               "code": "DCH050090",
               "cotation": "D350",
-              "designation": "Troisième année"
+              "designation": "Troisieme annee"
             },
             {
               "code": "DCH050100",
               "cotation": "D100",
-              "designation": "La première année"
+              "designation": "La premiere annee"
             },
             {
               "code": "DCH050110",
               "cotation": "D50",
-              "designation": "La deuxième année"
+              "designation": "La deuxieme annee"
             },
             {
               "code": "DCH050120",
               "cotation": "D180",
-              "designation": "Disjonction intermaxillaire rapide pour dysmorphose maxillaire en cas d'insuffisance respiratoire confirmée"
+              "designation": "Disjonction intermaxillaire rapide pour dysmorphose maxillaire en cas d'insuffisance respiratoire confirmee"
             },
             {
               "code": "DCH050130",
@@ -574,17 +574,17 @@
             {
               "code": "DCH050150",
               "cotation": "D250",
-              "designation": "Forfait annuel par année"
+              "designation": "Forfait annuel par annee"
             },
             {
               "code": "DCH050160",
               "cotation": "D60",
-              "designation": "En période d'attente"
+              "designation": "En periode d'attente"
             },
             {
               "code": "DCH050170",
               "cotation": "D350",
-              "designation": "Préparation orthodontique à la chirurgie orthognatique au-delà du 17ème anniversaire par an ; maximum 02 ans"
+              "designation": "Preparation orthodontique a la chirurgie orthognatique au-dela du 17eme anniversaire par an ; maximum 02 ans"
             }
           ]
         },
@@ -594,12 +594,12 @@
             {
               "code": "DCH060010",
               "cotation": "D60",
-              "designation": "De 1 à 3 dents"
+              "designation": "De 1 a 3 dents"
             },
             {
               "code": "DCH060020",
               "cotation": "D5",
-              "designation": "de 4 à 7 (par dent supplémentaire)"
+              "designation": "de 4 a 7 (par dent supplementaire)"
             },
             {
               "code": "DCH060030",
@@ -609,12 +609,12 @@
             {
               "code": "DCH060040",
               "cotation": "D5",
-              "designation": "de 9 à 11 (par dent supplémentaire)"
+              "designation": "de 9 a 11 (par dent supplementaire)"
             },
             {
               "code": "DCH060050",
               "cotation": "D150",
-              "designation": "De 12 à 14 dents"
+              "designation": "De 12 a 14 dents"
             },
             {
               "code": "DCH060060",
@@ -624,47 +624,47 @@
             {
               "code": "DCH060070",
               "cotation": "D15",
-              "designation": "Dent prothétique contre-plaquée sur plaque base en matière plastique, supplément"
+              "designation": "Dent prothetique contre-plaquee sur plaque base en matiere plastique, supplement"
             },
             {
               "code": "DCH060080",
               "cotation": "D100",
-              "designation": "Plaque base métallique coulée, supplément"
+              "designation": "Plaque base metallique coulee, supplement"
             },
             {
               "code": "DCH060090",
               "cotation": "D20",
-              "designation": "Dent prothétique contreplaquée ou massive soudée sur plaque base métallique, supplément"
+              "designation": "Dent prothetique contreplaquee ou massive soudee sur plaque base metallique, supplement"
             },
             {
               "code": "DCH060100",
               "cotation": "D15",
-              "designation": "Réparation de fracture sur la plaque base en matière plastique"
+              "designation": "Reparation de fracture sur la plaque base en matiere plastique"
             },
             {
               "code": "DCH060110",
               "cotation": "D15",
-              "designation": "Premier élément"
+              "designation": "Premier element"
             },
             {
               "code": "DCH060120",
               "cotation": "D5",
-              "designation": "Elément suivant sur l'appareil"
+              "designation": "Element suivant sur l'appareil"
             },
             {
               "code": "DCH060130",
               "cotation": "D20",
-              "designation": "Dents ou cochets soudés, ajoutés ou remplacés sur un appareil métallique, par élément"
+              "designation": "Dents ou cochets soudes, ajoutes ou remplaces sur un appareil metallique, par element"
             },
             {
               "code": "DCH060140",
               "cotation": "D20",
-              "designation": "Réparation de fracture de la plaque base métallique, non compris, s'il y a lieu le remontage des dents sur matière plastique"
+              "designation": "Reparation de fracture de la plaque base metallique, non compris, s'il y a lieu le remontage des dents sur matiere plastique"
             },
             {
               "code": "DCH060150",
               "cotation": "D5",
-              "designation": "Dents ou crochets remontés sur matière plastique, après réparation de la plaque base métallique par élément"
+              "designation": "Dents ou crochets remontes sur matiere plastique, apres reparation de la plaque base metallique par element"
             },
             {
               "code": "DCH060160",
@@ -674,42 +674,42 @@
             {
               "code": "DCH060170",
               "cotation": "D140",
-              "designation": "Attachement pour prothèse ( par élément)"
+              "designation": "Attachement pour protese ( par element)"
             },
             {
               "code": "DCH060180",
               "cotation": "D15",
-              "designation": "Remplacement de facette ou dent à tube"
+              "designation": "Remplacement de facette ou dent a tube"
             },
             {
               "code": "DCH060190",
               "cotation": "D50",
-              "designation": "Préparation dentaire pro prothétique pour plaque métallique"
+              "designation": "Preparation dentaire pro prothetique pour plaque metallique"
             },
             {
               "code": "DCH060200",
               "cotation": "D55",
-              "designation": "Couronne dentaire et élément de bridge"
+              "designation": "Couronne dentaire et element de bridge"
             },
             {
               "code": "DCH060210",
               "cotation": "D40",
-              "designation": "Dent à tenon ne faisant pas intervenir une technique de coulée"
+              "designation": "Dent a tenon ne faisant pas intervenir une technique de coulee"
             },
             {
               "code": "DCH060220",
               "cotation": "D50",
-              "designation": "Dent à tenon radiculaire faisant intervenir une technique de coulée"
+              "designation": "Dent a tenon radiculaire faisant intervenir une technique de coulee"
             },
             {
               "code": "DCH060230",
               "cotation": "D50",
-              "designation": "Reconstitution coulée de moignon"
+              "designation": "Reconstitution coulee de moignon"
             },
             {
               "code": "DCH060240",
               "cotation": "D15",
-              "designation": "Dépose et/ou repose d'une prothèse fixe : par élément pilier"
+              "designation": "Depose et/ou repose d'une protese fixe : par element pilier"
             }
           ]
         },
@@ -729,17 +729,17 @@
             {
               "code": "DCH070030",
               "cotation": "D100",
-              "designation": "Par addition (résine composite)"
+              "designation": "Par addition (resine composite)"
             },
             {
               "code": "DCH070040",
               "cotation": "D200",
-              "designation": "Gouttière occlusale (traitement, mise en place et suivi)"
+              "designation": "Gouttiere occlusale (traitement, mise en place et suivi)"
             },
             {
               "code": "DCH070050",
               "cotation": "D50",
-              "designation": "Réduction des subluxations et des luxations discales temporo-mandibulaires"
+              "designation": "Reduction des subluxations et des luxations discales temporo-mandibulaires"
             }
           ]
         },
@@ -749,12 +749,12 @@
             {
               "code": "DCH080010",
               "cotation": "D40",
-              "designation": "Blanchiment par voie externe (max de 5 séances) par séance"
+              "designation": "Blanchiment par voie externe (max de 5 seances) par seance"
             },
             {
               "code": "DCH080020",
               "cotation": "D30",
-              "designation": "Blanchiment par voie interne (max de 3 séances) par dent et par séance"
+              "designation": "Blanchiment par voie interne (max de 3 seances) par dent et par seance"
             }
           ]
         },
@@ -769,12 +769,12 @@
             {
               "code": "DCH090020",
               "cotation": "D70",
-              "designation": "Par implant supplémentaire"
+              "designation": "Par implant supplementaire"
             },
             {
               "code": "DCH090030",
               "cotation": "D100",
-              "designation": "Réalisation d'une prothèse implanto-portée (pièces prothétiques non comprises) par élément"
+              "designation": "Realisation d'une protese implanto-portee (pieces prothetiques non comprises) par element"
             }
           ]
         }
