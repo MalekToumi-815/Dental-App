@@ -150,62 +150,54 @@ namespace Dental_App
         {
             try
             {
-                // Ensure DB exists and run any migrations/seeds as needed
                 var ctx = Container.Resolve<Dental_App.Models.DentalContext>();
                 await ctx.Database.MigrateAsync();
-                // Seed CNAM
+
+                // Seed CNAM — une seule fois
                 if (!ctx.ActesCnam.Any())
                 {
                     var jsonPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Data", "actes_cnam.json");
-                    if (!ctx.ActesCnam.Any())
+                    if (File.Exists(jsonPath))
                     {
-                        System.Diagnostics.Debug.WriteLine($">>> JSON path: {jsonPath}");
-                        System.Diagnostics.Debug.WriteLine($">>> File exists: {File.Exists(jsonPath)}");
-                        if (File.Exists(jsonPath))
-                        {
-                            var json = await File.ReadAllTextAsync(jsonPath, System.Text.Encoding.UTF8);
-                            var root = System.Text.Json.JsonSerializer.Deserialize<CnamRoot>(json);
-
-                            var actes = new List<Dental_App.Models.ActeCnam>();
-                            foreach (var famille in root.Familles)
-                                foreach (var sousFamille in famille.SousFamilles)
-                                    foreach (var acte in sousFamille.Actes)
-                                        actes.Add(new Dental_App.Models.ActeCnam
-                                        {
-                                            Famille = famille.Famille,
-                                            SousFamille = sousFamille.SousFamille,
-                                            Code = acte.Code,
-                                            Cotation = acte.Cotation,
-                                            Designation = acte.Designation
-                                        });
-
-                            ctx.ActesCnam.AddRange(actes);
-                            await ctx.SaveChangesAsync();
-                        }
+                        var json = await File.ReadAllTextAsync(jsonPath, System.Text.Encoding.UTF8);
+                        var root = System.Text.Json.JsonSerializer.Deserialize<CnamRoot>(json);
+                        var actes = new List<Dental_App.Models.ActeCnam>();
+                        foreach (var famille in root.Familles)
+                            foreach (var sousFamille in famille.SousFamilles)
+                                foreach (var acte in sousFamille.Actes)
+                                    actes.Add(new Dental_App.Models.ActeCnam
+                                    {
+                                        Famille = famille.Famille,
+                                        SousFamille = sousFamille.SousFamille,
+                                        Code = acte.Code,
+                                        Cotation = acte.Cotation,
+                                        Designation = acte.Designation
+                                    });
+                        ctx.ActesCnam.AddRange(actes);
+                        await ctx.SaveChangesAsync();
                     }
-
-                    // Short simulated delay (remove in production)
-                    await Task.Delay(800);
-
-                    // Apply theme and register initial regions on UI thread
-                    Application.Current.Dispatcher.Invoke(() =>
-                    {
-                        try
-                        {
-                            var themeService = Container.Resolve<IThemeService>();
-                            themeService.RestoreDarkTheme();
-
-                            var regionManager = Container.Resolve<IRegionManager>();
-                            regionManager.RegisterViewWithRegion("SidebarRegion", typeof(SidebarView));
-                            regionManager.RegisterViewWithRegion("ToolbarRegion", typeof(ToolbarView));
-                            regionManager.RegisterViewWithRegion("ContentRegion", typeof(DashboardView));
-                        }
-                        catch (Exception ex)
-                        {
-                            System.Diagnostics.Debug.WriteLine($"During PerformStartupInitializationUI: {ex}");
-                        }
-                    });
                 }
+
+                // TOUJOURS exécuté — seed ou pas
+                await Task.Delay(800);
+
+                Application.Current.Dispatcher.Invoke(() =>
+                {
+                    try
+                    {
+                        var themeService = Container.Resolve<IThemeService>();
+                        themeService.RestoreDarkTheme();
+
+                        var regionManager = Container.Resolve<IRegionManager>();
+                        regionManager.RegisterViewWithRegion("SidebarRegion", typeof(SidebarView));
+                        regionManager.RegisterViewWithRegion("ToolbarRegion", typeof(ToolbarView));
+                        regionManager.RegisterViewWithRegion("ContentRegion", typeof(DashboardView));
+                    }
+                    catch (Exception ex)
+                    {
+                        System.Diagnostics.Debug.WriteLine($"During PerformStartupInitializationUI: {ex}");
+                    }
+                });
             }
             catch (Exception ex)
             {
