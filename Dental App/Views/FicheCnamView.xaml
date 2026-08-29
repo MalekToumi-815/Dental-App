@@ -5,168 +5,99 @@
              prism:ViewModelLocator.AutoWireViewModel="True"
              Background="{DynamicResource PrimaryBackground}">
 
-    <UserControl.Resources>
-        <BooleanToVisibilityConverter x:Key="BoolToVis"/>
-    </UserControl.Resources>
+	<Grid Margin="24">
+		<Grid.RowDefinitions>
+			<RowDefinition Height="Auto"/>
+			<RowDefinition Height="Auto"/>
+			<RowDefinition Height="Auto"/>
+			<RowDefinition Height="Auto"/>
+		</Grid.RowDefinitions>
 
-    <Grid Margin="24">
-        <Grid.RowDefinitions>
-            <RowDefinition Height="Auto"/>
-            <RowDefinition Height="Auto"/>
-            <RowDefinition Height="Auto"/>
-            <RowDefinition Height="*"/>
-        </Grid.RowDefinitions>
-
-        <!-- Titre -->
-        <TextBlock Text="Fiche CNAM"
+		<!-- Titre -->
+		<TextBlock Text="Fiche CNAM"
                    FontSize="22" FontWeight="Bold"
                    Foreground="{DynamicResource TextPrimary}"
                    Margin="0,0,0,24"/>
 
-        <!-- Filtres -->
-        <Grid Grid.Row="1" Margin="0,0,0,16">
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="*"/>
-                <ColumnDefinition Width="24"/>
-                <ColumnDefinition Width="*"/>
-            </Grid.ColumnDefinitions>
+		<!-- Famille + Sous-famille -->
+		<Grid Grid.Row="1" Margin="0,0,0,16">
+			<Grid.ColumnDefinitions>
+				<ColumnDefinition Width="*"/>
+				<ColumnDefinition Width="24"/>
+				<ColumnDefinition Width="*"/>
+			</Grid.ColumnDefinitions>
 
-            <!-- Famille -->
-            <StackPanel Grid.Column="0">
-                <TextBlock Text="Famille"
+			<StackPanel Grid.Column="0">
+				<TextBlock Text="Famille"
                            Foreground="{DynamicResource TextSecondary}"
                            FontSize="12" Margin="0,0,0,6"/>
-                <ComboBox ItemsSource="{Binding Familles}"
+				<ComboBox ItemsSource="{Binding Familles}"
                           SelectedItem="{Binding FamilleSelectionnee}"
                           Background="{DynamicResource SecondaryBackground}"
                           Foreground="{DynamicResource TextPrimary}"
                           BorderThickness="0"
                           Padding="12,8"
                           Height="40"/>
-            </StackPanel>
+			</StackPanel>
 
-            <!-- Sous-famille -->
-            <StackPanel Grid.Column="2">
-                <TextBlock Text="Sous-famille"
+			<StackPanel Grid.Column="2">
+				<TextBlock Text="Sous-famille"
                            Foreground="{DynamicResource TextSecondary}"
                            FontSize="12" Margin="0,0,0,6"/>
-                <ComboBox ItemsSource="{Binding SousFamilles}"
+				<ComboBox ItemsSource="{Binding SousFamilles}"
                           SelectedItem="{Binding SousFamilleSelectionnee}"
                           Background="{DynamicResource SecondaryBackground}"
                           Foreground="{DynamicResource TextPrimary}"
                           BorderThickness="0"
                           Padding="12,8"
                           Height="40"/>
-            </StackPanel>
-        </Grid>
+			</StackPanel>
+		</Grid>
 
-     
-        <Border Grid.Row="2"
+		<!-- Acte -->
+		<StackPanel Grid.Row="2" Margin="0,0,0,24">
+			<TextBlock Text="Acte médical"
+                       Foreground="{DynamicResource TextSecondary}"
+                       FontSize="12" Margin="0,0,0,6"/>
+			<ComboBox ItemsSource="{Binding Actes}"
+                      SelectedItem="{Binding ActeSelectionne}"
+                      DisplayMemberPath="Designation"
+                      Background="{DynamicResource SecondaryBackground}"
+                      Foreground="{DynamicResource TextPrimary}"
+                      BorderThickness="0"
+                      Padding="12,8"
+                      Height="40"/>
+		</StackPanel>
+
+		<!-- Code + Cotation -->
+		<Border Grid.Row="3"
                 Background="{DynamicResource SecondaryBackground}"
                 CornerRadius="12"
-                Margin="0,0,0,16"
-                Padding="20">
-            <Border.Style>
-                <Style TargetType="Border">
-                    <Setter Property="Visibility" Value="Collapsed"/>
-                    <Style.Triggers>
-                        <DataTrigger Binding="{Binding ActeSelectionne}" Value="{x:Null}">
-                            <Setter Property="Visibility" Value="Collapsed"/>
-                        </DataTrigger>
-                        <DataTrigger Binding="{Binding ActeSelectionne, Converter={x:Null}}" Value="{x:Null}">
-                            <Setter Property="Visibility" Value="Visible"/>
-                        </DataTrigger>
-                    </Style.Triggers>
-                </Style>
-            </Border.Style>
-            <Grid>
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="Auto"/>
-                    <ColumnDefinition Width="32"/>
-                    <ColumnDefinition Width="Auto"/>
-                    <ColumnDefinition Width="*"/>
-                </Grid.ColumnDefinitions>
+                Padding="24">
+			<Grid>
+				<Grid.ColumnDefinitions>
+					<ColumnDefinition Width="*"/>
+					<ColumnDefinition Width="*"/>
+				</Grid.ColumnDefinitions>
 
-                <!-- Code -->
-                <StackPanel Grid.Column="0">
-                    <TextBlock Text="Code"
+				<StackPanel Grid.Column="0">
+					<TextBlock Text="Code"
                                Foreground="{DynamicResource TextSecondary}"
-                               FontSize="11" Margin="0,0,0,4"/>
-                    <TextBlock Text="{Binding ActeSelectionne.Code}"
+                               FontSize="12" Margin="0,0,0,6"/>
+					<TextBlock Text="{Binding ActeSelectionne.Code}"
                                Foreground="{DynamicResource TextPrimary}"
-                               FontSize="18" FontWeight="Bold"/>
-                </StackPanel>
+                               FontSize="22" FontWeight="Bold"/>
+				</StackPanel>
 
-                <!-- Cotation -->
-                <StackPanel Grid.Column="2">
-                    <TextBlock Text="Cotation"
+				<StackPanel Grid.Column="1">
+					<TextBlock Text="Cotation"
                                Foreground="{DynamicResource TextSecondary}"
-                               FontSize="11" Margin="0,0,0,4"/>
-                    <TextBlock Text="{Binding ActeSelectionne.Cotation}"
+                               FontSize="12" Margin="0,0,0,6"/>
+					<TextBlock Text="{Binding ActeSelectionne.Cotation}"
                                Foreground="{DynamicResource AccentColor}"
-                               FontSize="18" FontWeight="Bold"/>
-                </StackPanel>
-            </Grid>
-        </Border>
-
-        <!-- Liste des actes -->
-        <Border Grid.Row="3"
-                Background="{DynamicResource SecondaryBackground}"
-                CornerRadius="12">
-            <DataGrid ItemsSource="{Binding Actes}"
-                      SelectedItem="{Binding ActeSelectionne}"
-                      AutoGenerateColumns="False"
-                      IsReadOnly="True"
-                      Background="Transparent"
-                      BorderThickness="0"
-                      RowBackground="Transparent"
-                      AlternatingRowBackground="{DynamicResource PrimaryBackground}"
-                      Foreground="{DynamicResource TextPrimary}"
-                      GridLinesVisibility="None"
-                      HeadersVisibility="Column"
-                      CanUserResizeRows="False"
-                      SelectionMode="Single"
-                      Margin="8">
-
-                <DataGrid.ColumnHeaderStyle>
-                    <Style TargetType="DataGridColumnHeader">
-                        <Setter Property="Background" Value="Transparent"/>
-                        <Setter Property="Foreground" Value="{DynamicResource TextSecondary}"/>
-                        <Setter Property="FontWeight" Value="SemiBold"/>
-                        <Setter Property="FontSize" Value="12"/>
-                        <Setter Property="Padding" Value="12,8"/>
-                        <Setter Property="BorderThickness" Value="0"/>
-                    </Style>
-                </DataGrid.ColumnHeaderStyle>
-
-                <DataGrid.CellStyle>
-                    <Style TargetType="DataGridCell">
-                        <Setter Property="BorderThickness" Value="0"/>
-                        <Setter Property="Padding" Value="12,8"/>
-                        <Setter Property="Foreground" Value="{DynamicResource TextPrimary}"/>
-                        <Setter Property="Background" Value="Transparent"/>
-                    </Style>
-                </DataGrid.CellStyle>
-
-                <DataGrid.Columns>
-                    <DataGridTextColumn Header="Code"
-                                        Binding="{Binding Code}"
-                                        Width="120"/>
-                    <DataGridTextColumn Header="Cotation"
-                                        Binding="{Binding Cotation}"
-                                        Width="100"/>
-                    <DataGridTextColumn Header="Designation"
-                                        Binding="{Binding Designation}"
-                                        Width="*">
-                        <DataGridTextColumn.ElementStyle>
-                            <Style TargetType="TextBlock">
-                                <Setter Property="TextWrapping" Value="Wrap"/>
-                                <Setter Property="Padding" Value="12,8"/>
-                            </Style>
-                        </DataGridTextColumn.ElementStyle>
-                    </DataGridTextColumn>
-                </DataGrid.Columns>
-            </DataGrid>
-        </Border>
-    </Grid>
+                               FontSize="22" FontWeight="Bold"/>
+				</StackPanel>
+			</Grid>
+		</Border>
+	</Grid>
 </UserControl>
