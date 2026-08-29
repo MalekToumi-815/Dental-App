@@ -14,5 +14,10 @@ namespace Dental_App.Models
         public string? Code { get; set; }
         public string? Cotation { get; set; }
         public string? Designation { get; set; }
+
+        public override string ToString()
+        {
+            return Designation ?? string.Empty;
+        }
     }
 }

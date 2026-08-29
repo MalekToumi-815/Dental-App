@@ -5,99 +5,225 @@
              prism:ViewModelLocator.AutoWireViewModel="True"
              Background="{DynamicResource PrimaryBackground}">
 
-	<Grid Margin="24">
-		<Grid.RowDefinitions>
-			<RowDefinition Height="Auto"/>
-			<RowDefinition Height="Auto"/>
-			<RowDefinition Height="Auto"/>
-			<RowDefinition Height="Auto"/>
-		</Grid.RowDefinitions>
+	<UserControl.Resources>
+		<Style x:Key="CnamComboBoxStyle" TargetType="ComboBox">
+			<Setter Property="Background" Value="White"/>
+			<Setter Property="Foreground" Value="{DynamicResource TextPrimary}"/>
+			<Setter Property="BorderBrush" Value="{DynamicResource GlobalElementBorderBrush}"/>
+			<Setter Property="BorderThickness" Value="1"/>
+			<Setter Property="Padding" Value="10,4"/>
+			<Setter Property="Height" Value="40"/>
+			<Setter Property="FontSize" Value="13"/>
+			<Setter Property="HorizontalContentAlignment" Value="Left"/>
+			<Setter Property="VerticalContentAlignment" Value="Center"/>
+			<Setter Property="Template">
+				<Setter.Value>
+					<ControlTemplate TargetType="ComboBox">
+						<Grid>
+							<Grid.ColumnDefinitions>
+								<ColumnDefinition Width="*"/>
+								<ColumnDefinition Width="Auto"/>
+							</Grid.ColumnDefinitions>
+							<Border x:Name="MainBorder" Grid.ColumnSpan="2"
+                                    Background="{TemplateBinding Background}"
+                                    BorderBrush="{TemplateBinding BorderBrush}"
+                                    BorderThickness="{TemplateBinding BorderThickness}"
+                                    CornerRadius="8"/>
+							<ContentPresenter Grid.Column="0"
+                                              Margin="{TemplateBinding Padding}"
+                                              VerticalAlignment="Center"
+                                              HorizontalAlignment="Left"
+                                              Content="{TemplateBinding SelectionBoxItem}"
+                                              ContentTemplate="{TemplateBinding SelectionBoxItemTemplate}"
+                                              IsHitTestVisible="False"/>
+							<Path Grid.Column="1" Data="M 0,0 L 4,4 L 8,0"
+                                  Stroke="{DynamicResource AccentColor}"
+                                  StrokeThickness="2"
+                                  HorizontalAlignment="Center"
+                                  VerticalAlignment="Center"
+                                  Margin="0,0,10,0"/>
+							<ToggleButton x:Name="ToggleBtn" Grid.ColumnSpan="2"
+                                          Background="Transparent"
+                                          BorderThickness="0"
+                                          IsChecked="{Binding IsDropDownOpen, RelativeSource={RelativeSource TemplatedParent}, Mode=TwoWay}"
+                                          ClickMode="Press">
+								<ToggleButton.Template>
+									<ControlTemplate TargetType="ToggleButton">
+										<Border Background="Transparent"/>
+									</ControlTemplate>
+								</ToggleButton.Template>
+							</ToggleButton>
+							<Popup x:Name="Popup"
+                                   Placement="Bottom"
+                                   IsOpen="{TemplateBinding IsDropDownOpen}"
+                                   AllowsTransparency="True"
+                                   Focusable="False"
+                                   PopupAnimation="Slide">
+								<Border Background="White"
+                                        BorderBrush="{DynamicResource GlobalElementBorderBrush}"
+                                        BorderThickness="1"
+                                        CornerRadius="8"
+                                        Margin="0,4,0,0"
+                                        MinWidth="{TemplateBinding ActualWidth}"
+                                        MaxHeight="220">
+									<Border.Effect>
+										<DropShadowEffect BlurRadius="12" ShadowDepth="2" Opacity="0.2" Color="Black"/>
+									</Border.Effect>
+									<ScrollViewer Margin="4" SnapsToDevicePixels="True">
+										<StackPanel IsItemsHost="True"/>
+									</ScrollViewer>
+								</Border>
+							</Popup>
+						</Grid>
+					</ControlTemplate>
+				</Setter.Value>
+			</Setter>
+			<Setter Property="ItemContainerStyle">
+				<Setter.Value>
+					<Style TargetType="ComboBoxItem">
+						<Setter Property="Padding" Value="10,8"/>
+						<Setter Property="Foreground" Value="{DynamicResource TextPrimary}"/>
+						<Setter Property="Background" Value="Transparent"/>
+						<Setter Property="Template">
+							<Setter.Value>
+								<ControlTemplate TargetType="ComboBoxItem">
+									<Border x:Name="ItemBorder"
+                                            Background="{TemplateBinding Background}"
+                                            CornerRadius="6"
+                                            Padding="{TemplateBinding Padding}">
+										<ContentPresenter/>
+									</Border>
+									<ControlTemplate.Triggers>
+										<Trigger Property="IsHighlighted" Value="True">
+											<Setter TargetName="ItemBorder" Property="Background" Value="{DynamicResource AccentColor}"/>
+											<Setter Property="Foreground" Value="White"/>
+										</Trigger>
+										<Trigger Property="IsSelected" Value="True">
+											<Setter TargetName="ItemBorder" Property="Background" Value="{DynamicResource AccentColor}"/>
+											<Setter Property="Foreground" Value="White"/>
+										</Trigger>
+									</ControlTemplate.Triggers>
+								</ControlTemplate>
+							</Setter.Value>
+						</Setter>
+					</Style>
+				</Setter.Value>
+			</Setter>
+		</Style>
+	</UserControl.Resources>
 
-		<!-- Titre -->
-		<TextBlock Text="Fiche CNAM"
-                   FontSize="22" FontWeight="Bold"
-                   Foreground="{DynamicResource TextPrimary}"
-                   Margin="0,0,0,24"/>
+	<ScrollViewer VerticalScrollBarVisibility="Auto">
+		<Grid Margin="32">
+			<Grid.RowDefinitions>
+				<RowDefinition Height="Auto"/>
+				<RowDefinition Height="Auto"/>
+				<RowDefinition Height="Auto"/>
+				<RowDefinition Height="Auto"/>
+			</Grid.RowDefinitions>
 
-		<!-- Famille + Sous-famille -->
-		<Grid Grid.Row="1" Margin="0,0,0,16">
-			<Grid.ColumnDefinitions>
-				<ColumnDefinition Width="*"/>
-				<ColumnDefinition Width="24"/>
-				<ColumnDefinition Width="*"/>
-			</Grid.ColumnDefinitions>
+			<!-- Titre -->
+			<TextBlock Text="Fiche CNAM"
+                       FontSize="{StaticResource TitleFontSize}"
+                       FontWeight="Bold"
+                       Foreground="{DynamicResource AccentColor}"
+                       Margin="0,0,0,28"/>
 
-			<StackPanel Grid.Column="0">
-				<TextBlock Text="Famille"
-                           Foreground="{DynamicResource TextSecondary}"
-                           FontSize="12" Margin="0,0,0,6"/>
-				<ComboBox ItemsSource="{Binding Familles}"
-                          SelectedItem="{Binding FamilleSelectionnee}"
-                          Background="{DynamicResource SecondaryBackground}"
-                          Foreground="{DynamicResource TextPrimary}"
-                          BorderThickness="0"
-                          Padding="12,8"
-                          Height="40"/>
-			</StackPanel>
-
-			<StackPanel Grid.Column="2">
-				<TextBlock Text="Sous-famille"
-                           Foreground="{DynamicResource TextSecondary}"
-                           FontSize="12" Margin="0,0,0,6"/>
-				<ComboBox ItemsSource="{Binding SousFamilles}"
-                          SelectedItem="{Binding SousFamilleSelectionnee}"
-                          Background="{DynamicResource SecondaryBackground}"
-                          Foreground="{DynamicResource TextPrimary}"
-                          BorderThickness="0"
-                          Padding="12,8"
-                          Height="40"/>
-			</StackPanel>
-		</Grid>
-
-		<!-- Acte -->
-		<StackPanel Grid.Row="2" Margin="0,0,0,24">
-			<TextBlock Text="Acte médical"
-                       Foreground="{DynamicResource TextSecondary}"
-                       FontSize="12" Margin="0,0,0,6"/>
-			<ComboBox ItemsSource="{Binding Actes}"
-                      SelectedItem="{Binding ActeSelectionne}"
-                      DisplayMemberPath="Designation"
-                      Background="{DynamicResource SecondaryBackground}"
-                      Foreground="{DynamicResource TextPrimary}"
-                      BorderThickness="0"
-                      Padding="12,8"
-                      Height="40"/>
-		</StackPanel>
-
-		<!-- Code + Cotation -->
-		<Border Grid.Row="3"
-                Background="{DynamicResource SecondaryBackground}"
-                CornerRadius="12"
-                Padding="24">
-			<Grid>
+			<!-- Famille + Sous-famille -->
+			<Grid Grid.Row="1" Margin="0,0,0,20">
 				<Grid.ColumnDefinitions>
 					<ColumnDefinition Width="*"/>
+					<ColumnDefinition Width="24"/>
 					<ColumnDefinition Width="*"/>
 				</Grid.ColumnDefinitions>
 
+				<!-- Famille -->
 				<StackPanel Grid.Column="0">
-					<TextBlock Text="Code"
+					<TextBlock Text="Famille"
                                Foreground="{DynamicResource TextSecondary}"
-                               FontSize="12" Margin="0,0,0,6"/>
-					<TextBlock Text="{Binding ActeSelectionne.Code}"
-                               Foreground="{DynamicResource TextPrimary}"
-                               FontSize="22" FontWeight="Bold"/>
+                               FontSize="{StaticResource SmallFontSize}"
+                               FontWeight="SemiBold"
+                               Margin="0,0,0,6"/>
+					<ComboBox Style="{StaticResource CnamComboBoxStyle}"
+                              ItemsSource="{Binding Familles}"
+                              SelectedItem="{Binding FamilleSelectionnee}"/>
 				</StackPanel>
 
-				<StackPanel Grid.Column="1">
-					<TextBlock Text="Cotation"
+				<!-- Sous-famille -->
+				<StackPanel Grid.Column="2">
+					<TextBlock Text="Sous-famille"
                                Foreground="{DynamicResource TextSecondary}"
-                               FontSize="12" Margin="0,0,0,6"/>
-					<TextBlock Text="{Binding ActeSelectionne.Cotation}"
-                               Foreground="{DynamicResource AccentColor}"
-                               FontSize="22" FontWeight="Bold"/>
+                               FontSize="{StaticResource SmallFontSize}"
+                               FontWeight="SemiBold"
+                               Margin="0,0,0,6"/>
+					<ComboBox Style="{StaticResource CnamComboBoxStyle}"
+                              ItemsSource="{Binding SousFamilles}"
+                              SelectedItem="{Binding SousFamilleSelectionnee}"/>
 				</StackPanel>
 			</Grid>
-		</Border>
-	</Grid>
+			<!-- Acte médical -->
+			
+			<StackPanel Grid.Row="2" Margin="0,0,0,28">
+				<TextBlock Text="Acte médical"
+						   Foreground="{DynamicResource TextSecondary}"
+						   FontSize="{StaticResource SmallFontSize}"
+						   FontWeight="SemiBold"
+						   Margin="0,0,0,6"/>
+				<ComboBox Style="{StaticResource CnamComboBoxStyle}"
+						  ItemsSource="{Binding Actes}"
+						  SelectedItem="{Binding ActeSelectionne}"
+						  DisplayMemberPath="Designation"/>
+			</StackPanel>
+
+			<!-- Code + Cotation -->
+			<Border Grid.Row="3"
+                    Background="White"
+                    BorderBrush="{DynamicResource GlobalElementBorderBrush}"
+                    BorderThickness="1"
+                    CornerRadius="12"
+                    Padding="28">
+				<Grid>
+					<Grid.ColumnDefinitions>
+						<ColumnDefinition Width="*"/>
+						<ColumnDefinition Width="1"/>
+						<ColumnDefinition Width="*"/>
+					</Grid.ColumnDefinitions>
+
+					<!-- Code -->
+					<StackPanel Grid.Column="0" HorizontalAlignment="Center">
+						<TextBlock Text="Code"
+                                   Foreground="{DynamicResource TextSecondary}"
+                                   FontSize="{StaticResource SmallFontSize}"
+                                   FontWeight="SemiBold"
+                                   HorizontalAlignment="Center"
+                                   Margin="0,0,0,8"/>
+						<TextBlock Text="{Binding ActeSelectionne.Code, FallbackValue='-'}"
+                                   Foreground="{DynamicResource TextPrimary}"
+                                   FontSize="28"
+                                   FontWeight="Bold"
+                                   HorizontalAlignment="Center"/>
+					</StackPanel>
+
+					<!-- Séparateur -->
+					<Rectangle Grid.Column="1"
+                               Fill="{DynamicResource GlobalElementBorderBrush}"
+                               Width="1"/>
+
+					<!-- Cotation -->
+					<StackPanel Grid.Column="2" HorizontalAlignment="Center">
+						<TextBlock Text="Cotation"
+                                   Foreground="{DynamicResource TextSecondary}"
+                                   FontSize="{StaticResource SmallFontSize}"
+                                   FontWeight="SemiBold"
+                                   HorizontalAlignment="Center"
+                                   Margin="0,0,0,8"/>
+						<TextBlock Text="{Binding ActeSelectionne.Cotation, FallbackValue='-'}"
+                                   Foreground="{DynamicResource AccentColor}"
+                                   FontSize="28"
+                                   FontWeight="Bold"
+                                   HorizontalAlignment="Center"/>
+					</StackPanel>
+				</Grid>
+			</Border>
+		</Grid>
+	</ScrollViewer>
 </UserControl>
