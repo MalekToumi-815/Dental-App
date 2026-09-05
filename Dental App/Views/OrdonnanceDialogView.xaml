@@ -293,14 +293,22 @@
                                              Style="{StaticResource DialogInputStyle}" 
                                              Text="{Binding Nom, UpdateSourceTrigger=PropertyChanged}" 
                                              IsReadOnly="{Binding DataContext.IsReadOnlyMode, RelativeSource={RelativeSource AncestorType=ItemsControl}}"
-                                             Tag="Medicament"/>
+                                             Tag="Medicament"
+                                             AcceptsReturn="True"
+                                             TextWrapping="Wrap"
+                                             VerticalScrollBarVisibility="Auto"
+                                             MinHeight="80"/>
                                              
                                     <!-- Posologie -->
                                     <TextBox Grid.Column="1" Margin="0,0,12,0" 
                                              Style="{StaticResource DialogInputStyle}" 
                                              Text="{Binding Posologie, UpdateSourceTrigger=PropertyChanged}" 
                                              IsReadOnly="{Binding DataContext.IsReadOnlyMode, RelativeSource={RelativeSource AncestorType=ItemsControl}}"
-                                             Tag="Posologie"/>
+                                             Tag="Posologie"
+                                             AcceptsReturn="True"
+                                             TextWrapping="Wrap"
+                                             VerticalScrollBarVisibility="Auto"
+                                             MinHeight="80"/>
 
                                     <!-- Remove Button -->
                                     <Button Grid.Column="2" 
