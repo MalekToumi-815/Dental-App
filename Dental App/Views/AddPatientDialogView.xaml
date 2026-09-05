@@ -5,7 +5,7 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:Dental_App.Views"
              mc:Ignorable="d" 
-             d:DesignHeight="550" d:DesignWidth="800"
+             d:DesignHeight="700" d:DesignWidth="520"
              Background="Transparent">
 
     <UserControl.Resources>
@@ -22,13 +22,13 @@
             </Setter>
         </Style>
 
+        <!-- FIX: MaxWidth retire, la taille est maintenant geree par le Grid racine (520x700) -->
         <Style x:Key="DialogContainerStyle" TargetType="Border">
             <Setter Property="Background" Value="{DynamicResource CardBackground}"/>
             <Setter Property="CornerRadius" Value="12"/>
             <Setter Property="BorderBrush" Value="{DynamicResource BorderColor}"/>
             <Setter Property="BorderThickness" Value="1"/>
             <Setter Property="Padding" Value="24"/>
-            <Setter Property="MaxWidth" Value="600"/>
         </Style>
 
         <Style x:Key="DialogTitleStyle" TargetType="TextBlock">
@@ -280,110 +280,123 @@
         </Style>
     </UserControl.Resources>
 
-    <Grid HorizontalAlignment="Center" VerticalAlignment="Center">
+    <!-- FIX: taille fixe (520x700) alignee sur PatientDetailsDialogView -->
+    <Grid Width="520" Height="700" HorizontalAlignment="Center" VerticalAlignment="Center">
         <Border Style="{StaticResource DialogContainerStyle}" 
                 BorderBrush="{DynamicResource GlobalElementBorderBrush}" 
                 BorderThickness="2">
-            <StackPanel>
-                <Grid Margin="0,0,0,20">
-                    <TextBlock Text="{Binding Title}" Style="{StaticResource DialogTitleStyle}"/>
-                </Grid>
+            <!-- FIX: ScrollViewer ajoute pour que le formulaire defile dans le conteneur de taille fixe -->
+            <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
+                <StackPanel>
+                    <Grid Margin="0,0,0,20">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="Auto"/>
+                        </Grid.ColumnDefinitions>
+                        <TextBlock Text="{Binding Title}" Style="{StaticResource DialogTitleStyle}"/>
+                        <!-- FIX: bouton X pour fermer le dialogue, comme sur PatientDetailsDialogView -->
+                        <Button Grid.Column="1" Background="Transparent" BorderThickness="0" Cursor="Hand" Padding="8" Command="{Binding CancelCommand}">
+                            <Path Data="M19 6.41L17.59 5L12 10.59L6.41 5L5 6.41L10.59 12L5 17.59L6.41 19L12 13.41L17.59 19L19 17.59L13.41 12L19 6.41Z" Fill="{DynamicResource TextPrimary}" Width="20" Height="20"/>
+                        </Button>
+                    </Grid>
 
-                <Grid>
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="*"/>
-                        <ColumnDefinition Width="20"/>
-                        <ColumnDefinition Width="*"/>
-                    </Grid.ColumnDefinitions>
-                    <Grid.RowDefinitions>
-                        <RowDefinition Height="Auto"/>
-                        <RowDefinition Height="Auto"/>
-                        <RowDefinition Height="Auto"/>
-                        <RowDefinition Height="Auto"/>
-                        <RowDefinition Height="Auto"/>
-                        <RowDefinition Height="Auto"/> <!-- for antecedent row -->
-                    </Grid.RowDefinitions>
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="20"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                            <!-- for antecedent row -->
+                        </Grid.RowDefinitions>
 
-                    <StackPanel Grid.Row="0" Grid.Column="0" Margin="0,0,0,16">
-                        <StackPanel Orientation="Horizontal" Margin="0,0,0,8">
-                            <TextBlock Text="Prenom" Style="{StaticResource FormFieldLabelStyle}"/>
-                            <TextBlock Text=" *" Foreground="#EF4444" FontSize="14" FontWeight="SemiBold"/>
+                        <StackPanel Grid.Row="0" Grid.Column="0" Margin="0,0,0,16">
+                            <StackPanel Orientation="Horizontal" Margin="0,0,0,8">
+                                <TextBlock Text="Prenom" Style="{StaticResource FormFieldLabelStyle}"/>
+                                <TextBlock Text=" *" Foreground="#EF4444" FontSize="14" FontWeight="SemiBold"/>
+                            </StackPanel>
+                            <TextBox Text="{Binding Prenom, UpdateSourceTrigger=PropertyChanged}" Style="{StaticResource FormInputStyle}"/>
                         </StackPanel>
-                        <TextBox Text="{Binding Prenom, UpdateSourceTrigger=PropertyChanged}" Style="{StaticResource FormInputStyle}"/>
-                    </StackPanel>
 
-                    <StackPanel Grid.Row="0" Grid.Column="2" Margin="0,0,0,16">
-                        <StackPanel Orientation="Horizontal" Margin="0,0,0,8">
-                            <TextBlock Text="Nom" Style="{StaticResource FormFieldLabelStyle}"/>
-                            <TextBlock Text=" *" Foreground="#EF4444" FontSize="14" FontWeight="SemiBold"/>
+                        <StackPanel Grid.Row="0" Grid.Column="2" Margin="0,0,0,16">
+                            <StackPanel Orientation="Horizontal" Margin="0,0,0,8">
+                                <TextBlock Text="Nom" Style="{StaticResource FormFieldLabelStyle}"/>
+                                <TextBlock Text=" *" Foreground="#EF4444" FontSize="14" FontWeight="SemiBold"/>
+                            </StackPanel>
+                            <TextBox Text="{Binding Nom, UpdateSourceTrigger=PropertyChanged}" Style="{StaticResource FormInputStyle}"/>
                         </StackPanel>
-                        <TextBox Text="{Binding Nom, UpdateSourceTrigger=PropertyChanged}" Style="{StaticResource FormInputStyle}"/>
-                    </StackPanel>
 
-                    <StackPanel Grid.Row="1" Grid.Column="0" Margin="0,0,0,16">
-                        <StackPanel Orientation="Horizontal" Margin="0,0,0,8">
-                            <TextBlock Text="Date de naissance" Style="{StaticResource FormFieldLabelStyle}"/>
-                            <TextBlock Text=" *" Foreground="#EF4444" FontSize="14" FontWeight="SemiBold"/>
+                        <StackPanel Grid.Row="1" Grid.Column="0" Margin="0,0,0,16">
+                            <StackPanel Orientation="Horizontal" Margin="0,0,0,8">
+                                <TextBlock Text="Date de naissance" Style="{StaticResource FormFieldLabelStyle}"/>
+                                <TextBlock Text=" *" Foreground="#EF4444" FontSize="14" FontWeight="SemiBold"/>
+                            </StackPanel>
+                            <Border Background="{DynamicResource SecondaryBackground}" 
+                                    BorderBrush="{DynamicResource BorderColor}" 
+                                    BorderThickness="1" 
+                                    CornerRadius="8">
+                                <DatePicker SelectedDate="{Binding DateNaissance, UpdateSourceTrigger=PropertyChanged}" Style="{StaticResource FormDatePickerStyle}"/>
+                            </Border>
                         </StackPanel>
-                        <Border Background="{DynamicResource SecondaryBackground}" 
-                                BorderBrush="{DynamicResource BorderColor}" 
-                                BorderThickness="1" 
-                                CornerRadius="8">
-                            <DatePicker SelectedDate="{Binding DateNaissance, UpdateSourceTrigger=PropertyChanged}" Style="{StaticResource FormDatePickerStyle}"/>
-                        </Border>
-                    </StackPanel>
 
-                    <StackPanel Grid.Row="1" Grid.Column="2" Margin="0,0,0,16">
-                        <StackPanel Orientation="Horizontal" Margin="0,0,0,8">
-                            <TextBlock Text="Sexe" Style="{StaticResource FormFieldLabelStyle}"/>
-                            <TextBlock Text=" *" Foreground="#EF4444" FontSize="14" FontWeight="SemiBold"/>
+                        <StackPanel Grid.Row="1" Grid.Column="2" Margin="0,0,0,16">
+                            <StackPanel Orientation="Horizontal" Margin="0,0,0,8">
+                                <TextBlock Text="Sexe" Style="{StaticResource FormFieldLabelStyle}"/>
+                                <TextBlock Text=" *" Foreground="#EF4444" FontSize="14" FontWeight="SemiBold"/>
+                            </StackPanel>
+                            <ComboBox ItemsSource="{Binding SexeOptions}" 
+                                      SelectedItem="{Binding Sexe, UpdateSourceTrigger=PropertyChanged}" 
+                                      Style="{StaticResource FormComboBoxStyle}"/>
                         </StackPanel>
-                        <ComboBox ItemsSource="{Binding SexeOptions}" 
-                                  SelectedItem="{Binding Sexe, UpdateSourceTrigger=PropertyChanged}" 
-                                  Style="{StaticResource FormComboBoxStyle}"/>
-                    </StackPanel>
 
-                    <StackPanel Grid.Row="2" Grid.Column="0" Margin="0,0,0,16">
-                        <StackPanel Orientation="Horizontal" Margin="0,0,0,8">
-                            <TextBlock Text="Telephone" Style="{StaticResource FormFieldLabelStyle}"/>
-                            <TextBlock Text=" *" Foreground="#EF4444" FontSize="14" FontWeight="SemiBold"/>
+                        <StackPanel Grid.Row="2" Grid.Column="0" Margin="0,0,0,16">
+                            <StackPanel Orientation="Horizontal" Margin="0,0,0,8">
+                                <TextBlock Text="Telephone" Style="{StaticResource FormFieldLabelStyle}"/>
+                                <TextBlock Text=" *" Foreground="#EF4444" FontSize="14" FontWeight="SemiBold"/>
+                            </StackPanel>
+                            <TextBox Text="{Binding Telephone, UpdateSourceTrigger=PropertyChanged}" Style="{StaticResource FormInputStyle}"/>
                         </StackPanel>
-                        <TextBox Text="{Binding Telephone, UpdateSourceTrigger=PropertyChanged}" Style="{StaticResource FormInputStyle}"/>
-                    </StackPanel>
 
-                    <StackPanel Grid.Row="3" Grid.Column="0" Grid.ColumnSpan="3" Margin="0,0,0,24">
-                        <StackPanel Orientation="Horizontal" Margin="0,0,0,8">
-                            <TextBlock Text="Adresse" Style="{StaticResource FormFieldLabelStyle}"/>
-                            <TextBlock Text=" *" Foreground="#EF4444" FontSize="14" FontWeight="SemiBold"/>
+                        <StackPanel Grid.Row="3" Grid.Column="0" Grid.ColumnSpan="3" Margin="0,0,0,24">
+                            <StackPanel Orientation="Horizontal" Margin="0,0,0,8">
+                                <TextBlock Text="Adresse" Style="{StaticResource FormFieldLabelStyle}"/>
+                                <TextBlock Text=" *" Foreground="#EF4444" FontSize="14" FontWeight="SemiBold"/>
+                            </StackPanel>
+                            <TextBox Text="{Binding Adresse, UpdateSourceTrigger=PropertyChanged}" Style="{StaticResource FormInputStyle}"/>
                         </StackPanel>
-                        <TextBox Text="{Binding Adresse, UpdateSourceTrigger=PropertyChanged}" Style="{StaticResource FormInputStyle}"/>
+
+                        <StackPanel Grid.Row="4" Grid.Column="0" Grid.ColumnSpan="3" Margin="0,0,0,24">
+                            <TextBlock Text="Profession" Style="{StaticResource FormFieldLabelStyle}"/>
+                            <TextBox Text="{Binding Profession, UpdateSourceTrigger=PropertyChanged}" Style="{StaticResource FormInputStyle}"/>
+                        </StackPanel>
+
+                        <!-- New: Antecedent input (optional) -->
+                        <StackPanel Grid.Row="5" Grid.Column="0" Grid.ColumnSpan="3" Margin="0,0,0,24">
+                            <TextBlock Text="Antecedent (optionnel)" Style="{StaticResource FormFieldLabelStyle}"/>
+                            <!-- Multiline TextBox: AcceptsReturn so Enter creates a new line instead of submitting -->
+                            <TextBox Text="{Binding NewAntecedent, UpdateSourceTrigger=PropertyChanged}" 
+                                     Style="{StaticResource FormInputStyle}" 
+                                     ToolTip="Ex: Diabete, Allergie..." 
+                                     AcceptsReturn="True" 
+                                     TextWrapping="Wrap" 
+                                     VerticalScrollBarVisibility="Auto" 
+                                     Height="100"/>
+                        </StackPanel>
+                    </Grid>
+
+                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
+                        <Button Content="Annuler" Command="{Binding CancelCommand}" Style="{StaticResource SecondaryButtonStyle}" Margin="0,0,12,0"/>
+                        <Button Content="{Binding ButtonText}" Command="{Binding SaveCommand}" Style="{StaticResource PrimaryButtonStyle}" IsEnabled="{Binding IsFormValid}"/>
                     </StackPanel>
 
-                    <StackPanel Grid.Row="4" Grid.Column="0" Grid.ColumnSpan="3" Margin="0,0,0,24">
-                        <TextBlock Text="Profession" Style="{StaticResource FormFieldLabelStyle}"/>
-                        <TextBox Text="{Binding Profession, UpdateSourceTrigger=PropertyChanged}" Style="{StaticResource FormInputStyle}"/>
-                    </StackPanel>
-
-                    <!-- New: Antecedent input (optional) -->
-                    <StackPanel Grid.Row="5" Grid.Column="0" Grid.ColumnSpan="3" Margin="0,0,0,24">
-                        <TextBlock Text="Antecedent (optionnel)" Style="{StaticResource FormFieldLabelStyle}"/>
-                        <!-- Multiline TextBox: AcceptsReturn so Enter creates a new line instead of submitting -->
-                        <TextBox Text="{Binding NewAntecedent, UpdateSourceTrigger=PropertyChanged}" 
-                                 Style="{StaticResource FormInputStyle}" 
-                                 ToolTip="Ex: Diabete, Allergie..." 
-                                 AcceptsReturn="True" 
-                                 TextWrapping="Wrap" 
-                                 VerticalScrollBarVisibility="Auto" 
-                                 Height="100"/>
-                    </StackPanel>
-                </Grid>
-
-                <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
-                    <Button Content="Annuler" Command="{Binding CancelCommand}" Style="{StaticResource SecondaryButtonStyle}" Margin="0,0,12,0"/>
-                    <Button Content="{Binding ButtonText}" Command="{Binding SaveCommand}" Style="{StaticResource PrimaryButtonStyle}" IsEnabled="{Binding IsFormValid}"/>
                 </StackPanel>
-
-            </StackPanel>
+            </ScrollViewer>
         </Border>
     </Grid>
 </UserControl>
