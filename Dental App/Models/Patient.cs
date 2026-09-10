@@ -25,6 +25,8 @@ public partial class Patient
 
     public string? Cin { get; set; }
 
+    public bool IsDeleted { get; set; } = false;
+
     public virtual ICollection<Consultation> Consultations { get; set; } = new List<Consultation>();
 
     public virtual ICollection<OdontogrammeLibre> OdontogrammeLibres { get; set; } = new List<OdontogrammeLibre>();

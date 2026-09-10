@@ -224,6 +224,12 @@ public partial class DentalContext : DbContext
             entity.Property(e => e.SommePaye)
                 .HasDefaultValue(0.0m)
                 .HasColumnType("decimal(18, 2)");
+
+            // Soft delete: configure IsDeleted property
+            entity.Property(p => p.IsDeleted).HasDefaultValue(false);
+            
+            // Global query filter: exclude soft-deleted patients
+            entity.HasQueryFilter(p => !p.IsDeleted);
         });
 
         modelBuilder.Entity<Prothesiste>(entity =>

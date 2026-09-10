@@ -28,6 +28,7 @@ namespace Dental_App.ViewModels
         private DelegateCommand _addPatientCommand;
         private DelegateCommand<PatientDisplayRow> _viewPatientCommand;
         private DelegateCommand<PatientDisplayRow> _editPatientCommand;
+        private DelegateCommand<PatientDisplayRow> _deletePatientCommand;
 
         private int _currentPage = 1;
         private int _pageSize = 10;
@@ -47,6 +48,7 @@ namespace Dental_App.ViewModels
             AddPatientCommand = new DelegateCommand(AddPatient);
             ViewPatientCommand = new DelegateCommand<PatientDisplayRow>(ViewPatient);
             EditPatientCommand = new DelegateCommand<PatientDisplayRow>(EditPatient);
+            DeletePatientCommand = new DelegateCommand<PatientDisplayRow>(async p => await DeletePatientAsync(p));
 
             NextPageCommand = new DelegateCommand(NextPage, () => HasNextPage);
             PreviousPageCommand = new DelegateCommand(PreviousPage, () => CurrentPage > 1);
@@ -158,6 +160,12 @@ namespace Dental_App.ViewModels
         {
             get => _editPatientCommand;
             set => SetProperty(ref _editPatientCommand, value);
+        }
+
+        public DelegateCommand<PatientDisplayRow> DeletePatientCommand
+        {
+            get => _deletePatientCommand;
+            set => SetProperty(ref _deletePatientCommand, value);
         }
 
         private void AddPatient()
@@ -289,6 +297,33 @@ namespace Dental_App.ViewModels
             catch (Exception ex)
             {
                 System.Diagnostics.Debug.WriteLine($"Error in EditPatient: {ex.Message}");
+                _notificationService.ShowError($"Erreur: {ex.Message}");
+            }
+        }
+
+        private async Task DeletePatientAsync(PatientDisplayRow displayRow)
+        {
+            if (displayRow?.Patient == null) return;
+
+            try
+            {
+                var result = System.Windows.MessageBox.Show($"Confirmer la suppression du patient {displayRow.FullName}?", "Confirmer", System.Windows.MessageBoxButton.YesNo, System.Windows.MessageBoxImage.Warning);
+                if (result != System.Windows.MessageBoxResult.Yes) return;
+
+                var ok = await _patientService.SoftDeletePatientAsync(displayRow.Id);
+                if (ok)
+                {
+                    _notificationService.ShowSuccess("Patient supprimé");
+                    await LoadPatientsAsync();
+                }
+                else
+                {
+                    _notificationService.ShowError("Échec de la suppression du patient");
+                }
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"Error deleting patient {displayRow?.Id}: {ex.Message}");
                 _notificationService.ShowError($"Erreur: {ex.Message}");
             }
         }

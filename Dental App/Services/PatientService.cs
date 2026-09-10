@@ -25,6 +25,8 @@ namespace Dental_App.Services
         Task<Patient?> GetByCinAsync(string? cin);
         Task<Patient> AjouterMontantAsync(int patientId, decimal montant);
         Task<decimal> GetSommeAPayerAsync(int patientId);
+        Task<bool> SoftDeletePatientAsync(int id);
+        Task<bool> RestorePatientAsync(int id);
     }
 
     public class PatientService : IPatientService
@@ -52,7 +54,7 @@ namespace Dental_App.Services
         public async Task<Patient?> GetByIdAsync(int id)
         {
             if (id <= 0) throw new ArgumentException("L'ID doit être supérieur à 0.", nameof(id));
-            return await _context.Patients.FirstOrDefaultAsync(p => p.Id == id);
+            return await _context.Patients.FirstOrDefaultAsync(p => p.Id == id && !p.IsDeleted);
         }
 
         public async Task<Patient?> GetByIdWithConsultationsAsync(int id)
@@ -60,12 +62,12 @@ namespace Dental_App.Services
             if (id <= 0) throw new ArgumentException("L'ID doit être supérieur à 0.", nameof(id));
             return await _context.Patients
                 .Include(p => p.Consultations)
-                .FirstOrDefaultAsync(p => p.Id == id);
+                .FirstOrDefaultAsync(p => p.Id == id && !p.IsDeleted);
         }
 
         public async Task<List<Patient>> GetAllAsync()
         {
-            return await _context.Patients.ToListAsync();
+            return await _context.Patients.Where(p => !p.IsDeleted).ToListAsync();
         }
 
         public async Task<List<Patient>> GetPatientsAsync(int pageIndex, int pageSize = 10)
@@ -73,6 +75,7 @@ namespace Dental_App.Services
             if (pageIndex < 1) pageIndex = 1;
             if (pageSize < 1) pageSize = 10;
             return await _context.Patients
+                .Where(p => !p.IsDeleted)
                 .Skip((pageIndex - 1) * pageSize)
                 .Take(pageSize)
                 .ToListAsync();
@@ -86,7 +89,7 @@ namespace Dental_App.Services
             if (string.IsNullOrWhiteSpace(nom) && string.IsNullOrWhiteSpace(prenom))
                 return new List<Patient>();
 
-            var query = _context.Patients.AsQueryable();
+            var query = _context.Patients.Where(p => !p.IsDeleted).AsQueryable();
             if (!string.IsNullOrWhiteSpace(nom))
                 query = query.Where(p => EF.Functions.Like(p.Nom, nom));
             if (!string.IsNullOrWhiteSpace(prenom))
@@ -107,7 +110,7 @@ namespace Dental_App.Services
 
             // Rechercher starts-with en priorité
             var startsWith = await _context.Patients
-                .Where(p => EF.Functions.Like(p.Nom, term + "%") || EF.Functions.Like(p.Prenom, term + "%"))
+                .Where(p => !p.IsDeleted && (EF.Functions.Like(p.Nom, term + "%") || EF.Functions.Like(p.Prenom, term + "%")))
                 .OrderBy(p => p.Nom).ThenBy(p => p.Prenom)
                 .ToListAsync();
 
@@ -181,12 +184,12 @@ namespace Dental_App.Services
         public async Task<bool> ExistsAsync(string nom, string prenom)
         {
             if (string.IsNullOrWhiteSpace(nom) || string.IsNullOrWhiteSpace(prenom)) return false;
-            return await _context.Patients.AnyAsync(p => p.Nom == nom && p.Prenom == prenom);
+            return await _context.Patients.AnyAsync(p => p.Nom == nom && p.Prenom == prenom && !p.IsDeleted);
         }
 
         public async Task<int> CountAsync()
         {
-            return await _context.Patients.CountAsync();
+            return await _context.Patients.CountAsync(p => !p.IsDeleted);
         }
 
         private void ValidatePatient(Patient patient)
@@ -204,7 +207,7 @@ namespace Dental_App.Services
         public async Task<Patient?> GetByCinAsync(string? cin)
         {
             if (string.IsNullOrWhiteSpace(cin)) return null;
-            return await _context.Patients.FirstOrDefaultAsync(p => p.Cin == cin);
+            return await _context.Patients.FirstOrDefaultAsync(p => p.Cin == cin && !p.IsDeleted);
         }
 
         public async Task<Patient> AjouterMontantAsync(int patientId, decimal montant)
@@ -238,6 +241,48 @@ namespace Dental_App.Services
             var sommeAPayer = consultations.Sum(c => c.MontantTotal ?? 0m);
 
             return sommeAPayer;
+        }
+
+        public async Task<bool> SoftDeletePatientAsync(int id)
+        {
+            if (id <= 0) throw new ArgumentException("L'ID doit être supérieur à 0.", nameof(id));
+            
+            var patient = await _context.Patients.IgnoreQueryFilters().FirstOrDefaultAsync(p => p.Id == id);
+            if (patient == null) return false;
+            
+            patient.IsDeleted = true;
+            _context.Patients.Update(patient);
+            try
+            {
+                await _context.SaveChangesAsync();
+                return true;
+            }
+            catch (DbUpdateException)
+            {
+                // log exception here if needed
+                return false;
+            }
+        }
+
+        public async Task<bool> RestorePatientAsync(int id)
+        {
+            if (id <= 0) throw new ArgumentException("L'ID doit être supérieur à 0.", nameof(id));
+            
+            var patient = await _context.Patients.IgnoreQueryFilters().FirstOrDefaultAsync(p => p.Id == id);
+            if (patient == null) return false;
+            
+            patient.IsDeleted = false;
+            _context.Patients.Update(patient);
+            try
+            {
+                await _context.SaveChangesAsync();
+                return true;
+            }
+            catch (DbUpdateException)
+            {
+                // log exception here if needed
+                return false;
+            }
         }
     }
 }

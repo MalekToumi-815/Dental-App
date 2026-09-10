@@ -328,6 +328,19 @@
                                                   Width="18" 
                                                   Height="18"/>
                                         </Button>
+
+                                        <!-- Delete Button with Trashcan Icon -->
+                                        <Button Style="{StaticResource ActionButtonStyle}"
+                                                ToolTip="Supprimer patient"
+                                                Command="{Binding DataContext.DeletePatientCommand, RelativeSource={RelativeSource AncestorType=DataGrid}}"
+                                                CommandParameter="{Binding}"
+                                                Margin="8,0,0,0">
+                                            <Path Data="M6,19A2,2 0 0,0 8,21H16A2,2 0 0,0 18,19V7H6V19M19,4H15.5L14.79,3.29C14.61,3.11 14.35,3 14.09,3H9.91C9.65,3 9.39,3.11 9.21,3.29L8.5,4H5V6H19V4Z"
+                                                  Fill="{DynamicResource AccentColor}" 
+                                                  Stretch="Uniform"
+                                                  Width="18" 
+                                                  Height="18"/>
+                                        </Button>
                                     </StackPanel>
                                 </DataTemplate>
                             </DataGridTemplateColumn.CellTemplate>
