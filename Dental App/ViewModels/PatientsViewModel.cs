@@ -307,26 +307,48 @@ namespace Dental_App.ViewModels
 
             try
             {
-                var result = System.Windows.MessageBox.Show($"Confirmer la suppression du patient {displayRow.FullName}?", "Confirmer", System.Windows.MessageBoxButton.YesNo, System.Windows.MessageBoxImage.Warning);
-                if (result != System.Windows.MessageBoxResult.Yes) return;
+                // Show custom confirmation dialog
+                var dialogVm = new ConfirmationDialogViewModel
+                {
+                    Title = "Confirmer la suppression",
+                    Message = $"Confirmer la suppression du patient {displayRow.FullName}?"
+                };
+
+                var dialogView = new ConfirmationDialogView { DataContext = dialogVm };
+
+                var window = new Window
+                {
+                    Content = dialogView,
+                    SizeToContent = SizeToContent.WidthAndHeight,
+                    WindowStyle = WindowStyle.None,
+                    AllowsTransparency = true,
+                    Background = System.Windows.Media.Brushes.Transparent,
+                    WindowStartupLocation = WindowStartupLocation.CenterOwner,
+                    Owner = Application.Current.MainWindow,
+                    Padding = new Thickness(10)
+                };
+
+                // Show as modal dialog. ConfirmationDialogView will set DialogResult and close the window when user acts.
+                var dialogResult = window.ShowDialog();
+                if (dialogResult != true) return;
 
                 var ok = await _patientService.SoftDeletePatientAsync(displayRow.Id);
-                if (ok)
-                {
+                 if (ok)
+                 {
                     _notificationService.ShowSuccess("Patient supprimé");
                     await LoadPatientsAsync();
-                }
-                else
-                {
+                 }
+                 else
+                 {
                     _notificationService.ShowError("Échec de la suppression du patient");
-                }
-            }
-            catch (Exception ex)
-            {
-                System.Diagnostics.Debug.WriteLine($"Error deleting patient {displayRow?.Id}: {ex.Message}");
-                _notificationService.ShowError($"Erreur: {ex.Message}");
-            }
-        }
+                 }
+             }
+             catch (Exception ex)
+             {
+                 System.Diagnostics.Debug.WriteLine($"Error deleting patient {displayRow?.Id}: {ex.Message}");
+                 _notificationService.ShowError($"Erreur: {ex.Message}");
+             }
+         }
 
         private async Task LoadPatientsAsync()
         {

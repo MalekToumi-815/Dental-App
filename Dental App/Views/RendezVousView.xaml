@@ -458,6 +458,16 @@
                                                       FontWeight="Bold"
                                                       TextAlignment="Center"/>
                                         </Border>
+                                        <Button ToolTip="Supprimer" 
+                                                Command="{Binding DataContext.DeleteRendezVousCommand, RelativeSource={RelativeSource AncestorType=UserControl}}"
+                                                CommandParameter="{Binding}"
+                                                Width="36" Height="36" Margin="0,8,0,0" 
+                                                Background="#E74C3C" 
+                                                BorderThickness="0"
+                                                HorizontalAlignment="Right">
+                                            <Path Data="M6,19A2,2 0 0,0 8,21H16A2,2 0 0,0 18,19V7H6V19M19,4H15.5L14.79,3.29C14.61,3.11 14.35,3 14.09,3H9.91C9.65,3 9.39,3.11 9.21,3.29L8.5,4H5V6H19V4Z"
+                                                  Fill="White" Width="14" Height="14" Stretch="Uniform" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                        </Button>
                                     </StackPanel>
                                 </Grid>
                             </Border>

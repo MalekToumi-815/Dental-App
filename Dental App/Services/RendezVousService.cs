@@ -33,6 +33,7 @@ namespace Dental_App.Services
         Task<int> CountAsync();
         Task<int> CountByPatientAsync(int patientId);
         Task<bool> HasConflictAsync(int patientId, DateTime dateDebut, int? excludeId = null);
+        Task<bool> DeleteRendezVousAsync(int id);
     }
 
     public class RendezVousService : IRendezVousService
@@ -264,6 +265,29 @@ namespace Dental_App.Services
             var validStatuses = new[] { RendezVousStatus.EnAttente, RendezVousStatus.Termine, RendezVousStatus.Annule };
             if (!validStatuses.Contains(status))
                 throw new ArgumentException($"Le statut doit être l'un de : {string.Join(", ", validStatuses)}", nameof(status));
+        }
+
+        /// <summary>
+        /// Delete a rendez-vous by id
+        /// </summary>
+        public async Task<bool> DeleteRendezVousAsync(int id)
+        {
+            if (id <= 0) throw new ArgumentException("L'ID doit être supérieur à 0.", nameof(id));
+
+            var entity = await _context.RendezVous.FindAsync(id);
+            if (entity == null) return false;
+
+            _context.RendezVous.Remove(entity);
+            try
+            {
+                await _context.SaveChangesAsync();
+                return true;
+            }
+            catch (DbUpdateException ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"Error deleting rendez-vous {id}: {ex.Message}");
+                return false;
+            }
         }
     }
 }

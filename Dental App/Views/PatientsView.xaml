@@ -296,11 +296,11 @@
                         <DataGridTextColumn Header="TELEPHONE" Binding="{Binding Phone}" Width="1*"/>
                         <DataGridTextColumn Header="DATE NAISSANCE" Binding="{Binding DateOfBirth}" Width="1*"/>
                         <DataGridTextColumn Header="DERNIER RDV" Binding="{Binding LastConsultation}" Width="1*"/>
-                        <DataGridTextColumn Header="MONTANT TOTAL" Binding="{Binding TotalAmount}" Width="1*"/>
-                        <DataGridTextColumn Header="MONTANT PAYE" Binding="{Binding PaidAmount}" Width="1*"/>
-                        <DataGridTextColumn Header="MONTANT RESTANT" Binding="{Binding RemainingAmount}" Width="1*"/>
+                        <DataGridTextColumn Header="TOTAL" Binding="{Binding TotalAmount}" Width="1*"/>
+                        <DataGridTextColumn Header="PAYE" Binding="{Binding PaidAmount}" Width="1*"/>
+                        <DataGridTextColumn Header="RESTANT" Binding="{Binding RemainingAmount}" Width="1*"/>
 
-                        <DataGridTemplateColumn Header="ACTIONS" Width="120">
+                        <DataGridTemplateColumn Header="ACTIONS" Width="130">
                             <DataGridTemplateColumn.CellTemplate>
                                 <DataTemplate>
                                     <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center">

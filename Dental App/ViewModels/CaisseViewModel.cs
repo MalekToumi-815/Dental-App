@@ -1,5 +1,6 @@
 using Dental_App.Models;
 using Dental_App.Services;
+using Dental_App.Views;
 using Prism.Commands;
 using Prism.Mvvm;
 using System;
@@ -200,6 +201,7 @@ namespace Dental_App.ViewModels
         public DelegateCommand CloseModalCommand { get; }
         public DelegateCommand SaveTransactionCommand { get; }
         public DelegateCommand<TransactionDisplayItem> EditTransactionCommand { get; }
+        public DelegateCommand<TransactionDisplayItem> DeleteTransactionCommand { get; }
         public DelegateCommand ClearSearchCommand { get; }
 
         public DelegateCommand NextPageCommand { get; }
@@ -216,6 +218,7 @@ namespace Dental_App.ViewModels
             CloseModalCommand = new DelegateCommand(CloseModal);
             SaveTransactionCommand = new DelegateCommand(SaveTransaction);
             EditTransactionCommand = new DelegateCommand<TransactionDisplayItem>(EditTransaction);
+            DeleteTransactionCommand = new DelegateCommand<TransactionDisplayItem>(async t => await DeleteTransactionAsync(t));
             ClearSearchCommand = new DelegateCommand(ClearSearch);
 
             NextPageCommand = new DelegateCommand(async () =>
@@ -424,6 +427,60 @@ namespace Dental_App.ViewModels
             {
                 Debug.WriteLine($"[EditTransaction] ERREUR: {ex.Message}");
                 MessageBox.Show($"Erreur lors du chargement: {ex.Message}", "Erreur", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+        }
+
+        private async Task DeleteTransactionAsync(TransactionDisplayItem item)
+        {
+            if (item == null) return;
+
+            try
+            {
+                var vm = new ConfirmationDialogViewModel
+                {
+                    Title = "Confirmer la suppression",
+                    Message = $"Voulez-vous supprimer la transaction '{item.Nom}' du {item.Date:dd/MM/yyyy}?"
+                };
+
+                bool? dialogResult = null;
+                vm.CloseAction = (res) => dialogResult = res;
+
+                var view = new ConfirmationDialogView { DataContext = vm };
+                var win = new Window
+                {
+                    Content = view,
+                    SizeToContent = SizeToContent.WidthAndHeight,
+                    WindowStartupLocation = WindowStartupLocation.CenterOwner,
+                    Owner = Application.Current.MainWindow,
+                    WindowStyle = WindowStyle.None,
+                    Background = System.Windows.Media.Brushes.Transparent,
+                    AllowsTransparency = true,
+                    ResizeMode = ResizeMode.NoResize
+                };
+
+                win.ShowDialog();
+                if (dialogResult != true) return;
+
+                IsLoading = true;
+                var ok = await _caisseService.DeleteCaisseAsync(item.Id);
+                if (ok)
+                {
+                    _notificationService.ShowSuccess("Transaction supprimée.", "Succès");
+                    await LoadDataAsync();
+                }
+                else
+                {
+                    _notificationService.ShowError("Échec de la suppression de la transaction.", "Erreur");
+                }
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine($"[DeleteTransactionAsync] ERREUR: {ex.Message}");
+                _notificationService.ShowError($"Erreur: {ex.Message}", "Erreur");
+            }
+            finally
+            {
+                IsLoading = false;
             }
         }
 

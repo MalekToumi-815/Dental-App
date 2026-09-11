@@ -31,6 +31,7 @@ namespace Dental_App.ViewModels
         private DelegateCommand _addConsultationCommand;
         private DelegateCommand<ConsultationDisplayRow> _editConsultationCommand;
         private DelegateCommand<ConsultationDisplayRow> _gererActeCommand;
+        private DelegateCommand<ConsultationDisplayRow> _deleteConsultationCommand;
 
         // Pagination fields
         private int _currentPage = 1;
@@ -56,6 +57,7 @@ namespace Dental_App.ViewModels
             AddConsultationCommand = new DelegateCommand(AddConsultation);
             EditConsultationCommand = new DelegateCommand<ConsultationDisplayRow>(EditConsultation);
             GererActeCommand = new DelegateCommand<ConsultationDisplayRow>(GererActe);
+            DeleteConsultationCommand = new DelegateCommand<ConsultationDisplayRow>(async c => await DeleteConsultationAsync(c));
 
             // Pagination commands
             NextPageCommand = new DelegateCommand(async () => await NextPageAsync(), () => CurrentPage < TotalPages);
@@ -146,6 +148,12 @@ namespace Dental_App.ViewModels
         {
             get => _gererActeCommand;
             set => SetProperty(ref _gererActeCommand, value);
+        }
+
+        public DelegateCommand<ConsultationDisplayRow> DeleteConsultationCommand
+        {
+            get => _deleteConsultationCommand;
+            set => SetProperty(ref _deleteConsultationCommand, value);
         }
 
         // Pagination public properties
@@ -569,6 +577,60 @@ namespace Dental_App.ViewModels
             {
                 System.Diagnostics.Debug.WriteLine($"Error in GererActe: {ex.Message}");
                 _notificationService.ShowError($"Erreur: {ex.Message}");
+            }
+        }
+
+        private async Task DeleteConsultationAsync(ConsultationDisplayRow consultation)
+        {
+            if (consultation == null) return;
+
+            try
+            {
+                var vm = new ConfirmationDialogViewModel
+                {
+                    Title = "Confirmer la suppression",
+                    Message = $"Supprimer la consultation du {consultation.Date:dd/MM/yyyy} ?"
+                };
+
+                bool? dialogResult = null;
+                vm.CloseAction = (res) => dialogResult = res;
+
+                var view = new ConfirmationDialogView { DataContext = vm };
+                var win = new Window
+                {
+                    Content = view,
+                    SizeToContent = SizeToContent.WidthAndHeight,
+                    WindowStartupLocation = WindowStartupLocation.CenterOwner,
+                    Owner = Application.Current.MainWindow,
+                    WindowStyle = WindowStyle.None,
+                    Background = System.Windows.Media.Brushes.Transparent,
+                    AllowsTransparency = true,
+                    ResizeMode = ResizeMode.NoResize
+                };
+
+                win.ShowDialog();
+                if (dialogResult != true) return;
+
+                IsLoading = true;
+                var ok = await _consultationService.DeleteConsultationAsync(consultation.Id);
+                if (ok)
+                {
+                    _notificationService.ShowSuccess("Consultation supprimée.");
+                    await LoadCurrentPageAsync();
+                }
+                else
+                {
+                    _notificationService.ShowError("Échec de la suppression de la consultation.");
+                }
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"Error deleting consultation: {ex.Message}");
+                _notificationService.ShowError($"Erreur: {ex.Message}");
+            }
+            finally
+            {
+                IsLoading = false;
             }
         }
     }

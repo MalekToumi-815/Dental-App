@@ -17,6 +17,9 @@ namespace Dental_App.Services
         Task<bool> ExistsAsync(int id);
         Task<int> CountAsync();
         Task<ActeMedical?> GetByLibelleExactAsync(string libelle);
+
+        // Deletion
+        Task<bool> DeleteActeMedicalAsync(int id);
     }
 
     public class ActeMedicalService : IActeMedicalService
@@ -96,6 +99,38 @@ namespace Dental_App.Services
             return await _context.ActeMedicals
                 .Include(a => a.IdConsuls)
                 .FirstOrDefaultAsync(a => a.Libelle == libelle);
+        }
+
+        public async Task<bool> DeleteActeMedicalAsync(int id)
+        {
+            if (id <= 0) throw new ArgumentException("L'ID doit être supérieur à 0.", nameof(id));
+
+            var acte = await _context.ActeMedicals
+                .Include(a => a.IdConsuls)
+                .FirstOrDefaultAsync(a => a.Id == id);
+
+            if (acte == null) return false;
+
+            using var tx = await _context.Database.BeginTransactionAsync();
+            try
+            {
+                // Clear many-to-many relationships (ActeConsultation)
+                foreach (var consult in acte.IdConsuls.ToList())
+                {
+                    consult.IdActes.Remove(acte);
+                }
+
+                _context.ActeMedicals.Remove(acte);
+                await _context.SaveChangesAsync();
+                await tx.CommitAsync();
+                return true;
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"Error deleting ActeMedical {id}: {ex.Message}");
+                try { await tx.RollbackAsync(); } catch { }
+                return false;
+            }
         }
 
         private void ValidateActeMedical(ActeMedical acteMedical)

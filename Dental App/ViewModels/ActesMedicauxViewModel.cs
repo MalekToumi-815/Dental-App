@@ -26,6 +26,7 @@ namespace Dental_App.ViewModels
         private bool _isLoading;
         private DelegateCommand? _addActeCommand;
         private DelegateCommand<ActeMedical>? _editActeCommand;
+        private DelegateCommand<ActeMedical>? _deleteActeCommand;
 
         public ActesMedicauxViewModel(IActeMedicalService acteService, ILiveSearchService<ActeMedical> liveSearchService, IAppNotificationService notificationService)
         {
@@ -40,6 +41,7 @@ namespace Dental_App.ViewModels
                 // Initialize Commands
                 _addActeCommand = new DelegateCommand(ExecuteAddActe);
                 _editActeCommand = new DelegateCommand<ActeMedical>(ExecuteEditActe);
+                _deleteActeCommand = new DelegateCommand<ActeMedical>(async a => await ExecuteDeleteActeAsync(a));
 
                 System.Diagnostics.Debug.WriteLine("ActesMedicauxViewModel initialization successful");
 
@@ -93,6 +95,11 @@ namespace Dental_App.ViewModels
         public DelegateCommand<ActeMedical> EditActeCommand
         {
             get => _editActeCommand ?? new DelegateCommand<ActeMedical>(ExecuteEditActe);
+        }
+
+        public DelegateCommand<ActeMedical> DeleteActeCommand
+        {
+            get => _deleteActeCommand ?? new DelegateCommand<ActeMedical>(async a => await ExecuteDeleteActeAsync(a));
         }
         #endregion
 
@@ -261,6 +268,55 @@ namespace Dental_App.ViewModels
             catch (Exception ex)
             {
                 _notificationService.ShowError($"Erreur: {ex.Message}", "Erreur"); // Notify error
+            }
+        }
+
+        private async Task ExecuteDeleteActeAsync(ActeMedical acte)
+        {
+            if (acte == null) return;
+
+            try
+            {
+                var vm = new ConfirmationDialogViewModel
+                {
+                    Title = "Confirmer la suppression",
+                    Message = $"Voulez-vous supprimer l'acte '{acte.Libelle}' ?"
+                };
+
+                bool? dialogResult = null;
+                vm.CloseAction = (res) => dialogResult = res;
+
+                var view = new ConfirmationDialogView { DataContext = vm };
+                var win = new Window
+                {
+                    Content = view,
+                    SizeToContent = SizeToContent.WidthAndHeight,
+                    WindowStartupLocation = WindowStartupLocation.CenterOwner,
+                    Owner = Application.Current.MainWindow,
+                    WindowStyle = WindowStyle.None,
+                    Background = System.Windows.Media.Brushes.Transparent,
+                    AllowsTransparency = true,
+                    ResizeMode = ResizeMode.NoResize
+                };
+
+                win.ShowDialog();
+                if (dialogResult != true) return;
+
+                var ok = await _acteService.DeleteActeMedicalAsync(acte.Id);
+                if (ok)
+                {
+                    Actes.Remove(acte);
+                    FilteredActes.Remove(acte);
+                    _notificationService.ShowSuccess("Acte supprimé.", "Succès");
+                }
+                else
+                {
+                    _notificationService.ShowError("Échec de la suppression de l'acte.", "Erreur");
+                }
+            }
+            catch (Exception ex)
+            {
+                _notificationService.ShowError($"Erreur: {ex.Message}", "Erreur");
             }
         }
     }

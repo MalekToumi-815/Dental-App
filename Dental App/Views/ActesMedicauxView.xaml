@@ -239,6 +239,16 @@
 											<Path Data="M3,17.25V21H6.75L17.81,9.94L14.06,6.19L3,17.25Z"
                                                   Fill="{DynamicResource AccentColor}" Width="16" Stretch="Uniform"/>
 										</Button>
+										<Button Command="{Binding DataContext.DeleteActeCommand, RelativeSource={RelativeSource AncestorType=DataGrid}}"
+                                                CommandParameter="{Binding}"
+                                                Background="#E74C3C"
+                                                BorderThickness="0"
+                                                Margin="5,0"
+                                                ToolTip="Supprimer"
+                                                Padding="4">
+											<Path Data="M6,19A2,2 0 0,0 8,21H16A2,2 0 0,0 18,19V7H6V19M19,4H15.5L14.79,3.29C14.61,3.11 14.35,3 14.09,3H9.91C9.65,3 9.39,3.11 9.21,3.29L8.5,4H5V6H19V4Z"
+                                                  Fill="White" Width="16" Height="16" Stretch="Uniform"/>
+										</Button>
 									</StackPanel>
 								</DataTemplate>
 								</DataGridTemplateColumn.CellTemplate>

@@ -27,6 +27,9 @@ namespace Dental_App.Services
 
         // New pagination method: returns items for the page and total count for the patient
         Task<(IEnumerable<Consultation> Items, int TotalCount)> GetByPatientIdPagedAsync(int patientId, int pageIndex, int pageSize);
+
+        // Deletion
+        Task<bool> DeleteConsultationAsync(int id);
     }
 
     /// <summary>
@@ -340,6 +343,37 @@ namespace Dental_App.Services
 
             if (consultation.MontantTotal.HasValue && consultation.MontantTotal < 0)
                 throw new ArgumentException("Le montant total ne peut pas être négatif.", nameof(consultation.MontantTotal));
+        }
+
+        /// <summary>
+        /// Delete a consultation and clear many-to-many links with ActeMedical
+        /// </summary>
+        public async Task<bool> DeleteConsultationAsync(int id)
+        {
+            if (id <= 0) throw new ArgumentException("L'ID doit être supérieur à 0.", nameof(id));
+
+            var consultation = await _context.Consultations
+                .Include(c => c.IdActes)
+                .FirstOrDefaultAsync(c => c.Id == id);
+
+            if (consultation == null) return false;
+
+            // Use transaction to ensure clearing associations and deletion are atomic
+            using var tx = await _context.Database.BeginTransactionAsync();
+            try
+            {
+                consultation.IdActes.Clear();
+                _context.Consultations.Remove(consultation);
+                await _context.SaveChangesAsync();
+                await tx.CommitAsync();
+                return true;
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"Error deleting consultation {id}: {ex.Message}");
+                try { await tx.RollbackAsync(); } catch { }
+                return false;
+            }
         }
     }
 }

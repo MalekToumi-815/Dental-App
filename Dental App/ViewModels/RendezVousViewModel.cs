@@ -2,6 +2,7 @@ using Prism.Mvvm;
 using Prism.Commands;
 using Dental_App.Services;
 using Dental_App.Models;
+using Dental_App.Views;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.Windows; // Remove this if not used elsewhere, but kept here just in case.
@@ -153,6 +154,7 @@ namespace Dental_App.ViewModels
         public DelegateCommand CloseModalCommand { get; }
         public DelegateCommand SaveRendezVousCommand { get; }
         public DelegateCommand<RendezVousItemViewModel> EditRendezVousCommand { get; }
+        public DelegateCommand<RendezVousItemViewModel> DeleteRendezVousCommand { get; }
 
         public RendezVousViewModel(IRendezVousService rendezVousService, IPatientService patientService, ILiveSearchService<Patient> searchService, IAppNotificationService notificationService)
         {
@@ -171,6 +173,7 @@ namespace Dental_App.ViewModels
             CloseModalCommand = new DelegateCommand(CloseModal);
             SaveRendezVousCommand = new DelegateCommand(SaveRendezVous);
             EditRendezVousCommand = new DelegateCommand<RendezVousItemViewModel>(EditRendezVous);
+            DeleteRendezVousCommand = new DelegateCommand<RendezVousItemViewModel>(async item => await DeleteRendezVousAsync(item));
 
             // S'abonner à l'événement de sélection du patient
             PatientSearchViewModel.OnPatientSelected += OnPatientSelectedHandler;
@@ -416,6 +419,56 @@ namespace Dental_App.ViewModels
             {
                 Debug.WriteLine($"[SaveRendezVous] ERREUR: {ex.Message}");
                 _notificationService.ShowError($"Erreur lors de l'enregistrement: {ex.Message}");
+            }
+        }
+
+        private async Task DeleteRendezVousAsync(RendezVousItemViewModel item)
+        {
+            if (item == null) return;
+
+            try
+            {
+                var vm = new ConfirmationDialogViewModel
+                {
+                    Title = "Confirmer la suppression",
+                    Message = $"Voulez-vous supprimer le rendez-vous de {item.NomPatient} à {item.Heure}?"
+                };
+
+                bool? dialogResult = null;
+                vm.CloseAction = (res) => dialogResult = res;
+
+                var view = new ConfirmationDialogView { DataContext = vm };
+                var win = new Window
+                {
+                    Content = view,
+                    SizeToContent = SizeToContent.WidthAndHeight,
+                    WindowStartupLocation = WindowStartupLocation.CenterOwner,
+                    Owner = Application.Current.MainWindow,
+                    WindowStyle = WindowStyle.None,
+                    Background = System.Windows.Media.Brushes.Transparent,
+                    AllowsTransparency = true,
+                    ResizeMode = ResizeMode.NoResize
+                };
+
+                win.ShowDialog();
+                if (dialogResult != true) return;
+
+                var ok = await _rendezVousService.DeleteRendezVousAsync(item.Id);
+                if (ok)
+                {
+                    _notificationService.ShowSuccess("Rendez-vous supprimé.");
+                    await LoadRendezVousByDateAsync();
+                    await LoadStatisticsAsync();
+                }
+                else
+                {
+                    _notificationService.ShowError("Échec de la suppression du rendez-vous.");
+                }
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine($"[DeleteRendezVousAsync] ERREUR: {ex.Message}");
+                _notificationService.ShowError($"Erreur: {ex.Message}");
             }
         }
     }

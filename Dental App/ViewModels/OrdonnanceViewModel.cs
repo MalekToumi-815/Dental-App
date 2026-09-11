@@ -32,6 +32,7 @@ namespace Dental_App.ViewModels
         private DelegateCommand _addTemplateCommand;
         private DelegateCommand<OrdonnanceDisplayRow> _printOrdonnanceCommand;
         private DelegateCommand<OrdonnanceDisplayRow> _viewOrdonnanceCommand;
+        private DelegateCommand<OrdonnanceDisplayRow> _deleteOrdonnanceCommand;
 
         public OrdonnanceViewModel(IPatientService patientService, IOrdonnanceService ordonnanceService, IOrdonnanceServiceTemplate templateService, ILiveSearchService<Patient> liveSearchService, IAppNotificationService notificationService)
         {
@@ -49,6 +50,7 @@ namespace Dental_App.ViewModels
             AddTemplateCommand = new DelegateCommand(AddTemplate);
             PrintOrdonnanceCommand = new DelegateCommand<OrdonnanceDisplayRow>(PrintOrdonnance);
             ViewOrdonnanceCommand = new DelegateCommand<OrdonnanceDisplayRow>(ViewOrdonnance);
+            DeleteOrdonnanceCommand = new DelegateCommand<OrdonnanceDisplayRow>(async o => await DeleteOrdonnanceAsync(o));
 
             _ = LoadPatientsAsync();
         }
@@ -134,6 +136,12 @@ namespace Dental_App.ViewModels
         {
             get => _viewOrdonnanceCommand;
             set => SetProperty(ref _viewOrdonnanceCommand, value);
+        }
+
+        public DelegateCommand<OrdonnanceDisplayRow> DeleteOrdonnanceCommand
+        {
+            get => _deleteOrdonnanceCommand;
+            set => SetProperty(ref _deleteOrdonnanceCommand, value);
         }
 
         public bool IsPatientSelected => SelectedPatient != null;
@@ -438,6 +446,55 @@ namespace Dental_App.ViewModels
             catch (Exception ex)
             {
                 MessageBox.Show($"Erreur: {ex.Message}", "Erreur", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+        }
+
+        private async Task DeleteOrdonnanceAsync(OrdonnanceDisplayRow ordonnance)
+        {
+            if (ordonnance == null) return;
+
+            try
+            {
+                var vm = new ConfirmationDialogViewModel
+                {
+                    Title = "Confirmer la suppression",
+                    Message = $"Supprimer l'ordonnance du {ordonnance.Date:dd/MM/yyyy} ?"
+                };
+
+                bool? dialogResult = null;
+                vm.CloseAction = (res) => dialogResult = res;
+
+                var view = new ConfirmationDialogView { DataContext = vm };
+                var win = new Window
+                {
+                    Content = view,
+                    SizeToContent = SizeToContent.WidthAndHeight,
+                    WindowStartupLocation = WindowStartupLocation.CenterOwner,
+                    Owner = Application.Current.MainWindow,
+                    WindowStyle = WindowStyle.None,
+                    Background = System.Windows.Media.Brushes.Transparent,
+                    AllowsTransparency = true,
+                    ResizeMode = ResizeMode.NoResize
+                };
+
+                win.ShowDialog();
+                if (dialogResult != true) return;
+
+                var ok = await _ordonnanceService.DeleteOrdonnanceAsync(ordonnance.Id);
+                if (ok)
+                {
+                    _notificationService.ShowSuccess("Ordonnance supprimée.", "Succès");
+                    if (SelectedPatient != null)
+                        await OnPatientSelectedAsync(SelectedPatient);
+                }
+                else
+                {
+                    _notificationService.ShowError("Échec de la suppression de l'ordonnance.", "Erreur");
+                }
+            }
+            catch (Exception ex)
+            {
+                _notificationService.ShowError($"Erreur: {ex.Message}", "Erreur");
             }
         }
     }

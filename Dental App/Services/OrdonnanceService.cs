@@ -21,6 +21,9 @@ namespace Dental_App.Services
         Task<int> CountAsync();
         Task<int> CountByPatientAsync(int patientId);
         Task<bool> AddMedicamentAsync(int ordonnanceId, Medicament medicament);
+
+        // Deletion
+        Task<bool> DeleteOrdonnanceAsync(int id);
     }
 
     /// <summary>
@@ -241,6 +244,40 @@ namespace Dental_App.Services
         {
             if (ordonnance.PatientId <= 0)
                 throw new ArgumentException("Le PatientId doit être supérieur à 0.", nameof(ordonnance.PatientId));
+        }
+
+        /// <summary>
+        /// Delete an ordonnance and its medicaments
+        /// </summary>
+        public async Task<bool> DeleteOrdonnanceAsync(int id)
+        {
+            if (id <= 0) throw new ArgumentException("L'ID doit être supérieur à 0.", nameof(id));
+
+            var ordonnance = await _context.Ordonnances
+                .Include(o => o.Medicaments)
+                .FirstOrDefaultAsync(o => o.Id == id);
+
+            if (ordonnance == null) return false;
+
+            using var tx = await _context.Database.BeginTransactionAsync();
+            try
+            {
+                if (ordonnance.Medicaments != null && ordonnance.Medicaments.Any())
+                {
+                    _context.Medicaments.RemoveRange(ordonnance.Medicaments);
+                }
+
+                _context.Ordonnances.Remove(ordonnance);
+                await _context.SaveChangesAsync();
+                await tx.CommitAsync();
+                return true;
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"Error deleting ordonnance {id}: {ex.Message}");
+                try { await tx.RollbackAsync(); } catch { }
+                return false;
+            }
         }
     }
 }

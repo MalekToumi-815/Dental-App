@@ -26,6 +26,9 @@ namespace Dental_App.Services
         // Pagination support
         Task<List<Caisse>> GetCaisseAsync(int pageIndex, int pageSize = 10);
         Task<int> GetCaisseCountAsync();
+
+        // Deletion
+        Task<bool> DeleteCaisseAsync(int id);
     }
 
     public class CaisseService : ICaisseService
@@ -205,6 +208,29 @@ namespace Dental_App.Services
         {
             var today = DateOnly.FromDateTime(DateTime.Now);
             return await GetDailySummaryAsync(today);
+        }
+
+        /// <summary>
+        /// Delete a Caisse entry by id
+        /// </summary>
+        public async Task<bool> DeleteCaisseAsync(int id)
+        {
+            if (id <= 0) throw new ArgumentException("L'ID doit être supérieur à 0.", nameof(id));
+
+            var entity = await _context.Caisses.FindAsync(id);
+            if (entity == null) return false;
+
+            _context.Caisses.Remove(entity);
+            try
+            {
+                await _context.SaveChangesAsync();
+                return true;
+            }
+            catch (DbUpdateException ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"Error deleting caisse: {ex.Message}");
+                return false;
+            }
         }
     }
 }
