@@ -41,7 +41,8 @@ namespace Dental_App.Views
                 { "CaisseView", CaisseButton },
                 { "EvolutionView", EvolutionButton }, // Added mapping so it highlights
                 { "CommandeProthesisteView", CommandeProthesisteButton },
-                { "ProthesisteView", ProthesistesButton } // Fixed
+                { "ProthesisteView", ProthesistesButton }, // Fixed
+                { "FicheCnamView", FicheCnamButton } // CNAM fiche mapping
             };
 
             this.Loaded += SidebarView_Loaded;

@@ -10,6 +10,7 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
+using Dental_App.Views;
 
 namespace Dental_App.ViewModels
 {
@@ -141,6 +142,7 @@ namespace Dental_App.ViewModels
         public DelegateCommand CloseModalCommand { get; }
         public DelegateCommand SaveCommand { get; }
         public DelegateCommand<CommandeProthesisteDisplayItem> EditCommand { get; }
+        public DelegateCommand<CommandeProthesisteDisplayItem> DeleteCommand { get; }
         public DelegateCommand PrepareCommandeCommand { get; }
         public DelegateCommand ClearSearchCommand { get; }
         public DelegateCommand NextPageCommand { get; }
@@ -162,6 +164,7 @@ namespace Dental_App.ViewModels
             CloseModalCommand = new DelegateCommand(CloseModal);
             SaveCommand = new DelegateCommand(SaveCommande);
             EditCommand = new DelegateCommand<CommandeProthesisteDisplayItem>(EditCommande);
+            DeleteCommand = new DelegateCommand<CommandeProthesisteDisplayItem>(DeleteCommande);
             PrepareCommandeCommand = new DelegateCommand(PrepareCommande);
             ClearSearchCommand = new DelegateCommand(ClearSearch);
             NextPageCommand = new DelegateCommand(NextPage, CanNextPage);
@@ -172,6 +175,55 @@ namespace Dental_App.ViewModels
 
             Debug.WriteLine("[ViewModel] CommandeProthesisteViewModel initialisé");
             LoadData();
+        }
+
+        private async void DeleteCommande(CommandeProthesisteDisplayItem item)
+        {
+            if (item == null) return;
+
+            try
+            {
+                var vm = new ConfirmationDialogViewModel
+                {
+                    Title = "Confirmer la suppression",
+                    Message = $"Voulez-vous supprimer la commande #{item.Id} ?"
+                };
+
+                bool? dialogResult = null;
+                vm.CloseAction = (res) => dialogResult = res;
+
+                var view = new ConfirmationDialogView { DataContext = vm };
+                var win = new Window
+                {
+                    Content = view,
+                    SizeToContent = SizeToContent.WidthAndHeight,
+                    WindowStartupLocation = WindowStartupLocation.CenterOwner,
+                    Owner = Application.Current.MainWindow,
+                    WindowStyle = WindowStyle.None,
+                    Background = System.Windows.Media.Brushes.Transparent,
+                    AllowsTransparency = true,
+                    ResizeMode = ResizeMode.NoResize
+                };
+
+                win.ShowDialog();
+                if (dialogResult != true) return;
+
+                var ok = await _commandeService.DeleteAsync(item.Id);
+                if (ok)
+                {
+                    Commandes.Remove(item);
+                    _notificationService.ShowSuccess("Commande supprimée.", "Succès");
+                    await LoadCommandes();
+                }
+                else
+                {
+                    _notificationService.ShowError("Échec de la suppression.", "Erreur");
+                }
+            }
+            catch (Exception ex)
+            {
+                _notificationService.ShowError($"Erreur: {ex.Message}", "Erreur");
+            }
         }
 
         private bool CanNextPage() => CurrentPage < TotalPages;
