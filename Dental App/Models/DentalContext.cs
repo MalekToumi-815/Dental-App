@@ -119,7 +119,7 @@ public partial class DentalContext : DbContext
 
             entity.HasOne(d => d.IdProthesisteNavigation).WithMany(p => p.CommandeProthesistes)
                 .HasForeignKey(d => d.IdProthesiste)
-                .OnDelete(DeleteBehavior.ClientSetNull);
+                .OnDelete(DeleteBehavior.Cascade);
         });
 
         modelBuilder.Entity<Consultation>(entity =>

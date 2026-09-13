@@ -17,6 +17,7 @@ namespace Dental_App.Services
         Task<Prothesiste> UpdateAsync(Prothesiste prothesiste);
         Task<bool> ExistsAsync(string name);
         Task<int> CountAsync();
+        Task<bool> DeleteAsync(int id);
     }
 
     public class ProthesisteService : IProthesisteService
@@ -102,6 +103,27 @@ namespace Dental_App.Services
         public async Task<int> CountAsync()
         {
             return await _context.Prothesistes.CountAsync();
+        }
+
+        public async Task<bool> DeleteAsync(int id)
+        {
+            if (id <= 0) throw new ArgumentException("L'ID doit être supérieur à 0.", nameof(id));
+
+            var proth = await _context.Prothesistes.FindAsync(id);
+            if (proth == null) return false;
+
+            try
+            {
+                // Rely on configured cascade delete to remove related CommandeProthesiste rows
+                _context.Prothesistes.Remove(proth);
+                await _context.SaveChangesAsync();
+                return true;
+            }
+            catch (Exception)
+            {
+                // Let caller handle/log exception as needed
+                throw;
+            }
         }
 
         private void Validate(Prothesiste p)

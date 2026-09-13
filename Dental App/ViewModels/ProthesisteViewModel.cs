@@ -8,6 +8,7 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
+using Dental_App.Views;
 
 namespace Dental_App.ViewModels
 {
@@ -174,6 +175,7 @@ namespace Dental_App.ViewModels
         public DelegateCommand CloseModalCommand { get; }
         public DelegateCommand SaveCommand { get; }
         public DelegateCommand<ProthesisteDisplayItem> EditCommand { get; }
+        public DelegateCommand<ProthesisteDisplayItem> DeleteCommand { get; }
         public DelegateCommand ClearSearchCommand { get; }
 
         // New commands for orders modal
@@ -193,6 +195,7 @@ namespace Dental_App.ViewModels
             CloseModalCommand = new DelegateCommand(CloseModal);
             SaveCommand = new DelegateCommand(SaveProthesiste);
             EditCommand = new DelegateCommand<ProthesisteDisplayItem>(EditProthesiste);
+            DeleteCommand = new DelegateCommand<ProthesisteDisplayItem>(DeleteProthesiste);
             ClearSearchCommand = new DelegateCommand(ClearSearch);
 
             OpenOrdersCommand = new DelegateCommand<ProthesisteDisplayItem>(OpenOrders);
@@ -203,6 +206,54 @@ namespace Dental_App.ViewModels
 
             // Load data
             LoadProthesistes();
+        }
+
+        private async void DeleteProthesiste(ProthesisteDisplayItem item)
+        {
+            if (item == null) return;
+
+            try
+            {
+                var vm = new ConfirmationDialogViewModel
+                {
+                    Title = "Confirmer la suppression",
+                    Message = $"La suppression du prothésiste '{item.Nom}' supprimera aussi ses {item.NbCommandes} commandes associées. Continuer ?"
+                };
+
+                bool? dialogResult = null;
+                vm.CloseAction = (res) => dialogResult = res;
+
+                var view = new ConfirmationDialogView { DataContext = vm };
+                var win = new Window
+                {
+                    Content = view,
+                    SizeToContent = SizeToContent.WidthAndHeight,
+                    WindowStartupLocation = WindowStartupLocation.CenterOwner,
+                    Owner = Application.Current.MainWindow,
+                    WindowStyle = WindowStyle.None,
+                    Background = System.Windows.Media.Brushes.Transparent,
+                    AllowsTransparency = true,
+                    ResizeMode = ResizeMode.NoResize
+                };
+
+                win.ShowDialog();
+                if (dialogResult != true) return;
+
+                var ok = await _prothesisteService.DeleteAsync(item.Id);
+                if (ok)
+                {
+                    _notificationService.ShowSuccess("Prothésiste supprimé.", "Succès");
+                    LoadProthesistes();
+                }
+                else
+                {
+                    _notificationService.ShowError("Échec de la suppression du prothésiste.", "Erreur");
+                }
+            }
+            catch (Exception ex)
+            {
+                _notificationService.ShowError($"Erreur: {ex.Message}", "Erreur");
+            }
         }
 
         private void InitializeMonths()
@@ -509,18 +560,18 @@ namespace Dental_App.ViewModels
                 }
             });
         }
-    }
-
-    /// <summary>
-    /// Display item for Prothesiste in the view
-    /// </summary>
-    public class ProthesisteDisplayItem
-    {
-        public int Id { get; set; }
-        public string Nom { get; set; }
-        public string Adresse { get; set; }
-        public string Telephone { get; set; }
-        public int NbCommandes { get; set; }
+    
+        /// <summary>
+        /// Display item for Prothesiste in the view
+        /// </summary>
+        public class ProthesisteDisplayItem
+        {
+            public int Id { get; set; }
+            public string Nom { get; set; }
+            public string Adresse { get; set; }
+            public string Telephone { get; set; }
+            public int NbCommandes { get; set; }
+        }
     }
 }
 
