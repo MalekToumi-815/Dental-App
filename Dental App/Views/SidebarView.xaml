@@ -33,9 +33,9 @@
 
         <!-- Section Title Style -->
         <Style x:Key="SectionTitleStyle" TargetType="TextBlock">
-            <Setter Property="Foreground" Value="{DynamicResource TextSecondary}"/>
-            <Setter Property="FontSize" Value="11"/>
-            <Setter Property="FontWeight" Value="SemiBold"/>
+            <Setter Property="Foreground" Value="{DynamicResource AccentColor}"/>
+            <Setter Property="FontSize" Value="14"/>
+            <Setter Property="FontWeight" Value="Bold"/>
             <Setter Property="Margin" Value="20,20,0,12"/>
         </Style>
 
@@ -139,7 +139,7 @@
 
                 <!-- PATIENTS Section -->
                 <TextBlock Text="PATIENTS" Style="{StaticResource SectionTitleStyle}"/>
-                
+
                 <Button Content="Patients" Tag="{StaticResource IconPatients}" 
                         x:Name="PatientsButton"
                         Command="{Binding NavigateCommand}" CommandParameter="PatientsView" Style="{StaticResource NavButtonStyle}"/>

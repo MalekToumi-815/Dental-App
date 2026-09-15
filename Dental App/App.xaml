@@ -174,7 +174,7 @@
             <Setter Property="FontSize" Value="{StaticResource BaseFontSize}"/>
         </Style>
 
-      
+
 
         <!-- Icon Geometries -->
         <Geometry x:Key="IconMoon">
