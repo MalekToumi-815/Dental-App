@@ -346,20 +346,39 @@
             <Border Grid.Column="0" Background="{DynamicResource CardBackground}" CornerRadius="12" BorderThickness="2" BorderBrush="{DynamicResource GlobalElementBorderBrush}" Padding="20" Margin="0,0,20,0">
                 <!-- Dental Schema with Template Image -->
                 <Grid>
-                    <Grid.RowDefinitions>
-                        <RowDefinition Height="Auto"/>
-                        <RowDefinition Height="*"/>
-                    </Grid.RowDefinitions>
+                    <!-- Background Image -->
+                    <Image x:Name="OdontogrammeImage"
+                           Stretch="UniformToFill" 
+                           RenderOptions.BitmapScalingMode="HighQuality"
+                           Width="645.0" Height="553.0"/>
+                    
+                    <!-- Tooth Paths Overlay loaded from XAML -->
+                    <Grid x:Name="ToothOverlayGrid" Panel.ZIndex="10" MouseDown="ToothOverlay_MouseDown"/>
 
-                    <!-- Drawing Toolbar - Only visible in Edit Mode -->
-                    <Border Grid.Row="0" 
+                    <!-- InkCanvas for Drawing -->
+                    <InkCanvas x:Name="FreeDrawCanvas"
+                               Panel.ZIndex="20"
+                               Background="Transparent"
+                               EditingMode="Ink"
+                               Visibility="{Binding IsInkCanvasEnabled, Converter={StaticResource BooleanToVisibilityConverter}}"
+                               IsHitTestVisible="{Binding IsHistoryMode, Converter={StaticResource InvertedBooleanConverter}}">
+                        <InkCanvas.DefaultDrawingAttributes>
+                            <DrawingAttributes x:Name="CurrentAttributes" Color="Red" Width="2" Height="2"/>
+                        </InkCanvas.DefaultDrawingAttributes>
+                    </InkCanvas>
+
+                    <!-- Drawing Toolbar - overlayed on top of the image (only visible in Edit Mode) -->
+                    <Border
                             Background="{DynamicResource SecondaryBackground}" 
                             Padding="10" 
                             CornerRadius="8" 
-                            Margin="0,0,0,10" 
+                            Margin="0,0,0,0" 
                             BorderBrush="{DynamicResource BorderColor}" 
                             BorderThickness="1"
-                            Visibility="{Binding IsHistoryMode, Converter={StaticResource InvertedBooleanToVisibilityConverter}}">
+                            Visibility="{Binding IsHistoryMode, Converter={StaticResource InvertedBooleanToVisibilityConverter}}"
+                            Panel.ZIndex="30"
+                            HorizontalAlignment="Center"
+                            VerticalAlignment="Top">
                         <ScrollViewer HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Disabled">
                             <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
                                 <!-- Pen Mode Button -->
@@ -445,30 +464,6 @@
                         </StackPanel>
                         </ScrollViewer>
                     </Border>
-
-                    <!-- Dental Schema Container -->
-                    <Grid Grid.Row="1">
-                        <!-- Background Image -->
-                        <Image x:Name="OdontogrammeImage"
-                               Stretch="UniformToFill" 
-                               RenderOptions.BitmapScalingMode="HighQuality"
-                               Width="645.0" Height="553.0"/>
-                        
-                        <!-- Tooth Paths Overlay loaded from XAML -->
-                        <Grid x:Name="ToothOverlayGrid" Panel.ZIndex="10" MouseDown="ToothOverlay_MouseDown"/>
-
-                        <!-- InkCanvas for Drawing -->
-                        <InkCanvas x:Name="FreeDrawCanvas"
-                                   Panel.ZIndex="20"
-                                   Background="Transparent"
-                                   EditingMode="Ink"
-                                   Visibility="{Binding IsInkCanvasEnabled, Converter={StaticResource BooleanToVisibilityConverter}}"
-                                   IsHitTestVisible="{Binding IsHistoryMode, Converter={StaticResource InvertedBooleanConverter}}">
-                            <InkCanvas.DefaultDrawingAttributes>
-                                <DrawingAttributes x:Name="CurrentAttributes" Color="Red" Width="2" Height="2"/>
-                            </InkCanvas.DefaultDrawingAttributes>
-                        </InkCanvas>
-                    </Grid>
                 </Grid>
             </Border>
 

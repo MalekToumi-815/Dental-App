@@ -17,7 +17,7 @@
 
         <!-- Title -->
         <TextBlock Grid.Row="0" 
-                   Text="Select Drawing Color" 
+                   Text="Choisir la Couleur" 
                    FontSize="16" 
                    FontWeight="Bold" 
                    Margin="0,0,0,15"
@@ -66,7 +66,7 @@
 
         <!-- Color Preview -->
         <StackPanel Grid.Row="3" Orientation="Horizontal" Margin="0,0,0,10">
-            <TextBlock Text="Selected Color:" 
+            <TextBlock Text="Couleur selectioner:" 
                        VerticalAlignment="Center" 
                        Margin="0,0,10,0"
                        Foreground="{DynamicResource TextSecondary}"/>
@@ -104,7 +104,7 @@
                     </Style>
                 </Button.Resources>
             </Button>
-            <Button Content="Cancel" 
+            <Button Content="Annuler" 
                     Click="Cancel_Click" 
                     Width="80" 
                     Padding="10,8"
