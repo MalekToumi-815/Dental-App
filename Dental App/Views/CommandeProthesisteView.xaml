@@ -320,7 +320,7 @@
                     <Border BorderBrush="{DynamicResource GlobalElementBorderBrush}"
                             BorderThickness="0,0,0,1"
                             Padding="20,14"
-                            Background="{DynamicResource PrimaryBackground}">
+                            Background="{DynamicResource CardBackground}">
                         <Grid>
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition Width="50"/>
@@ -331,22 +331,22 @@
                                 <ColumnDefinition Width="100"/>
                             </Grid.ColumnDefinitions>
                             <TextBlock Grid.Column="0" Text="#"
-                                       Foreground="{DynamicResource CardBackground}"
+                                       Foreground="{DynamicResource TextSecondary}"
                                        FontSize="12" FontWeight="SemiBold"/>
                             <TextBlock Grid.Column="1" Text="PROTHESISTE"
-                                       Foreground="{DynamicResource CardBackground}"
+                                       Foreground="{DynamicResource TextSecondary}"
                                        FontSize="12" FontWeight="SemiBold"/>
                             <TextBlock Grid.Column="2" Text="DATE"
-                                       Foreground="{DynamicResource CardBackground}"
+                                       Foreground="{DynamicResource TextSecondary}"
                                        FontSize="12" FontWeight="SemiBold"/>
                             <TextBlock Grid.Column="3" Text="ACHATS"
-                                       Foreground="{DynamicResource CardBackground}"
+                                       Foreground="{DynamicResource TextSecondary}"
                                        FontSize="12" FontWeight="SemiBold"/>
                             <TextBlock Grid.Column="4" Text="SOMME PAYEE"
-                                       Foreground="{DynamicResource CardBackground}"
+                                       Foreground="{DynamicResource TextSecondary}"
                                        FontSize="12" FontWeight="SemiBold"/>
                             <TextBlock Grid.Column="5" Text="ACTIONS"
-                                       Foreground="{DynamicResource CardBackground}"
+                                       Foreground="{DynamicResource TextSecondary}"
                                        FontSize="12" FontWeight="SemiBold"
                                        HorizontalAlignment="Center"/>
                         </Grid>

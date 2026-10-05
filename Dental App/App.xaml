@@ -44,15 +44,15 @@
         <Color x:Key="BorderColorValue">#D6E9E6</Color>
 
         <!-- Additional semantic colors for unified styling -->
-        <Color x:Key="SuccessColorValue">#14B8A6</Color>
-        <Color x:Key="DangerColorValue">#FF6B6B</Color>
+        <Color x:Key="SuccessColorValue">#1EA7D4</Color>
+        <Color x:Key="DangerColorValue">#E0607A</Color>
         <Color x:Key="WarningColorValue">#FFA500</Color>
 
         <!-- Map legacy keys to palette -->
         <Color x:Key="SecondaryBackgroundColor">#FFFFFF</Color>
         <Color x:Key="CardBackgroundColor">#FFFFFF</Color>
         <Color x:Key="TextPrimaryColor">#0F3D3E</Color>
-        <Color x:Key="TextSecondaryColor">#7FA8A3</Color>
+        <Color x:Key="TextSecondaryColor">#000000</Color>
 
         <!-- Sidebar -->
         <Color x:Key="SidebarBackgroundColor">#FFFFFF</Color>
@@ -70,11 +70,11 @@
         <SolidColorBrush x:Key="WarningBrush" Color="{StaticResource WarningColorValue}"/>
 
         <!-- PrimaryBackground gradient (exact requested stops) -->
-        <LinearGradientBrush x:Key="PrimaryBackground" StartPoint="0,0" EndPoint="1,1">
-            <GradientStop Color="#5AD1D6" Offset="0"/>
-            <GradientStop Color="#4A93E0" Offset="0.45"/>
-            <GradientStop Color="#8A6FE8" Offset="0.75"/>
-            <GradientStop Color="#C98FE0" Offset="1"/>
+        <LinearGradientBrush x:Key="PrimaryBackground" StartPoint="0,0.5" EndPoint="1,0.5">
+            <GradientStop Color="#A8E6E2" Offset="0"/>
+            <GradientStop Color="#7FD4E0" Offset="0.35"/>
+            <GradientStop Color="#6FB8E8" Offset="0.7"/>
+            <GradientStop Color="#9AD4F0" Offset="1"/>
         </LinearGradientBrush>
 
         <SolidColorBrush x:Key="CardBackground" Color="{StaticResource PrimaryBackgroundColor}"/>

@@ -328,7 +328,7 @@
                     <Border BorderBrush="{DynamicResource GlobalElementBorderBrush}"
                             BorderThickness="0,0,0,1"
                             Padding="20,14"
-                            Background="{DynamicResource PrimaryBackground}">
+                            Background="{DynamicResource CardBackground}">
                         <Grid>
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition Width="60"/>
@@ -339,22 +339,22 @@
                                 <ColumnDefinition Width="100"/>
                             </Grid.ColumnDefinitions>
                             <TextBlock Grid.Column="0" Text="#"
-                                       Foreground="{DynamicResource CardBackground}"
+                                       Foreground="{DynamicResource TextSecondary}"
                                        FontSize="12" FontWeight="SemiBold"/>
                             <TextBlock Grid.Column="1" Text="NOM"
-                                       Foreground="{DynamicResource CardBackground}"
+                                       Foreground="{DynamicResource TextSecondary}"
                                        FontSize="12" FontWeight="SemiBold"/>
                             <TextBlock Grid.Column="2" Text="ADRESSE"
-                                       Foreground="{DynamicResource CardBackground}"
+                                       Foreground="{DynamicResource TextSecondary}"
                                        FontSize="12" FontWeight="SemiBold"/>
                             <TextBlock Grid.Column="3" Text="TÉLÉPHONE"
-                                       Foreground="{DynamicResource CardBackground}"
+                                       Foreground="{DynamicResource TextSecondary}"
                                        FontSize="12" FontWeight="SemiBold"/>
                             <TextBlock Grid.Column="4" Text="NB COMMANDES"
-                                       Foreground="{DynamicResource CardBackground}"
+                                       Foreground="{DynamicResource TextSecondary}"
                                        FontSize="12" FontWeight="SemiBold"/>
                             <TextBlock Grid.Column="5" Text="ACTIONS"
-                                       Foreground="{DynamicResource CardBackground}"
+                                       Foreground="{DynamicResource TextSecondary}"
                                        FontSize="12" FontWeight="SemiBold"
                                        HorizontalAlignment="Center"/>
                         </Grid>
@@ -453,7 +453,7 @@
                                                         CommandParameter="{Binding}">
                                                     <!-- Eye icon -->
                                                     <Path Data="M1 12C1 12 5 4 12 4s11 8 11 8-4 8-11 8S1 12 1 12zm11 4a4 4 0 100-8 4 4 0 000 8zM12 11a1 1 0 110-2 1 1 0 010 2z"
-                                                          Fill="{DynamicResource TextSecondary}" Width="16" Height="16" Stretch="Uniform"/>
+                                                          Fill="{DynamicResource AccentColor}" Width="16" Height="16" Stretch="Uniform"/>
                                                 </Button>
                                                 <!-- Supprimer -->
                                                 <Button Style="{StaticResource IconBtn}"
