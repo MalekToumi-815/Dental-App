@@ -355,19 +355,19 @@
                     <Border Background="{DynamicResource CardBackground}" Margin="5" Padding="15" BorderBrush="{DynamicResource GlobalElementBorderBrush}" BorderThickness="2" CornerRadius="8">
                         <StackPanel>
                             <TextBlock Text="TOTAL REVENUS" Foreground="{DynamicResource TextSecondary}" FontSize="12"/>
-                            <TextBlock Text="{Binding TotalRevenus, StringFormat='0.00 DT'}" Foreground="#14B8A6" FontSize="24" FontWeight="Bold" Margin="0,10,0,0"/>
+                            <TextBlock Text="{Binding TotalRevenus, StringFormat='0.00 DT'}" Foreground="{DynamicResource SuccessBrush}" FontSize="24" FontWeight="Bold" Margin="0,10,0,0"/>
                         </StackPanel>
                     </Border>
                     <Border Background="{DynamicResource CardBackground}" Margin="5" Padding="15" BorderBrush="{DynamicResource GlobalElementBorderBrush}" BorderThickness="2" CornerRadius="8">
                         <StackPanel>
                             <TextBlock Text="TOTAL DEPENSES" Foreground="{DynamicResource TextSecondary}" FontSize="12"/>
-                            <TextBlock Text="{Binding TotalDepenses, StringFormat='0.00 DT'}" Foreground="#FF6B6B" FontSize="24" FontWeight="Bold" Margin="0,10,0,0"/>
+                            <TextBlock Text="{Binding TotalDepenses, StringFormat='0.00 DT'}" Foreground="{DynamicResource DangerBrush}" FontSize="24" FontWeight="Bold" Margin="0,10,0,0"/>
                         </StackPanel>
                     </Border>
                     <Border Background="{DynamicResource CardBackground}" Margin="5" Padding="15" BorderBrush="{DynamicResource GlobalElementBorderBrush}" BorderThickness="2" CornerRadius="8">
                         <StackPanel>
                             <TextBlock Text="SOLDE NET" Foreground="{DynamicResource TextSecondary}" FontSize="12"/>
-                            <TextBlock Text="{Binding SoldeNet, StringFormat='0.00 DT'}" Foreground="#FFA500" FontSize="24" FontWeight="Bold" Margin="0,10,0,0"/>
+                            <TextBlock Text="{Binding SoldeNet, StringFormat='0.00 DT'}" Foreground="{DynamicResource WarningBrush}" FontSize="24" FontWeight="Bold" Margin="0,10,0,0"/>
                         </StackPanel>
                     </Border>
                 </UniformGrid>
@@ -387,12 +387,12 @@
                                     <StackPanel Margin="20,0" VerticalAlignment="Bottom" Width="100">
                                         <!-- Revenue Bar -->
                                         <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="0,0,0,8">
-                                            <Border Width="35" Height="{Binding RevenueBarHeight}" Background="#14B8A6" VerticalAlignment="Bottom" Margin="0,0,8,0" CornerRadius="4"/>
-                                            <Border Width="35" Height="{Binding ExpenseBarHeight}" Background="#FF6B6B" VerticalAlignment="Bottom" CornerRadius="4"/>
+                                            <Border Width="35" Height="{Binding RevenueBarHeight}" Background="{DynamicResource SuccessBrush}" VerticalAlignment="Bottom" Margin="0,0,8,0" CornerRadius="4"/>
+                                            <Border Width="35" Height="{Binding ExpenseBarHeight}" Background="{DynamicResource DangerBrush}" VerticalAlignment="Bottom" CornerRadius="4"/>
                                         </StackPanel>
                                         <!-- Values -->
-                                        <TextBlock Text="{Binding Revenue, StringFormat='R:{0:F0}'}" Foreground="#14B8A6" HorizontalAlignment="Center" FontSize="10" FontWeight="Bold" Margin="0,0,0,2"/>
-                                        <TextBlock Text="{Binding Expense, StringFormat='D:{0:F0}'}" Foreground="#FF6B6B" HorizontalAlignment="Center" FontSize="10" FontWeight="Bold" Margin="0,0,0,8"/>
+                                        <TextBlock Text="{Binding Revenue, StringFormat='R:{0:F0}'}" Foreground="{DynamicResource SuccessBrush}" HorizontalAlignment="Center" FontSize="10" FontWeight="Bold" Margin="0,0,0,2"/>
+                                        <TextBlock Text="{Binding Expense, StringFormat='D:{0:F0}'}" Foreground="{DynamicResource DangerBrush}" HorizontalAlignment="Center" FontSize="10" FontWeight="Bold" Margin="0,0,0,8"/>
                                         <!-- Day Name -->
                                         <TextBlock Text="{Binding DayName}" Foreground="{DynamicResource TextSecondary}" HorizontalAlignment="Center" FontSize="11"/>
                                     </StackPanel>
@@ -474,19 +474,19 @@
                                     <ColumnDefinition Width="100"/>
                                 </Grid.ColumnDefinitions>
                                 <TextBlock Grid.Column="0" Text="DATE"
-                                           Foreground="{DynamicResource TextSecondary}"
+                                           Foreground="{DynamicResource CardBackground}"
                                            FontSize="12" FontWeight="SemiBold"/>
                                 <TextBlock Grid.Column="1" Text="NOM"
-                                           Foreground="{DynamicResource TextSecondary}"
+                                           Foreground="{DynamicResource CardBackground}"
                                            FontSize="12" FontWeight="SemiBold"/>
                                 <TextBlock Grid.Column="2" Text="TYPE"
-                                           Foreground="{DynamicResource TextSecondary}"
+                                           Foreground="{DynamicResource CardBackground}"
                                            FontSize="12" FontWeight="SemiBold"/>
                                 <TextBlock Grid.Column="3" Text="MONTANT"
-                                           Foreground="{DynamicResource TextSecondary}"
+                                           Foreground="{DynamicResource CardBackground}"
                                            FontSize="12" FontWeight="SemiBold"/>
                                 <TextBlock Grid.Column="4" Text="ACTIONS"
-                                           Foreground="{DynamicResource TextSecondary}"
+                                           Foreground="{DynamicResource CardBackground}"
                                            FontSize="12" FontWeight="SemiBold"
                                            HorizontalAlignment="Center"/>
                             </Grid>
@@ -546,10 +546,10 @@
                                                         <Setter Property="Background" Value="Transparent"/>
                                                         <Style.Triggers>
                                                             <DataTrigger Binding="{Binding Type}" Value="Revenu">
-                                                                <Setter Property="Background" Value="#062D24"/>
+                                                                <Setter Property="Background" Value="{DynamicResource SuccessBrush}"/>
                                                             </DataTrigger>
                                                             <DataTrigger Binding="{Binding Type}" Value="Depense">
-                                                                <Setter Property="Background" Value="#5C2C2C"/>
+                                                                <Setter Property="Background" Value="{DynamicResource DangerBrush}"/>
                                                             </DataTrigger>
                                                         </Style.Triggers>
                                                     </Style>
@@ -563,10 +563,10 @@
                                                             <Setter Property="TextAlignment" Value="Center"/>
                                                             <Style.Triggers>
                                                                 <DataTrigger Binding="{Binding Type}" Value="Revenu">
-                                                                    <Setter Property="Foreground" Value="#14B8A6"/>
+                                                                    <Setter Property="Foreground" Value="{DynamicResource CardBackground}"/>
                                                                 </DataTrigger>
                                                                 <DataTrigger Binding="{Binding Type}" Value="Depense">
-                                                                    <Setter Property="Foreground" Value="#FF6B6B"/>
+                                                                    <Setter Property="Foreground" Value="{DynamicResource CardBackground}"/>
                                                                 </DataTrigger>
                                                             </Style.Triggers>
                                                         </Style>
@@ -601,7 +601,7 @@
                                                         Command="{Binding DataContext.DeleteTransactionCommand, RelativeSource={RelativeSource AncestorType=ItemsControl}}"
                                                         CommandParameter="{Binding}"
                                                         Margin="8,0,0,0"
-                                                        Background="#E74C3C">
+                                                        Background="{DynamicResource DangerBrush}">
                                                     <Path Data="M6,19A2,2 0 0,0 8,21H16A2,2 0 0,0 18,19V7H6V19M19,4H15.5L14.79,3.29C14.61,3.11 14.35,3 14.09,3H9.91C9.65,3 9.39,3.11 9.21,3.29L8.5,4H5V6H19V4Z"
                                                           Fill="White" Width="15" Height="15" Stretch="Uniform"/>
                                                 </Button>
@@ -693,7 +693,7 @@
                                        Foreground="{DynamicResource TextPrimary}"
                                        FontSize="14" FontWeight="SemiBold"/>
                             <TextBlock Text=" *"
-                                       Foreground="#EF4444"
+                                       Foreground="{DynamicResource DangerBrush}"
                                        FontSize="14" FontWeight="SemiBold"/>
                         </StackPanel>
                         <Border Background="{DynamicResource SecondaryBackground}"
@@ -713,7 +713,7 @@
                                        Foreground="{DynamicResource TextPrimary}"
                                        FontSize="14" FontWeight="SemiBold"/>
                             <TextBlock Text=" *"
-                                       Foreground="#EF4444"
+                                       Foreground="{DynamicResource DangerBrush}"
                                        FontSize="14" FontWeight="SemiBold"/>
                         </StackPanel>
                         <TextBox Style="{StaticResource PlainInputStyle}"
@@ -727,7 +727,7 @@
                                        Foreground="{DynamicResource TextPrimary}"
                                        FontSize="14" FontWeight="SemiBold"/>
                             <TextBlock Text=" *"
-                                       Foreground="#EF4444"
+                                       Foreground="{DynamicResource DangerBrush}"
                                        FontSize="14" FontWeight="SemiBold"/>
                         </StackPanel>
                         <ComboBox Style="{StaticResource ComboBoxStyle}"
@@ -745,7 +745,7 @@
                                        Foreground="{DynamicResource TextPrimary}"
                                        FontSize="14" FontWeight="SemiBold"/>
                             <TextBlock Text=" *"
-                                       Foreground="#EF4444"
+                                       Foreground="{DynamicResource DangerBrush}"
                                        FontSize="14" FontWeight="SemiBold"/>
                         </StackPanel>
                         <TextBox Style="{StaticResource InputStyle}"

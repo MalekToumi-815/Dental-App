@@ -34,45 +34,63 @@
         <sys:Double x:Key="LargeFontSize">18</sys:Double>
         <sys:Double x:Key="TitleFontSize">22</sys:Double>
 
-        <!-- Theme Colors (harmonised for light sidebar) -->
-        <Color x:Key="AccentColorValue">#17B6D8</Color>
-        <Color x:Key="AccentHoverColor">#13A3BC</Color>
-        <Color x:Key="AccentPressedColor">#0E8B9E</Color>
-        <Color x:Key="DarkNavyColor">#0B3B45</Color>
-        <Color x:Key="LightBackgroundColor">#B8E8F5</Color>
+        <!-- Theme Colors -->
+        <Color x:Key="AccentColorValue">#1EA7D4</Color>
+        <Color x:Key="AccentHoverColor">#1A93BC</Color>
+        <Color x:Key="AccentPressedColor">#1580A3</Color>
+        <Color x:Key="DarkNavyColor">#0F3D3E</Color>
         <Color x:Key="PrimaryBackgroundColor">#FFFFFF</Color>
-        <Color x:Key="TextMutedColor">#88C2CE</Color>
-        <Color x:Key="BorderColorValue">#D3EEF2</Color>
+        <Color x:Key="TextMutedColor">#7FA8A3</Color>
+        <Color x:Key="BorderColorValue">#D6E9E6</Color>
+
+        <!-- Additional semantic colors for unified styling -->
+        <Color x:Key="SuccessColorValue">#14B8A6</Color>
+        <Color x:Key="DangerColorValue">#FF6B6B</Color>
+        <Color x:Key="WarningColorValue">#FFA500</Color>
 
         <!-- Map legacy keys to palette -->
         <Color x:Key="SecondaryBackgroundColor">#FFFFFF</Color>
         <Color x:Key="CardBackgroundColor">#FFFFFF</Color>
-        <Color x:Key="TextPrimaryColor">#0B3B45</Color>
-        <Color x:Key="TextSecondaryColor">#88C2CE</Color>
+        <Color x:Key="TextPrimaryColor">#0F3D3E</Color>
+        <Color x:Key="TextSecondaryColor">#7FA8A3</Color>
 
-        <!-- Sidebar: set to pure white as requested -->
+        <!-- Sidebar -->
         <Color x:Key="SidebarBackgroundColor">#FFFFFF</Color>
 
-        <!-- Global border used for most elements (keeps RendezVous intact because it uses local styles) -->
-        <Color x:Key="GlobalElementBorderColor">#1f99b8</Color>
+        <!-- Global border -->
+        <Color x:Key="GlobalElementBorderColor">#1EA7D4</Color>
         <SolidColorBrush x:Key="GlobalElementBorderBrush" Color="{StaticResource GlobalElementBorderColor}"/>
 
-        <!-- Brush Resources -->
+        <!-- Brushes for semantic colors -->
         <SolidColorBrush x:Key="AccentColor" Color="{StaticResource AccentColorValue}"/>
         <SolidColorBrush x:Key="AccentHover" Color="{StaticResource AccentHoverColor}"/>
         <SolidColorBrush x:Key="AccentPressed" Color="{StaticResource AccentPressedColor}"/>
-        <SolidColorBrush x:Key="PrimaryBackground" Color="{StaticResource LightBackgroundColor}"/>
+        <SolidColorBrush x:Key="SuccessBrush" Color="{StaticResource SuccessColorValue}"/>
+        <SolidColorBrush x:Key="DangerBrush" Color="{StaticResource DangerColorValue}"/>
+        <SolidColorBrush x:Key="WarningBrush" Color="{StaticResource WarningColorValue}"/>
+
+        <!-- PrimaryBackground gradient (exact requested stops) -->
+        <LinearGradientBrush x:Key="PrimaryBackground" StartPoint="0,0" EndPoint="1,1">
+            <GradientStop Color="#5AD1D6" Offset="0"/>
+            <GradientStop Color="#4A93E0" Offset="0.45"/>
+            <GradientStop Color="#8A6FE8" Offset="0.75"/>
+            <GradientStop Color="#C98FE0" Offset="1"/>
+        </LinearGradientBrush>
+
         <SolidColorBrush x:Key="CardBackground" Color="{StaticResource PrimaryBackgroundColor}"/>
         <SolidColorBrush x:Key="SecondaryBackground" Color="{StaticResource PrimaryBackgroundColor}"/>
         <SolidColorBrush x:Key="TextPrimary" Color="{StaticResource TextPrimaryColor}"/>
         <SolidColorBrush x:Key="TextSecondary" Color="{StaticResource TextSecondaryColor}"/>
         <SolidColorBrush x:Key="BorderColor" Color="{StaticResource BorderColorValue}"/>
-        <SolidColorBrush x:Key="SidebarBackground" Color="{StaticResource SidebarBackgroundColor}"/>
 
-        <!-- App logo brush removed to avoid missing resource error; add back if logo asset included in project resources -->
-        <!--<ImageBrush x:Key="AppLogoBrush" Stretch="Uniform" ImageSource="pack://application:,,,/Dental App;component/Assets/Images/logo.png"/>-->
+        <!-- Sidebar background: softer vertical gradient to harmonise with PrimaryBackground -->
+        <LinearGradientBrush x:Key="SidebarBackground" StartPoint="0,0" EndPoint="0,1">
+            <GradientStop Color="#E8F8F7" Offset="0"/>
+            <GradientStop Color="#E3EEFB" Offset="0.5"/>
+            <GradientStop Color="#F0E8FB" Offset="1"/>
+        </LinearGradientBrush>
 
-        <!-- Global implicit styles so the theme applies to all views (RendezVous overrides its local styles) -->
+        <!-- Global implicit styles so the theme applies to all views -->
         <Style TargetType="Window">
             <Setter Property="Background" Value="{DynamicResource PrimaryBackground}"/>
             <Setter Property="Foreground" Value="{DynamicResource TextPrimary}"/>
@@ -99,7 +117,7 @@
             <Setter Property="FontSize" Value="{StaticResource BaseFontSize}"/>
         </Style>
 
-        <!-- Implicit Button style for all views (RendezVous has explicit local ButtonStyle so it is not affected) -->
+        <!-- Implicit Button style -->
         <Style TargetType="Button">
             <Setter Property="Background" Value="{DynamicResource AccentColor}"/>
             <Setter Property="Foreground" Value="{DynamicResource PrimaryBackground}"/>
@@ -132,7 +150,7 @@
             </Setter>
         </Style>
 
-        <!-- TextBox implicit style: harmonised border color -->
+        <!-- TextBox implicit style -->
         <Style TargetType="TextBox">
             <Setter Property="Background" Value="{DynamicResource TextPrimary}"/>
             <Setter Property="Foreground" Value="{DynamicResource TextPrimary}"/>
@@ -143,7 +161,7 @@
             <Setter Property="FontSize" Value="{StaticResource BaseFontSize}"/>
         </Style>
 
-        <!-- ComboBox implicit style: harmonised border color -->
+        <!-- ComboBox implicit style -->
         <Style TargetType="ComboBox">
             <Setter Property="Background" Value="{DynamicResource SecondaryBackground}"/>
             <Setter Property="Foreground" Value="{DynamicResource TextPrimary}"/>
@@ -155,7 +173,7 @@
             <Setter Property="FontSize" Value="{StaticResource BaseFontSize}"/>
         </Style>
 
-        <!-- ListView and ListBox harmonised borders -->
+        <!-- ListView and ListBox styles -->
         <Style TargetType="ListView">
             <Setter Property="Background" Value="{DynamicResource PrimaryBackground}"/>
             <Setter Property="Foreground" Value="{DynamicResource TextPrimary}"/>
@@ -173,8 +191,6 @@
             <Setter Property="FontFamily" Value="{StaticResource AppFontFamily}"/>
             <Setter Property="FontSize" Value="{StaticResource BaseFontSize}"/>
         </Style>
-
-
 
         <!-- Icon Geometries -->
         <Geometry x:Key="IconMoon">

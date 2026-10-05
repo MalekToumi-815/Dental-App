@@ -107,7 +107,17 @@ namespace Dental_App.Services
                     resources[kvp.Key] = color;
 
                     var brushKey = kvp.Key.Replace("Color", "");
-                    resources[brushKey] = new SolidColorBrush(color);
+
+                    // Only replace existing brushes when they are SolidColorBrush to avoid overwriting gradients or other complex brushes
+                    if (resources.Contains(brushKey))
+                    {
+                        var existing = resources[brushKey];
+                        if (existing is SolidColorBrush)
+                        {
+                            resources[brushKey] = new SolidColorBrush(color);
+                        }
+                        // If existing brush is not a SolidColorBrush (e.g. LinearGradientBrush), preserve it.
+                    }
                 }
             }
 
@@ -126,9 +136,14 @@ namespace Dental_App.Services
                 var brushKey = colorKey.Replace("Color", "");
                 if (resources.Contains(brushKey))
                 {
-                    // Create new unfrozen brush instead of modifying frozen one
-                    var newBrush = new SolidColorBrush(colorValue);
-                    resources[brushKey] = newBrush;
+                    var existing = resources[brushKey];
+                    // Only replace if the existing resource is a SolidColorBrush
+                    if (existing is SolidColorBrush)
+                    {
+                        var newBrush = new SolidColorBrush(colorValue);
+                        resources[brushKey] = newBrush;
+                    }
+                    // If the existing brush is not a SolidColorBrush (e.g. a GradientBrush), do not overwrite it.
                 }
             }
         }

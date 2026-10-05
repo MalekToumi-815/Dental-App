@@ -339,22 +339,22 @@
                                 <ColumnDefinition Width="100"/>
                             </Grid.ColumnDefinitions>
                             <TextBlock Grid.Column="0" Text="#"
-                                       Foreground="{DynamicResource TextSecondary}"
+                                       Foreground="{DynamicResource CardBackground}"
                                        FontSize="12" FontWeight="SemiBold"/>
                             <TextBlock Grid.Column="1" Text="NOM"
-                                       Foreground="{DynamicResource TextSecondary}"
+                                       Foreground="{DynamicResource CardBackground}"
                                        FontSize="12" FontWeight="SemiBold"/>
                             <TextBlock Grid.Column="2" Text="ADRESSE"
-                                       Foreground="{DynamicResource TextSecondary}"
+                                       Foreground="{DynamicResource CardBackground}"
                                        FontSize="12" FontWeight="SemiBold"/>
                             <TextBlock Grid.Column="3" Text="TÉLÉPHONE"
-                                       Foreground="{DynamicResource TextSecondary}"
+                                       Foreground="{DynamicResource CardBackground}"
                                        FontSize="12" FontWeight="SemiBold"/>
                             <TextBlock Grid.Column="4" Text="NB COMMANDES"
-                                       Foreground="{DynamicResource TextSecondary}"
+                                       Foreground="{DynamicResource CardBackground}"
                                        FontSize="12" FontWeight="SemiBold"/>
                             <TextBlock Grid.Column="5" Text="ACTIONS"
-                                       Foreground="{DynamicResource TextSecondary}"
+                                       Foreground="{DynamicResource CardBackground}"
                                        FontSize="12" FontWeight="SemiBold"
                                        HorizontalAlignment="Center"/>
                         </Grid>
@@ -526,7 +526,7 @@
                                        Foreground="{DynamicResource TextPrimary}"
                                        FontSize="14" FontWeight="SemiBold"/>
                             <TextBlock Text=" *"
-                                       Foreground="#EF4444"
+                                       Foreground="{DynamicResource DangerBrush}"
                                        FontSize="14" FontWeight="SemiBold"/>
                         </StackPanel>
                         <TextBox Style="{StaticResource InputStyle}"
@@ -540,7 +540,7 @@
                                        Foreground="{DynamicResource TextPrimary}"
                                        FontSize="14" FontWeight="SemiBold"/>
                             <TextBlock Text=" *"
-                                       Foreground="#EF4444"
+                                       Foreground="{DynamicResource DangerBrush}"
                                        FontSize="14" FontWeight="SemiBold"/>
                         </StackPanel>
                         <TextBox Style="{StaticResource InputStyle}"
@@ -554,7 +554,7 @@
                                        Foreground="{DynamicResource TextPrimary}"
                                        FontSize="14" FontWeight="SemiBold"/>
                             <TextBlock Text=" *"
-                                       Foreground="#EF4444"
+                                       Foreground="{DynamicResource DangerBrush}"
                                        FontSize="14" FontWeight="SemiBold"/>
                         </StackPanel>
                         <TextBox Style="{StaticResource InputStyle}"
