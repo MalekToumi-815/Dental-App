@@ -1,7 +1,7 @@
 # Dental App
 ![Logo](docs/logo.jpeg)
 
-A modern desktop management application for dental clinics built with WPF and .NET 8. The application provides patient management, consultations, odontogram editing, financial caisse tracking, prosthetist orders and more — designed for small to medium dental practices.
+A modern desktop management application for dental clinics built with WPF and .NET 8. The application provides patient management, consultations, odontogram editing, financial caisse tracking, prosthetist orders and more  designed for small to medium dental practices.
 
 ---
 
@@ -29,39 +29,59 @@ A modern desktop management application for dental clinics built with WPF and .N
 
 ## Screenshots
 
-Below are representative screenshots from the application (files included in `docs/`).
+Below is the full set of images currently included in `docs/`, replacing the older gallery with the latest visuals from the application.
+
+- Logo
+
+  ![Logo](docs/logo.jpeg)
+
+- Dashboard
+
+  ![Dashboard](docs/dashboard.jpg)
+
+- Consultation
+
+  ![Consultation](docs/consultation.jpg)
+
+- Acte
+
+  ![Acte](docs/acte.png)
+
+- Commande
+
+  ![Commande](docs/commande.png)
+
+- Fiche CNAM
+
+  ![Fiche CNAM](docs/fiche_cnam.png)
+
+- Evolution
+
+  ![Evolution](docs/evolution.png)
 
 - Financial dashboard / Caisse
 
-  ![Caisse](docs/caisse.jpeg)
-
-- Main dashboard
-
-  ![Dashboard](docs/dashboard.jpeg)
+  ![Caisse](docs/caisse.png)
 
 - Odontogram editor
 
-  ![Odontogramme](docs/odontogramme.jpeg)
+  ![Odontogramme](docs/odontogramme.png)
 
 - Patients list
 
-  ![Patients](docs/patients.jpeg)
+  ![Patients](docs/patients.jpg)
 
-- Prosthetist list
+- Radiographs / radio images view
 
-  ![Prothesiste](docs/prothesiste.jpeg)
-
-- Radiographs / Radio images view
-
-  ![Radio Images](docs/radio.jpeg)
+  ![Radio Images](docs/radio.png)
 
 - Example ordonnance screen
 
-  ![Ordonnance](docs/ordonance.jpeg)
+  ![Ordonnance](docs/ordonance.png)
 
 - Appointments / Rendez-vous
 
-  ![Rendezvous](docs/rendezvous.jpeg)
+  ![Rendez-vous](docs/rendezvous.jpg)
 
 ---
 
@@ -90,12 +110,12 @@ Notes:
 
 ## Project Structure (high level)
 
-- `Dental App` — WPF project containing Views, ViewModels, Services, Models and EF migrations
-- `Views` — XAML UI definitions
-- `ViewModels` — MVVM view logic (Prism DelegateCommands, navigation)
-- `Services` — Application services (data access, business rules)
-- `Models` — EF Core entities
-- `Migrations` — EF Core migrations for database schema
+- `Dental App`  WPF project containing Views, ViewModels, Services, Models and EF migrations
+- `Views`  XAML UI definitions
+- `ViewModels`  MVVM view logic (Prism DelegateCommands, navigation)
+- `Services`  Application services (data access, business rules)
+- `Models`  EF Core entities
+- `Migrations`  EF Core migrations for database schema
 
 ---
 
