@@ -75,7 +75,7 @@ Below is the full set of images currently included in `docs/`, replacing the old
 
   ![Radio Images](docs/radio.png)
 
-- Example ordonnance screen
+- Ordonnance screen
 
   ![Ordonnance](docs/ordonance.png)
 
